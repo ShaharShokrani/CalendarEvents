@@ -3,6 +3,7 @@ const path = require('path');
 //const bodyParser = require('body-parser');
 //const nodeMailer = require('nodemailer');
 const home = require('./routes/home');
+const courses = require('./routes/courses');
 const mustache = require('mustache');
 const fs = require("fs");
 
@@ -24,6 +25,7 @@ app.set('views',path.join(__dirname,'views'));
 
 //Define routes:
 app.use('/', home);
+app.use('/courses/', courses);
 app.use(express.static(path.join(__dirname,'/static')));
 
 

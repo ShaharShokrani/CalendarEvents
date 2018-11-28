@@ -10,7 +10,8 @@
   "keywords": [],
   "dependencies": {
     "express": "*",
-    "mustache": "*"
+    "mustache": "*",
+    "joi": "*"
   },
   "devDependencies": {
     "jshint": "^2.9.6"
