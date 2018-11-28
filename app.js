@@ -4,14 +4,11 @@ const path = require('path');
 //const nodeMailer = require('nodemailer');
 const home = require('./routes/home');
 const mustache = require('mustache');
-const fs = require("fs")
+const fs = require("fs");
 
 var app = express();
 
-//Define routes:
-app.use('/', home);
-app.use(express.static(path.join(__dirname,'/static')));
-
+app.set('view engine','html');
 // To set functioning of mustachejs view engine
 app.engine('html', function (filePath, options, callback) { 
     fs.readFile(filePath, function (err, content) {
@@ -20,11 +17,17 @@ app.engine('html', function (filePath, options, callback) {
         var rendered = mustache.to_html(content.toString(),options);
         return callback(null, rendered)
     });
-  });
+});
 
 // Setting mustachejs as view engine
 app.set('views',path.join(__dirname,'views'));
-//app.set('view engine','html');
+
+//Define routes:
+app.use('/', home);
+app.use(express.static(path.join(__dirname,'/static')));
+
+
+//
 
 
 // app.use(bodyParser.json());
