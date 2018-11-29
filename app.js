@@ -1,9 +1,9 @@
 const express = require('express');
 const path = require('path');
-//const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 //const nodeMailer = require('nodemailer');
 const home = require('./routes/home');
-const courses = require('./routes/courses');
+const events = require('./routes/events');
 const mustache = require('mustache');
 const fs = require("fs");
 
@@ -21,21 +21,18 @@ app.engine('html', function (filePath, options, callback) {
 });
 
 // Setting mustachejs as view engine
-app.set('views',path.join(__dirname,'views'));
+app.set('views', path.join(__dirname,'views'));
 
 //Define routes:
 app.use('/', home);
-app.use('/courses/', courses);
+app.use('/events/', events);
 app.use(express.static(path.join(__dirname,'/static')));
 
 
-//
-
-
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({
-//     extended:false
-// }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended:false
+}));
 
 const port = process.env.PORT || 3000;
 app.listen(port, ()=>{
