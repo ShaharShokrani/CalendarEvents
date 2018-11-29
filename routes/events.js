@@ -81,16 +81,8 @@ router.get('/:year?/:month?/:day?/:id?', function(req, res) {
         }
     });
 
-      
-
-    var data = {
-        "fruit": {
-            "apple": req.params.fruitName,
-            "color": req.params.fruitColor
-        }
-    }; 
     console.log(req.params);
-    res.send(events);
+    res.send(result);
 });
 
 var getIdFromReq = function() {
