@@ -9,12 +9,12 @@ const events = [
         id: 1,
         allDay: true,
         title: 'Long Event',
-        start: '2018-03-07',
-        end: '2018-03-10',
+        start: '2018-11-07',
+        end: '2018-11-10',
         //Filtering properties:
         year: [2018],
         month: [3],
-        day: [7,8,9]
+        day: [29,28]
     },
     {
         id: 999,

@@ -14,6 +14,79 @@
 
     <!-- Custom styles for this template -->
     <!-- <link href="starter-template.css" rel="stylesheet"> -->
+    
+    <!--Fullcalendar-->
+    <link rel='stylesheet' href='/fullcalendar-3.9.0/fullcalendar.css' />
+    <script src='/fullcalendar-3.9.0/lib/jquery.min.js'></script>
+    <script src='/fullcalendar-3.9.0/lib/moment.min.js'></script>
+    <script src='/fullcalendar-3.9.0/fullcalendar.js'></script>
+    <script src='/fullcalendar-3.9.0/locale/he.js'></script>
+
+    <script>
+        function getYearMonth(){
+          //  Get current year-month
+          $.ajax({
+                url: '/events?getYearMonth',
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                  return data;
+                },
+                error: function (request, status, error) {
+                  return data;
+                  //alert(request.responseText);
+                }
+          });
+        }
+
+        $(function() {  //  document ready
+          //  Initialize the fullcalendar
+          $('#calendar').fullCalendar({
+            locale: 'he',
+            isRTL: true,
+            header: { center: 'month,agendaWeek' }, // buttons for switching between views
+            views: {
+              month: { // name of view
+                titleFormat: 'YYYY, MM, DD'
+                // other view-specific options here
+              }
+              
+            },
+            events: getEvents('2018','11')
+
+          });
+          
+          //  Get the calendar object
+          var calendar = $('#calendar').fullCalendar('getCalendar');
+
+          //  Click on a day 
+          calendar.on('dayClick', function(date, jsEvent, view) {
+            console.log('clicked on ' + date.format());
+            alert('a day has been clicked!');
+          });
+          
+          
+          
+        });
+        //  Get all events by given year-month
+        function getEvents(yearParam,monthParam){
+          $.ajax({
+                url: '/events?year=' + yearParam + '&month=' + monthParam,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    //alert(data);
+                    //console.log(data);
+                    return data;
+                },
+                error: function (request, status, error) {
+                  console.log("error");
+                  //alert(request.responseText);
+                }
+          });
+        }
+            
+    </script>
   </head>
 
   <body>
@@ -56,15 +129,26 @@
       <div class="starter-template">
         <h1>Bootstrap starter template</h1>
         <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+        
+        <div id='calendar'></div>
+
       </div>
 
     </main><!-- /.container -->
+    
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+
+
+
+    <!--  
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    -->
+    
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="js/bootstrap.min.js"></script>
+    
   </body>
 </html>
