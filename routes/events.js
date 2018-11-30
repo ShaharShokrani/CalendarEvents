@@ -6,7 +6,6 @@ const router = express.Router();
 const Joi = require('joi');
 const moment = require('moment');
 
-
 const eventsJson = fs.readFileSync('static/events.json');
 const events = JSON.parse(eventsJson).items;
 console.log(eventsJson);
