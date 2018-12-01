@@ -1,81 +1,38 @@
 {
     "items": [
         {
-            "id": 1,
-            "allDay": true,
             "title": "Long Event",
-            "start": "2018-03-07",
-            "end": "2018-03-10",
-            "year": [
-                2018
-            ],
-            "month": [
-                3
-            ],
-            "day": [
-                7,
-                8,
-                9
-            ]
+            "start": "2018-12-01"
         },
         {
-            "id": 999,
+            "id": 2,
             "allDay": false,
             "title": "Repeating Event",
-            "start": "2018-03-09T16: 00: 00",
+            "start": "2018-12-02T16:00:00-0000",
             "year": [
                 2018
             ],
             "month": [
-                3
-            ],
-            "day": [
-                9
-            ]
-        },
-        {
-            "allDay": false,
-            "id": 999,
-            "title": "Repeating Event",
-            "start": "2018-03-16T16: 00: 00",
-            "year": [
-                2018
-            ],
-            "month": [
-                3
-            ],
-            "day": [
-                16
-            ]
-        },
-        {
-            "allDay": false,
-            "title": "Meeting",
-            "start": "2018-04-12T10: 30: 00",
-            "end": "2018-04-12T12: 30: 00",
-            "year": [
-                2018
-            ],
-            "month": [
-                4
-            ],
-            "day": [
                 12
+            ],
+            "day": [
+                2
             ]
         },
         {
+            "id": 3,
             "allDay": false,
             "title": "Click for Google",
             "url": "http: //google.com/",
-            "start": "2018-03-28",
+            "start": "2018-12-10",
             "year": [
                 2018
             ],
             "month": [
-                3
+                12
             ],
             "day": [
-                28
+                10
             ]
         }
     ]
