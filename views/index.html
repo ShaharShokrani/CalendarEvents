@@ -16,58 +16,59 @@
     <!-- <link href="starter-template.css" rel="stylesheet"> -->
     
     <!--Fullcalendar-->
+<<<<<<< HEAD
     <link rel='stylesheet' href='/css/fullcalendar.css' />
     <script src='/js/jquery.min.js'></script>
     <script src='/js/moment.min.js'></script>
     <script src='/js/fullcalendar.min.js'></script>
     <script src='/js/fullcalendar-he.js'></script>
 
+=======
+    <link rel='stylesheet' href='/fullcalendar-3.9.0/fullcalendar.css' />
+    <script src='/fullcalendar-3.9.0/lib/jquery.min.js'></script>
+    <script src='/fullcalendar-3.9.0/lib/moment.min.js'></script>
+    <script src='/fullcalendar-3.9.0/fullcalendar.js'></script>
+    <script src='/fullcalendar-3.9.0/locale/he.js'></script>
+    <script src='/js/events.js'></script>
+>>>>>>> 40a33caaa61cd2511f92fa6adc287ea20c1e8d05
     <script>
-        function getYearMonth(){
-          //  Get current year-month
-          $.ajax({
-                url: '/events?getYearMonth',
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                  return data;
-                },
-                error: function (request, status, error) {
-                  return data;
-                  //alert(request.responseText);
-                }
-          });
-        }
 
+        var eventsList;
+        var eventsReady = false;
+        
         $(function() {  //  document ready
-          //  Initialize the fullcalendar
-          $('#calendar').fullCalendar({
-            locale: 'he',
-            isRTL: true,
-            header: { center: 'month,agendaWeek' }, // buttons for switching between views
-            views: {
-              month: { // name of view
-                titleFormat: 'YYYY, MM, DD'
-                // other view-specific options here
-              }
-              
-            },
-            events: getEvents('2018','11')
+            //getYearMonth() ?
+            getEvents(new Date().getFullYear(),new Date().getMonth()+1);
+            if(!eventsReady) {
+                setTimeout(function() {   
+                    if (eventsList) {
+                          //  Initialize the fullcalendar
+                          $('#calendar').fullCalendar({
+                            locale: 'he',
+                            isRTL: true,
+                            header: { center: 'month,agendaWeek' }, // buttons for switching between views
+                            views: {
+                              month: { // name of view
+                                titleFormat: 'YYYY, MM, DD'
+                                // other view-specific options here
+                              }
+                            },
+                            events: eventsList
+                          });
+                        
+                          //  Get the calendar object
+                          var calendar = $('#calendar').fullCalendar('getCalendar');
 
-          });
-          
-          //  Get the calendar object
-          var calendar = $('#calendar').fullCalendar('getCalendar');
-
-          //  Click on a day 
-          calendar.on('dayClick', function(date, jsEvent, view) {
-            console.log('clicked on ' + date.format());
-            alert('a day has been clicked!');
-          });
-          
-          
-          
+                          //  Click on a day 
+                          calendar.on('dayClick', function(date, jsEvent, view) {
+                            console.log('clicked on ' + date.format());
+                            alert('a day has been clicked!');
+                          });
+                    }
+                }, 100);
+            }
         });
+<<<<<<< HEAD
         //  Get all events by given year-month
         function getEvents(yearParam,monthParam){
           $.ajax({
@@ -86,6 +87,8 @@
           });
         }
             
+=======
+>>>>>>> 40a33caaa61cd2511f92fa6adc287ea20c1e8d05
     </script>
   </head>
 
