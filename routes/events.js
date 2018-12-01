@@ -26,8 +26,8 @@ router.get('/:year?/:month?/:day?/:id?', function (req, res) {
                 event.day.includes(parseInt(req.params.day));
         }
         else if (req.params.month) {
-            return event.month.includes(parseInt(req.params.month)) &&
-                event.day.includes(parseInt(req.params.day));
+            return event.year.includes(parseInt(req.params.year)) &&
+                event.month.includes(parseInt(req.params.month));
         }
         else if (req.params.year) {
             return event.year.includes(parseInt(req.params.year));
