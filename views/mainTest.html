@@ -2,98 +2,33 @@
 <html lang="en">
   <head>
     <link rel='stylesheet' href='/css/fullcalendar.css' />
-    <script src='/js/jquery.min.js'></script>
-    <script src='/js/underscore.js'></script>
-    <script src='/js/backbone.js'></script>
-    <script src='/js/moment.min.js'></script>
-    <script src='/js/fullcalendar.min.js'></script>
-    <script src='/js/fullcalendar-he.js'></script>
+    <script src='/js/vendors/jquery.min.js'></script>
+    <script src='/js/vendors/underscore.js'></script>
+    <script src='/js/vendors/backbone.js'></script>
+    <script src='/js/vendors/moment.min.js'></script>
+    <script src='/js/vendors/fullcalendar.min.js'></script>
+    <script src='/js/vendors/fullcalendar-he.js'></script>
+    
+    <script src='/js/collections/eventsCollection.js'></script>
+    <script src='/js/models/eventModel.js'></script>
+    <script src='/js/views/appView.js'></script>
+    <script src='/js/views/eventModalView.js'></script>
+    <script src='/js/views/fullCalendarView.js'></script>
+    
     <script>
       'use strict';
       $(function() {  //  document ready
+        window.App = window.App || {};
 
-        // Event Model
-        // -----------
-        var Event = Backbone.Model.extend({
-          defaults: function() {
-            return { }
-          }
-        });
-
-        // Event Collection
-        // ----------------
-        var EventsList = Backbone.Collection.extend({
-          model: Event,
-          url: '/events/',
-          applyFilter: function (filters) {          
-            var filtered = this.filter(event => {
-              if (filters.day && filters.month && filters.year) {
-                return event.get("year").includes(filters.year) &&
-                      event.get("month").includes(filters.month) &&
-                      event.get("day").includes(filters.day);
-              }
-              else if (filters.month && filters.year) {
-                return event.get("year").includes(filters.year) &&
-                      event.get("month").includes(filters.month);
-              }
-              else if (filters.year) {
-                return event.get("year").includes(filters.year);
-              }
-              else {
-                  return true;
-              }
-            });
-            return new EventsList(filtered);
-          }
-        });
-
-        var Events = new EventsList;
-
-        // The Application
-        var AppView = Backbone.View.extend({
-          el: $('.js-events-app'),
-          // Our template for the line of statistics at the bottom of the app.
-          filtersTemplate: _.template($('.js-filters-template').html()),
-          events: {
-            "click .js-apply-filters": "applyFilters",
-          },
-          initialize: function() {
-            this.listenTo(Events, 'add', this.addEvent);
-            this.listenTo(Events, 'reset', this.resetEvents);
-            this.listenTo(Events, 'sync', this.render);
-
-            this.$fullCalendar = this.$('.js-full-calendar');
-            let events = Events.fetch();
-          },
-          render: function() {
-            console.log(Events.toJSON());
-
-            this.$fullCalendar.fullCalendar({
-              locale: 'he', //TODO: make this options come as params from server side.
-              isRTL: true,
-              header: { center: 'month,agendaWeek' }, // buttons for switching between views
-              views: {
-                month: { // name of view
-                  titleFormat: 'YYYY, MM, DD' //TODO: make it behave according to the user.
-                  // other view-specific options here
-                }            
-              },
-              events: Events.toJSON() //TODO: make a util function that get the current month and year.
-            });
-          }
-        });
-
-        var App = new AppView;
-
-        // //  Initialize the fullcalendar
-        // //  Get the calendar object
-        // var calendar = $('#calendar').fullCalendar('getCalendar');
-
-        // //  Click on a day 
-        // calendar.on('dayClick', function(date, jsEvent, view) {
-        //   console.log('clicked on ' + date.format());
-        //   alert('a day has been clicked!');
-        // });                      
+        App.AppView = App.AppView || {};
+        App.EventModalView = App.EventModalView || {};
+        App.FullCalendarView = App.FullCalendarView || {};
+        App.EventModel = App.EventModel || {};
+        App.EventsCollection = App.EventsCollection || {};
+        
+        let model = App.EventModel;
+        let collection = new App.EventsCollection({model: model});
+        let view = new App.AppView({collection: collection});
       });
     </script>
   </head>
@@ -107,6 +42,45 @@
           <span>filters</span>
         </div>
       </script>
+
+      <script type="text/template" class="js-event-modal-template">
+        <div>
+          Test
+        </div>
+      </script>
   </body>
- </html>     
+ </html> 
+ 
+ 
+
+ <!-- applyFilters: function (filters) {
+  var filtered = this.filter(event => {
+    const eventFilters = event.get("filters");
+
+    if (!Array.isArray(eventFilters.year) ||
+    !Array.isArray(eventFilters.month) ||
+    !Array.isArray(eventFilters.day)){
+      //TODO: set a logger for 'bad' inputs.
+      return true;
+    }
+
+    if (filters.day && filters.month && filters.year) {
+      return eventFilters.year.includes(filters.year) &&
+            eventFilters.month.includes(filters.month) &&
+            eventFilters.day.includes(filters.day);
+    }
+    else if (filters.month && filters.year) {
+      return eventFilters.year.includes(filters.year) &&
+            eventFilters.month.includes(filters.month);
+    }
+    else if (filters.year) {
+      return eventFilters.year.includes(filters.year);
+    }
+    else {
+        return true;
+    }
+  });
+
+  return new EventsCollection(filtered);
+} -->
 
