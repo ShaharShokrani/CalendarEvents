@@ -4,7 +4,7 @@ window.App = window.App || {};
 
 App.AppView = Backbone.View.extend({
     initialize: function() {
-        this.$el = $('.js-events-app');
+        this.$el = $('.js-app');
         //TODO: add validation for collection.
 
         this.fullCalendarView = new App.FullCalendarView();

@@ -17,66 +17,45 @@
     
     <!--Fullcalendar-->
     <link rel='stylesheet' href='/css/fullcalendar.css' />
-    <script src='/js/jquery.min.js'></script>
-    <script src='/js/moment.min.js'></script>
-    <script src='/js/fullcalendar.min.js'></script>
-    <script src='/js/fullcalendar-he.js'></script>
+    <script src='/js/vendors/jquery.min.js'></script>
+    <script src='/js/vendors/underscore.js'></script>
+    <script src='/js/vendors/backbone.js'></script>
+    <script src='/js/vendors/moment.min.js'></script>
+    <script src='/js/vendors/fullcalendar.min.js'></script>
+    <script src='/js/vendors/fullcalendar-he.js'></script>
+    
+    <script src='/js/collections/eventsCollection.js'></script>
+    <script src='/js/models/eventModel.js'></script>
+    <script src='/js/views/appView.js'></script>
+    <script src='/js/views/eventModalView.js'></script>
+    <script src='/js/views/fullCalendarView.js'></script>
 
     <script>
+      'use strict';
+      $(function() {  //  document ready
+        window.App = window.App || {};
 
-        var eventsList;
-        var eventsReady = false;
+        App.AppView = App.AppView || {};
+        App.EventModalView = App.EventModalView || {};
+        App.FullCalendarView = App.FullCalendarView || {};
+        App.EventModel = App.EventModel || {};
+        App.EventsCollection = App.EventsCollection || {};
         
-        $(function() {  //  document ready
-            //getYearMonth() ?
-            getEvents(new Date().getFullYear(),new Date().getMonth()+1);
-            if(!eventsReady) {
-                setTimeout(function() {   
-                    if (eventsList) {
-                          //  Initialize the fullcalendar
-                          $('#calendar').fullCalendar({
-                            locale: 'he',
-                            isRTL: true,
-                            header: { center: 'month,agendaWeek' }, // buttons for switching between views
-                            views: {
-                              month: { // name of view
-                                titleFormat: 'YYYY, MM, DD'
-                                // other view-specific options here
-                              }
-                            },
-                            events: eventsList                            
-                          });
-                        
-                          //  Get the calendar object
-                          var calendar = $('#calendar').fullCalendar('getCalendar');
+        let model = App.EventModel;
+        let collection = new App.EventsCollection({model: model});
+        let view = new App.AppView({collection: collection});
+      });
+    </script>
+    <script type="text/template" class="js-filters-template">      
+      <div>
+        <span>filters</span>
+      </div>
+    </script>
 
-                          //  Click on a day 
-                          calendar.on('dayClick', function(date, jsEvent, view) {
-                            console.log('clicked on ' + date.format());
-                            alert('a day has been clicked!');
-                          });
-                    }
-                }, 100);
-            }
-        });
-        //  Get all events by given year-month
-        function getEvents(yearParam,monthParam){
-          $.ajax({
-                url: '/events/' + yearParam + '/' + monthParam + '/', //TODO: use a generic util function that generates a url for REST api based on params
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    //alert(data);
-                    //console.log(data);
-                    return data;
-                },
-                error: function (request, status, error) {
-                  console.log("error");
-                  //alert(request.responseText);
-                }
-          });
-        }
-            
+    <script type="text/template" class="js-event-modal-template">
+      <div>
+        Test
+      </div>
     </script>
   </head>
 
@@ -121,13 +100,14 @@
         <h1>Bootstrap starter template</h1>
         <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
         
-        <div id='calendar'></div>
-
+        <div class='js-app'>
+            <div class='js-full-calendar'></div>
+        </div>
       </div>
 
     </main><!-- /.container -->
   
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/vendors/bootstrap.min.js"></script>
     
   </body>
 </html>
