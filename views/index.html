@@ -27,6 +27,7 @@
     <script src='/js/collections/eventsCollection.js'></script>
     <script src='/js/models/eventModel.js'></script>
     <script src='/js/views/appView.js'></script>
+    <script src='/js/views/filtersView.js'></script>
     <script src='/js/views/eventModalView.js'></script>
     <script src='/js/views/fullCalendarView.js'></script>
 
@@ -36,6 +37,7 @@
         window.App = window.App || {};
 
         App.AppView = App.AppView || {};
+        App.FiltersView = App.FiltersView || {};
         App.EventModalView = App.EventModalView || {};
         App.FullCalendarView = App.FullCalendarView || {};
         App.EventModel = App.EventModel || {};
@@ -55,6 +57,12 @@
     <script type="text/template" class="js-event-modal-template">
       <div>
         Test
+      </div>
+    </script>
+    <script type="text/template" class="js-app-template">      
+      <div class="js-app">
+        <div class='js-full-calendar'></div>
+        <div class='js-filters'></div>
       </div>
     </script>
   </head>
@@ -98,11 +106,7 @@
 
       <div class="starter-template">
         <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-        
-        <div class='js-app'>
-            <div class='js-full-calendar'></div>
-        </div>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>        
       </div>
 
     </main><!-- /.container -->

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 //const nodeMailer = require('nodemailer');
 const home = require('./routes/home');
 const events = require('./routes/events');
+const filters = require('./routes/filters');
 const mustache = require('mustache');
 const fs = require("fs");
 
@@ -26,6 +27,7 @@ app.set('views', path.join(__dirname,'views'));
 //Define routes:
 app.use('/', home);
 app.use('/events/', events);
+app.use('/filters/', filters);
 app.use(express.static(path.join(__dirname,'/static')));
 
 

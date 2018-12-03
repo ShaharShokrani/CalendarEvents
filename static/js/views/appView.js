@@ -3,7 +3,7 @@
 window.App = window.App || {};
 
 App.AppView = Backbone.View.extend({
-    el: '.js-app', 
+    el: 'body', 
     initialize: function() {
         this.template = _.template($('.js-app-template').html());
 

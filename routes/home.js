@@ -14,8 +14,13 @@ router.get('/about', function(req, res){
 });
 
 router.get('/mainTest', function(req, res){
-    console.log('main.test router');
+    console.log('main test router');
     res.render('mainTest', {name: 'Shahar'});
+});
+
+router.get('/filtersTest', function(req, res){
+    console.log('filters test router');
+    res.render('filtersTest', {name: 'Shahar'});
 });
 
 module.exports = router;
