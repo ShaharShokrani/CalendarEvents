@@ -4,7 +4,8 @@ window.App = window.App || {};
 
 App.EventModalView = Backbone.View.extend({
     initialize: function() {
-        this.template = _.template($('.js-event-modal-template').html());            
+        this.$el = $('body');
+        this.template = _.template($('.js-event-modal-template').html());
     },
     render: function() {
         this.$el.html(this.template(this.model.toJSON()));
