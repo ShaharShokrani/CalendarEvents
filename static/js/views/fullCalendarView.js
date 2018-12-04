@@ -14,19 +14,22 @@ App.FullCalendarView = Backbone.View.extend({
             // other view-specific options here
             }            
         },
-        events: this.events,
+        events: this.collection,
         eventClick: this.renderEventModal.bind(this)
       };
     },
     initialize: function() {
+        console.log('FullCalendarView.initialize');
         this.$el = $('.js-full-calendar');
     },
     render: function(res) {
-        this.events = res.collection.toJSON();
+        console.log('FullCalendarView.render');
+        this.collection = res.collection.toJSON();
         this.$el.fullCalendar(this.options());
         return this;
     },
     renderEventModal: function(res) {
+        console.log('FullCalendarView.renderEventModal');
         //this.EventModalView = new App.EventModalView({model: todo});
         console.log(res);
     },

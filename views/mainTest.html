@@ -1,16 +1,25 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Vendors -->
     <link rel='stylesheet' href='/css/fullcalendar.css' />
-    <script src='/js/vendors/jquery.min.js'></script>
+    <script src='/js/vendors/jquery.min.js'></script>    
     <script src='/js/vendors/underscore.js'></script>
     <script src='/js/vendors/backbone.js'></script>
     <script src='/js/vendors/moment.min.js'></script>
+    <script src='/js/vendors/mustache.min.js'></script>
     <script src='/js/vendors/fullcalendar.min.js'></script>
     <script src='/js/vendors/fullcalendar-he.js'></script>
     
+    <!-- Collections -->
     <script src='/js/collections/eventsCollection.js'></script>
+    <script src='/js/collections/filtersCollection.js'></script>
+
+    <!-- Models -->
     <script src='/js/models/eventModel.js'></script>
+    <script src='/js/models/filterModel.js'></script>
+
+    <!-- Views -->
     <script src='/js/views/appView.js'></script>
     <script src='/js/views/filtersView.js'></script>
     <script src='/js/views/eventModalView.js'></script>
@@ -23,13 +32,23 @@
 
         App.AppView = App.AppView || {};
         App.EventModalView = App.EventModalView || {};
+        App.FiltersView = App.FiltersView || {};
         App.FullCalendarView = App.FullCalendarView || {};
         App.EventModel = App.EventModel || {};
+        App.FilterModel = App.FilterModel || {};
         App.EventsCollection = App.EventsCollection || {};
+        App.FiltersCollection = App.FiltersCollection || {};
         
-        let model = App.EventModel;
-        let collection = new App.EventsCollection({model: model});
-        let view = new App.AppView({collection: collection});
+        let eventModel = App.EventModel;
+        let filterModel = App.FilterModel;
+
+        let eventsCollection = new App.EventsCollection({model: eventModel});
+        let filtersCollection = new App.FiltersCollection({model: filterModel});
+        
+        let view = new App.AppView({
+          eventsCollection: eventsCollection,
+          filtersCollection: filtersCollection
+        });
       });
     </script>
   </head>
@@ -43,7 +62,7 @@
 
       <script type="text/template" class="js-filters-template">              
           <span>filters</span>
-          <select class="js-filter-genre-id">
+          <select class="js-genre-id">
           </select>
       </script>
 

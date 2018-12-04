@@ -2,6 +2,6 @@
 
 window.App = window.App || {};
 
-App.FiltersCollection = Backbone.Collection.extend({          
+App.FiltersCollection = Backbone.Collection.extend({
     url: '/filters/'          
 });

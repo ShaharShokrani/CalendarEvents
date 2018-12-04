@@ -1,13 +1,34 @@
 {
     "items": [
         {
-            "id": 1
+            "Id": "1111-1111",
+            "TypeId": "1",
+            "Name": "Genre",
+            "Options": [
+                {
+                    "Text": "text1",
+                    "ValueId": "1"
+                },
+                {
+                    "Text": "text2",
+                    "ValueId": "2"
+                }
+            ]
         },
         {
-            "id": 2
-        },
-        {
-            "id": 3
+            "Id": "2222-2222",
+            "TypeId": "2",
+            "Name": "SubGenre",
+            "Options": [
+                {
+                    "Text": "text1",
+                    "ValueId": "1"
+                },
+                {
+                    "Text": "text2",
+                    "ValueId": "2"
+                }
+            ]
         }
     ]
 }
