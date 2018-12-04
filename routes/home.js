@@ -18,6 +18,11 @@ router.get('/mainTest', function(req, res){
     res.render('mainTest', {name: 'Shahar'});
 });
 
+router.get('/eventModalTest', function(req, res){
+    console.log('eventModalTest test router');
+    res.render('eventModalTest', {name: 'Rafael'});
+});
+
 router.get('/filtersTest', function(req, res){
     console.log('filters test router');
     res.render('filtersTest', {name: 'Shahar'});
