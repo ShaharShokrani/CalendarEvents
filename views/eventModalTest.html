@@ -39,14 +39,15 @@
                 }
             });
             let view = new App.EventModalView({model: model});
+            view.render();
         });
     </script>
   </head>
   <body>
       <script type="text/template" class="js-event-modal-template">
-        <div>
-          asdfasdf
-        </div>
+    <div>
+        hello {{title}}
+    </div>
       </script>
   </body>
  </html>
