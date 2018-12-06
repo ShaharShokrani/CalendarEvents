@@ -1,9 +1,11 @@
 'use strict';
 
 window.App = window.App || {};
+App.EventModel = App.EventModel || {}
 
 App.EventsCollection = Backbone.Collection.extend({          
-    url: '/events/'          
+    model: App.EventModel,
+    url: '/events'
 });
 
 

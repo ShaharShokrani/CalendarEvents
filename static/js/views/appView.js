@@ -3,29 +3,29 @@
 window.App = window.App || {};
 
 App.AppView = Backbone.View.extend({
-    el: 'body', 
+    el: 'body',     
     initialize: function(options) {
         console.log('AppView.initialize');
 
         if (!options || 
-            !options.eventsCollection ||
-            !options.filtersCollection) {
+            !options.events ||
+            !options.filters) {
                 throw new Error("options params are missing.");
             }
-        this.eventsCollection = options.eventsCollection;
-        this.filtersCollection = options.filtersCollection;
+        this.events =  options.events;
+        this.filters = options.filters;
         
         this.template = _.template($('.js-app-template').html());
 
         //Click listeners
         //this.listenTo(this.eventsCollection, 'add', this.renderFullCalendar); //TODO: check if needed
-        this.listenTo(this.eventsCollection, 'sync', this.renderFullCalendar);
-        this.listenTo(this.filtersCollection, 'sync', this.renderFilters);
-        this.eventsCollection.fetch({
+        this.listenTo(this.events, 'sync', this.renderFullCalendar);
+        
+        this.events.fetch({
             data:{}
         });
 
-        this.filtersCollection.fetch({
+        this.filters.fetch({
             data:{}
         });
 
@@ -40,12 +40,12 @@ App.AppView = Backbone.View.extend({
         });
         this.filtersView = new App.FiltersView({
             el: '.js-filters'
-        });        
+        });
     },
     renderFilters: function() {
         console.log('AppView.renderFilters');
         this.filtersView.render({
-            collection: this.filtersCollection
+            model: this.filters
         });
     },
     renderFullCalendar: function() {

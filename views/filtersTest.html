@@ -4,9 +4,9 @@
         <!-- Vendors -->
         <link rel='stylesheet' href='/css/fullcalendar.css' />
         <script src='/js/vendors/jquery.min.js'></script>
-        <script src='/js/vendors/mustache.min.js'></script>
+        <script src='/js/vendors/mustache.js'></script>
         <script src='/js/vendors/underscore.min.js'></script>
-        <script src='/js/vendors/backbone.min.js'></script>
+        <script src='/js/vendors/backbone.js'></script>
         <script src='/js/vendors/moment.min.js'></script>
         <script src='/js/vendors/fullcalendar.min.js'></script>
         <script src='/js/vendors/fullcalendar-he.js'></script>
@@ -25,9 +25,11 @@
                 App.FiltersCollection = App.FiltersCollection || {};
                 App.FiltersView = App.FiltersView || {};
             
-                let model = App.FilterModal;
-                let collection = new App.FiltersCollection({model: model});
-                let view = new App.FiltersView({collection: collection});
+                // let model = App.FilterModal;
+                let filters = new App.FiltersCollection;
+                filters.fetch();
+
+                let filtersView = new App.FiltersView({model: filters});
             });
         </script>
     </head>

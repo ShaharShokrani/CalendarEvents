@@ -7,8 +7,8 @@
     <script src='/js/vendors/underscore.js'></script>
     <script src='/js/vendors/backbone.js'></script>
     <script src='/js/vendors/moment.min.js'></script>
-    <script src='/js/vendors/mustache.min.js'></script>
-    <script src='/js/vendors/fullcalendar.min.js'></script>
+    <script src='/js/vendors/mustache.js'></script>
+    <script src='/js/vendors/fullcalendar.js'></script>
     <script src='/js/vendors/fullcalendar-he.js'></script>
     
     <!-- Collections -->
@@ -34,22 +34,21 @@
         App.EventModalView = App.EventModalView || {};
         App.FiltersView = App.FiltersView || {};
         App.FullCalendarView = App.FullCalendarView || {};
+
         App.EventModel = App.EventModel || {};
         App.FilterModel = App.FilterModel || {};
+
         App.EventsCollection = App.EventsCollection || {};
         App.FiltersCollection = App.FiltersCollection || {};
-        
-        let eventModel = App.EventModel;
-        let filterModel = App.FilterModel;
 
-        let eventsCollection = new App.EventsCollection({model: eventModel});
-        let filtersCollection = new App.FiltersCollection({model: filterModel});
+        var events = new App.EventsCollection;
+        var filters = new App.FiltersCollection;
         
-        let view = new App.AppView({
-          eventsCollection: eventsCollection,
-          filtersCollection: filtersCollection
+        var view = new App.AppView({
+          events: events,
+          filters: filters
         });
-      });
+    });
     </script>
   </head>
   <body>

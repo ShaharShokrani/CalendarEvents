@@ -12,6 +12,7 @@ console.log(filtersJson);
 console.log(filters);
 
 router.get('/', (req, res) => {
+    console.log('/filters/')
     res.send(filters);
 });
 

@@ -2,31 +2,35 @@
     "items": [
         {
             "Id": "1111-1111",
-            "TypeId": "1",
+            "TypeId": 1,
             "Name": "Genre",
             "Options": [
                 {
                     "Text": "text1",
-                    "ValueId": "1"
+                    "Value": "1",
+                    "Guid": ""
                 },
                 {
                     "Text": "text2",
-                    "ValueId": "2"
+                    "Value": "2",
+                    "Guid": ""
                 }
             ]
         },
         {
             "Id": "2222-2222",
-            "TypeId": "2",
+            "TypeId": 2,
             "Name": "SubGenre",
             "Options": [
                 {
                     "Text": "text1",
-                    "ValueId": "1"
+                    "Value": "1",
+                    "Guid": ""
                 },
                 {
                     "Text": "text2",
-                    "ValueId": "2"
+                    "Value": "2",
+                    "Guid": ""
                 }
             ]
         }

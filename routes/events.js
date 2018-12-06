@@ -12,6 +12,7 @@ const events = JSON.parse(eventsJson).items;
 // console.log(events);
 
 router.get('/', (req, res) => {
+    console.log('/Events/')
     res.send(events);
 });
 

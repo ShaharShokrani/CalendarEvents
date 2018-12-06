@@ -3,38 +3,70 @@
 window.App = window.App || {};
 
 App.FiltersView = Backbone.View.extend({
-    $genreId: null,
+    el: 'body',
 
-    initialize: function() {
+    initialize: function(options) {
         console.log("FiltersView.initialize");
-        this.template = $(".js-filters-template").html();
-    },
-    render: function(options) {
-        console.log("FiltersView.render");
 
-        if (!options || !options.collection)
-        {
+        if (!options || !options.model) {
             throw new Error("FiltersView.render missing params, options:'" + options + "'");
         }
-        this.collection = options.collection;
+        this.model = options.model;
+        this.listenTo(this.model, 'sync', this.renderOptions);
+        this.template = $(".js-filters-template").html();
+
+        this.render();
+    },
+    render: function() {
+        console.log("FiltersView.render");
 
 		this.$el.html(Mustache.render(this.template));
-        this.$el.append(this.template);
+		return this;
+    },
+    renderOptions: function() {
+        console.log("FiltersView.renderOptions");
 
-        this.$genreId = this.$el.find('.js-genre-id');
-        this.collection.forEach(function(model, index, list) {
+        this.model.models.forEach(function(model, index, list) {
             if (!model.isValid()) {
                 throw new Error("FiltersView.render: collection missing options property. model:" + model);
             }
+            let attributes = model.toJSON();
 
-            let options = model.get("Options");
-            console.log(model);
-            console.log(index);
-            console.log(list);
+            switch (attributes.TypeId) {
+                case 1:
+                    let genreView = new App.FiltersView.Genre({
+                        model: model
+                    });
+                    break;
+                default:
+                    break;
+            }
+
+        });
+    },
+});
+
+App.FiltersView.Genre = Backbone.View.extend({    
+    el: '.js-filter-genre-id',
+    initialize: function(options) {
+        console.log("FiltersView.Genre.initialize");
+
+        if (!this.model.isValid()) {
+            throw new Error("FiltersView.Genre.render model not valid, model:'" + model.toJSON() + "'");
+        }
+        this.render();
+    },
+    render: function() {
+        console.log("FiltersView.Genre.render");
+        let self = this;
+
+        let attributes = this.model.toJSON();
+        attributes.Options.forEach(function(item){
+            self.$el.append($('<option>', { 
+                value: item.Value,
+                text : item.Text 
+            }));
         });
 		return this;
-    },
-    renderGenreId: function() {
-        console.log("FiltersView.renderGenreId");
     }
 });
