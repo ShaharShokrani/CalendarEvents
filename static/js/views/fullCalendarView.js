@@ -3,6 +3,9 @@
 window.App = window.App || {};
 
 App.FullCalendarView = Backbone.View.extend({
+    el: '.js-full-calendar',
+    model: App.EventsCollection,
+    
     options: function () {
       return {
         locale: 'he', //TODO: make this options come as params from server side.
@@ -14,17 +17,19 @@ App.FullCalendarView = Backbone.View.extend({
             // other view-specific options here
             }            
         },
-        events: this.collection,
+        events: this.model,
         eventClick: this.renderEventModal.bind(this)
       };
     },
     initialize: function() {
         console.log('FullCalendarView.initialize');
-        this.$el = $('.js-full-calendar');
+
+        this.listenTo(this.model, 'sync', this.render);
     },
     render: function(res) {
         console.log('FullCalendarView.render');
-        this.collection = res.collection.toJSON();
+        
+        //this.model.fetch();
         this.$el.fullCalendar(this.options());
         return this;
     },

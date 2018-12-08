@@ -6,18 +6,20 @@
     <script src='/js/vendors/jquery.min.js'></script>    
     <script src='/js/vendors/underscore.js'></script>
     <script src='/js/vendors/backbone.js'></script>
-    <script src='/js/vendors/moment.min.js'></script>
+    <!-- TODO: add a moment.js to development -->
+    <script src='/js/vendors/moment.min.js'></script> 
     <script src='/js/vendors/mustache.js'></script>
     <script src='/js/vendors/fullcalendar.js'></script>
     <script src='/js/vendors/fullcalendar-he.js'></script>
     
+    <!-- Models -->
+    <script src='/js/models/appModel.js'></script>
+    <script src='/js/models/eventModel.js'></script>
+    <script src='/js/models/filterModel.js'></script>
+
     <!-- Collections -->
     <script src='/js/collections/eventsCollection.js'></script>
     <script src='/js/collections/filtersCollection.js'></script>
-
-    <!-- Models -->
-    <script src='/js/models/eventModel.js'></script>
-    <script src='/js/models/filterModel.js'></script>
 
     <!-- Views -->
     <script src='/js/views/appView.js'></script>
@@ -28,26 +30,26 @@
     <script>
       'use strict';
       $(function() {  //  document ready
+
         window.App = window.App || {};
 
-        App.AppView = App.AppView || {};
-        App.EventModalView = App.EventModalView || {};
-        App.FiltersView = App.FiltersView || {};
-        App.FullCalendarView = App.FullCalendarView || {};
-
-        App.EventModel = App.EventModel || {};
-        App.FilterModel = App.FilterModel || {};
-
-        App.EventsCollection = App.EventsCollection || {};
+        App.FilterModal = App.FilterModal || {};
         App.FiltersCollection = App.FiltersCollection || {};
+        App.FiltersView = App.FiltersView || {};
 
-        var events = new App.EventsCollection;
-        var filters = new App.FiltersCollection;
-        
-        var view = new App.AppView({
-          events: events,
-          filters: filters
-        });
+        // window.App = window.App || {};
+
+        // App.AppView = App.AppView || {};
+        // App.EventModalView = App.EventModalView || {};
+        // App.FiltersView = App.FiltersView || {};
+        // App.FullCalendarView = App.FullCalendarView || {};
+
+        // App.EventModel = App.EventModel || {};
+        // App.FilterModel = App.FilterModel || {};
+
+        // App.EventsCollection = App.EventsCollection || {};
+        // App.FiltersCollection = App.FiltersCollection || {};
+        let appView = new App.AppView();
     });
     </script>
   </head>
@@ -60,9 +62,9 @@
       </script>
 
       <script type="text/template" class="js-filters-template">              
-          <span>filters</span>
-          <select class="js-genre-id">
-          </select>
+        <span>filters</span>
+        <select class="js-filter-genre-id">
+        </select>
       </script>
 
       <script type="text/template" class="js-event-modal-template">

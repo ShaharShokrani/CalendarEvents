@@ -11,7 +11,7 @@ App.FilterModel = Backbone.Model.extend({
             "Options": []
         };
     },
-    url: '/filters',
+    // url: '/filters',
     validate: function(attrs, options) {        
         console.log("FilterModel.validate");
 

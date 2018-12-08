@@ -13,9 +13,9 @@ router.get('/about', function(req, res){
     res.render('about', {name: 'Shahar'});
 });
 
-router.get('/mainTest', function(req, res){
-    console.log('main test router');
-    res.render('mainTest', {name: 'Shahar'});
+router.get('/appTest', function(req, res){
+    console.log('app test router');
+    res.render('appTest', {name: 'Shahar'});
 });
 
 router.get('/eventModalTest', function(req, res){

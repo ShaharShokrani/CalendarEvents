@@ -3,15 +3,16 @@
 window.App = window.App || {};
 
 App.FiltersView = Backbone.View.extend({
-    el: 'body',
+    el: '.js-filters',
+    // model: App.FiltersCollection,
 
     initialize: function(options) {
         console.log("FiltersView.initialize");
 
-        if (!options || !options.model) {
-            throw new Error("FiltersView.render missing params, options:'" + options + "'");
-        }
-        this.model = options.model;
+        // if (!options || !options.model) {
+        //     throw new Error("FiltersView.render missing params, options:'" + options + "'");
+        // }
+        
         this.listenTo(this.model, 'sync', this.renderOptions);
         this.template = $(".js-filters-template").html();
 
@@ -20,6 +21,7 @@ App.FiltersView = Backbone.View.extend({
     render: function() {
         console.log("FiltersView.render");
 
+        //this.model.fetch();
 		this.$el.html(Mustache.render(this.template));
 		return this;
     },
