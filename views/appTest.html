@@ -11,7 +11,7 @@
     <script src='/js/vendors/mustache.js'></script>
     <script src='/js/vendors/fullcalendar.js'></script>
     <script src='/js/vendors/fullcalendar-he.js'></script>
-    
+
     <!-- Models -->
     <script src='/js/models/appModel.js'></script>
     <script src='/js/models/eventModel.js'></script>
@@ -25,30 +25,13 @@
     <script src='/js/views/appView.js'></script>
     <script src='/js/views/filtersView.js'></script>
     <script src='/js/views/eventModalView.js'></script>
-    <script src='/js/views/fullCalendarView.js'></script>
+    <script src='/js/views/eventsView.js'></script>
     
     <script>
       'use strict';
       $(function() {  //  document ready
 
         window.App = window.App || {};
-
-        App.FilterModal = App.FilterModal || {};
-        App.FiltersCollection = App.FiltersCollection || {};
-        App.FiltersView = App.FiltersView || {};
-
-        // window.App = window.App || {};
-
-        // App.AppView = App.AppView || {};
-        // App.EventModalView = App.EventModalView || {};
-        // App.FiltersView = App.FiltersView || {};
-        // App.FullCalendarView = App.FullCalendarView || {};
-
-        // App.EventModel = App.EventModel || {};
-        // App.FilterModel = App.FilterModel || {};
-
-        // App.EventsCollection = App.EventsCollection || {};
-        // App.FiltersCollection = App.FiltersCollection || {};
         let appView = new App.AppView();
     });
     </script>

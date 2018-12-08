@@ -2,9 +2,8 @@
 
 window.App = window.App || {};
 
-App.FullCalendarView = Backbone.View.extend({
+App.EventsView = Backbone.View.extend({
     el: '.js-full-calendar',
-    model: App.EventsCollection,
     
     options: function () {
       return {
@@ -17,24 +16,23 @@ App.FullCalendarView = Backbone.View.extend({
             // other view-specific options here
             }            
         },
-        events: this.model,
+        events: this.model.toJSON(),
         eventClick: this.renderEventModal.bind(this)
       };
     },
     initialize: function() {
-        console.log('FullCalendarView.initialize');
+        console.log('EventsView.initialize');
 
         this.listenTo(this.model, 'sync', this.render);
     },
     render: function(res) {
-        console.log('FullCalendarView.render');
+        console.log('EventsView.render');
         
-        //this.model.fetch();
         this.$el.fullCalendar(this.options());
         return this;
     },
     renderEventModal: function(res) {
-        console.log('FullCalendarView.renderEventModal');
+        console.log('EventsView.renderEventModal');
         //this.EventModalView = new App.EventModalView({model: todo});
         console.log(res);
     },

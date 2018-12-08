@@ -11,9 +11,9 @@
         <script src='/js/vendors/fullcalendar.min.js'></script>
         <script src='/js/vendors/fullcalendar-he.js'></script>
         
-        <script src='/js/models/filterModel.js'></script>
-        <script src='/js/collections/filtersCollection.js'></script>
-        <script src='/js/views/filtersView.js'></script>
+        <script src='/js/models/eventModel.js'></script>
+        <script src='/js/collections/eventsCollection.js'></script>
+        <script src='/js/views/eventsView.js'></script>
 
         <script>
             'use strict';
@@ -21,10 +21,10 @@
                 //TODO: Should move into main.js
                 window.App = window.App || {};
 
-                let filters = new App.FiltersCollection();
-                filters.fetch();
+                let events = new App.EventsCollection();
+                events.fetch();
 
-                let filtersView = new App.FiltersView({ model: filters });
+                let eventsView = new App.EventsView({ model: events });
             });
         </script>
     </head>

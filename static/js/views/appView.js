@@ -22,30 +22,16 @@ App.AppView = Backbone.View.extend({
 
         this.$el.append(this.template);
 
-        // let eventsModel = new App.EventsCollection;
-        // eventsModel.fetch();
+        let events = new App.EventsCollection;
+        events.fetch();
 
-        // this.fullCalendarView = new App.FullCalendarView({
-        //     model: eventsModel,
-        // });
+        this.eventsView = new App.EventsView({
+            model: events,
+        });
 
         let filters = new App.FiltersCollection();
         filters.fetch();
 
         let filtersView = new App.FiltersView({ model: filters });
-    },
-    // renderFilters: function() {
-    //     console.log('AppView.renderFilters');
-
-    //     this.filtersView.render({
-    //         model: this.model.get("Filters")
-    //     });
-    // },
-    // renderFullCalendar: function() {
-    //     console.log('AppView.renderFullCalendar');
-
-    //     this.fullCalendarView.render({
-    //         collection: this.model.get("Events")
-    //     });
-    // }
+    }
 });

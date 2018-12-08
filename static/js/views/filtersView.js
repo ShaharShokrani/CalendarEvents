@@ -4,14 +4,9 @@ window.App = window.App || {};
 
 App.FiltersView = Backbone.View.extend({
     el: '.js-filters',
-    // model: App.FiltersCollection,
 
     initialize: function(options) {
         console.log("FiltersView.initialize");
-
-        // if (!options || !options.model) {
-        //     throw new Error("FiltersView.render missing params, options:'" + options + "'");
-        // }
         
         this.listenTo(this.model, 'sync', this.renderOptions);
         this.template = $(".js-filters-template").html();

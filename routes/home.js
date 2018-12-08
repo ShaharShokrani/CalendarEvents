@@ -18,6 +18,11 @@ router.get('/appTest', function(req, res){
     res.render('appTest', {name: 'Shahar'});
 });
 
+router.get('/eventsTest', function(req, res){
+    console.log('events test router');
+    res.render('eventsTest', {name: 'Shahar'});
+});
+
 router.get('/eventModalTest', function(req, res){
     console.log('eventModalTest test router');
     res.render('eventModalTest', {name: 'Rafael'});
