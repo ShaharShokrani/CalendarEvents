@@ -23,8 +23,17 @@
 
                 let filters = new App.FiltersCollection();
                 filters.fetch();
+                let vent = _.extend({}, Backbone.Events);                
+                vent.on("genre", filterEventsView);
+                function filterEventsView(res) {
+                    console.log("filterEventsView");
+                    console.log(res);
+                }
 
-                let filtersView = new App.FiltersView({ model: filters });
+                let filtersView = new App.FiltersView({
+                    model: filters,
+                    vent: vent
+                });
             });
         </script>
     </head>
@@ -35,8 +44,8 @@
         </div>
 
         <script type="text/template" class="js-filters-template">              
-            <span>filters</span>
-            <select class="js-filter-genre-id">
+            <span>Genre</span>
+            <select class="js-genre-id">
             </select>
         </script>
     </body>
