@@ -16,7 +16,9 @@
                     8,
                     9
                 ],
-                "genreId": [],
+                "genreId": [
+                    2
+                ],
                 "subGenreId": []
             }
         },

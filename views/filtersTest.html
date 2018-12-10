@@ -23,7 +23,7 @@
 
                 let filters = new App.FiltersCollection();
                 filters.fetch();
-                let vent = _.extend({}, Backbone.Events);                
+                let vent = _.extend({}, Backbone.Events);
                 vent.on("genre", filterEventsView);
                 function filterEventsView(res) {
                     console.log("filterEventsView");

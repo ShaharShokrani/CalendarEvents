@@ -15,12 +15,12 @@ App.AppView = Backbone.View.extend({
     initialize: function(options) {
         console.log('AppView.initialize');
 
-        if (!options || !options.vent || !(options.vent instanceof Backbone.Events)) {
+        if (!options || !options.vent) {
             throw new Error("options params are missing.");
         }
         this.vent =  options.vent;
         
-        this.vent.on("filter:genre", this.filterEventsView.bind(this));
+        this.vent.on("genre", this.filterEventsView.bind(this));
         this.template = _.template($('.js-app-template').html());
 
         this.render();
@@ -44,10 +44,7 @@ App.AppView = Backbone.View.extend({
     },
     filterEventsView: function(res) {
         console.log("AppView.filterEventsView" + res);
-        //this.eventsView.filter(res);
-        // this.model.reset(this.model.where({
-        //     cat_name: "interviews"
-        //   }));
+        this.eventsView.filter(res);
     },
     renderFiltersView: function() {
         console.log('AppView.renderFiltersView');

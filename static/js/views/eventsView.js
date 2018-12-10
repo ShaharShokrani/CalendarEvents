@@ -14,7 +14,7 @@ App.EventsView = Backbone.View.extend({
             month: { // name of view
                 titleFormat: 'YYYY, MM, DD' //TODO: make it behave according to the user.
             // other view-specific options here
-            }            
+            }
         },
         events: this.model.toJSON(),
         eventClick: this.renderEventModal.bind(this)
@@ -23,13 +23,29 @@ App.EventsView = Backbone.View.extend({
     initialize: function() {
         console.log('EventsView.initialize');
 
-        this.listenTo(this.model, 'sync', this.render);
+        this.listenTo(this.model, 'sync', this.render.bind(this));
+        this.listenTo(this.model, 'reset', this.rerenderEvents.bind(this));
     },
     render: function(res) {
         console.log('EventsView.render');
+        console.log(this.model.toJSON());
+
+
         
         this.$el.fullCalendar(this.options());
         return this;
+    },
+    rerenderEvents: function() {
+        console.log('EventsView.rerenderEvents');
+
+        this.$el.fullCalendar('removeEvents');
+        this.$el.fullCalendar('addEventSource', this.model.toJSON());
+        this.$el.fullCalendar('rerenderEvents');
+    },
+    filter: function(res) {
+        console.log('EventsView.filter');
+
+        this.model.reset(this.model.byGenreId(2));
     },
     renderEventModal: function(res) {
         console.log('EventsView.renderEventModal');

@@ -31,7 +31,10 @@
       $(function() {  //  document ready
 
         window.App = window.App || {};
-        let appView = new App.AppView();
+
+        let appView = new App.AppView({
+          vent: _.extend({}, Backbone.Events
+        )});
     });
     </script>
   </head>

@@ -4,7 +4,14 @@ window.App = window.App || {};
 
 App.EventsCollection = Backbone.Collection.extend({          
     model: App.EventModel,
-    url: '/events'
+    url: '/events',
+    byGenreId: function (genreId) {
+        let filtered = this.filter(function (event) {
+            let filters = event.get("filters");
+            return filters.genreId.includes(genreId);
+        });
+        return new App.EventsCollection(filtered);
+    }
 });
 
 
