@@ -3,12 +3,14 @@
   <head>
     
     <script src='/js/vendors/jquery.min.js'></script>
+    <!--<script src='/js/vendors/mustache.js'></script>-->
     <script src='/js/vendors/underscore.js'></script>
     <script src='/js/vendors/backbone.js'></script>
     <script src='/js/vendors/moment.min.js'></script>
     <script src='/js/models/eventModel.js'></script>
     <script src='/js/views/eventModalView.js'></script>
-    
+    <script src='/js/vendors/bootstrap.min.js'></script>
+    <link rel='stylesheet' href='/css/bootstrap.min.css' />    
 
     <script>
       'use strict';
@@ -18,6 +20,28 @@
             App.AppView = App.AppView || {};
             App.EventModalView = App.EventModalView || {};
             App.EventModel = App.EventModel || {};
+            let event = new App.EventModel({
+                title: "Long Event",
+                start: "2018-12-01",
+                end: "2018-12-10",
+                filters: {
+                    year: [
+                        2018
+                    ],
+                    month: [
+                        12
+                    ],
+                    day: [
+                        7,
+                        8,
+                        9
+                    ],
+                    genreId: [],
+                    subGenreId: []
+                }
+            });
+            let model = new App.EventModel({event});
+            /*
             let model = new App.EventModel({
                 title: "Long Event",
                 start: "2018-12-01",
@@ -38,16 +62,40 @@
                     subGenreId: []
                 }
             });
+            */
             let view = new App.EventModalView({model: model});
             view.render();
+            
+            $('#myModal').modal('toggle');
         });
     </script>
   </head>
   <body>
       <script type="text/template" class="js-event-modal-template">
-    <div>
-        hello {{title}}
-    </div>
+        <div>
+            <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Event: <%= title %></h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                                <div>start: <%= start %></div>
+                                <div>end: <%= end %></div>
+                                <div>filter year: <%= filters.year %></div>
+                                <div>filter month: <%= filters.month %></div>
+                                <div>filter day: <%= filters.day %></div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    
+                    </div>
+                </div>
+        </div>
       </script>
   </body>
  </html>
