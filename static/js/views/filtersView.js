@@ -60,13 +60,11 @@ App.FiltersView = Backbone.View.extend({
     renderGenre: function() {
         console.log("FiltersView.renderGenre");
         let self = this;
-
-
 		return this;
     },
     onGenreChanged: function(event) {
-        console.log('FiltersView.onGenreChanged');        
-        this.vent.trigger("genre", event);
+        console.log('FiltersView.onGenreChanged');
+        this.vent.trigger("genre", { GenreId: parseInt(event.target.value) });
     }
 });
 

@@ -5,14 +5,26 @@ window.App = window.App || {};
 App.EventsCollection = Backbone.Collection.extend({          
     model: App.EventModel,
     url: '/events',
-    byGenreId: function (genreId) {
-        let filtered = this.filter(function (event) {
-            let filters = event.get("filters");
-            return filters.genreId.includes(genreId);
-        });
-        return new App.EventsCollection(filtered);
-    }
+    initialize: function (models) {
+        this.filtered = new Backbone.Collection();
+    },
+    filterByGenreId: function (params) {
+        if (params !== -1)
+        {
+            var filteredEvents = this.filter(function(item){
+                let filters = item.get("filters");
+                return filters.genreId.includes(params);
+            });
+            this.filtered.reset(filteredEvents);
+        }
+        else
+        {
+            this.filtered.reset(this.models); 
+        }
+    },
 });
+
+
 
 
 // applyFilters: function (filters) {

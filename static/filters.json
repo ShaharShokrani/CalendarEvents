@@ -6,12 +6,12 @@
             "Name": "Genre",
             "Options": [
                 {
-                    "Text": "text1",
+                    "Text": "Music",
                     "Value": "1",
                     "Guid": ""
                 },
                 {
-                    "Text": "text2",
+                    "Text": "Theater",
                     "Value": "2",
                     "Guid": ""
                 }

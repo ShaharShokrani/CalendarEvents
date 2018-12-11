@@ -24,13 +24,11 @@ App.EventsView = Backbone.View.extend({
         console.log('EventsView.initialize');
 
         this.listenTo(this.model, 'sync', this.render.bind(this));
-        this.listenTo(this.model, 'reset', this.rerenderEvents.bind(this));
+        this.listenTo(this.model.filtered, 'reset', this.rerenderEvents.bind(this));
     },
     render: function(res) {
         console.log('EventsView.render');
         console.log(this.model.toJSON());
-
-
         
         this.$el.fullCalendar(this.options());
         return this;
@@ -39,13 +37,13 @@ App.EventsView = Backbone.View.extend({
         console.log('EventsView.rerenderEvents');
 
         this.$el.fullCalendar('removeEvents');
-        this.$el.fullCalendar('addEventSource', this.model.toJSON());
+        this.$el.fullCalendar('addEventSource', this.model.filtered.toJSON());
         this.$el.fullCalendar('rerenderEvents');
     },
     filter: function(res) {
         console.log('EventsView.filter');
 
-        this.model.reset(this.model.byGenreId(2));
+        this.model.filterByGenreId(res.GenreId); //TODO: should be renamed to collection instead of model.
     },
     renderEventModal: function(res) {
         console.log('EventsView.renderEventModal');

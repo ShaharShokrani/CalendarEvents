@@ -39,7 +39,7 @@
                     8,
                     9
                 ],
-                "genreId": [],
+                "genreId": [1],
                 "subGenreId": []
             }
         },
