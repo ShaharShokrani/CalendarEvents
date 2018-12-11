@@ -49,5 +49,6 @@ App.EventsView = Backbone.View.extend({
         console.log('EventsView.renderEventModal');
         //this.EventModalView = new App.EventModalView({model: todo});
         console.log(res);
+        
     },
 });
