@@ -40,9 +40,9 @@ App.EventsView = Backbone.View.extend({
         this.$el.fullCalendar('addEventSource', this.model.filtered.toJSON());
         this.$el.fullCalendar('rerenderEvents');
     },
-    filter: function(res) {
-        console.log('EventsView.filter');
-
+    filterByGenreId: function(res) {
+        console.log('EventsView.filterByGenreId');
+        
         this.model.filterByGenreId(res.GenreId); //TODO: should be renamed to collection instead of model.
     },
     renderEventModal: function(res) {

@@ -2,13 +2,21 @@
 <html lang="en">
   <head>
     
-    <script src='/js/vendors/jquery.min.js'></script>
+    <script src='/js/vendors/jquery.min.js'></script>    
     <script src='/js/vendors/underscore.js'></script>
     <script src='/js/vendors/backbone.js'></script>
-    <script src='/js/vendors/moment.min.js'></script>
+    <!-- TODO: add a moment.js to development -->
+    <script src='/js/vendors/moment.min.js'></script> 
+    <script src='/js/vendors/mustache.js'></script>
+
+    <!-- Models -->
     <script src='/js/models/eventModel.js'></script>
+
+    <!-- Collections -->
+    <script src='/js/collections/eventsCollection.js'></script>
+
+    <!-- Views -->
     <script src='/js/views/eventModalView.js'></script>
-    
 
     <script>
       'use strict';
@@ -46,7 +54,7 @@
   <body>
       <script type="text/template" class="js-event-modal-template">
     <div>
-        hello {{title}}
+        hello {{Title}}
     </div>
       </script>
   </body>

@@ -20,7 +20,7 @@ App.AppView = Backbone.View.extend({
         }
         this.vent =  options.vent;
         
-        this.vent.on("genre", this.filterEventsView.bind(this));
+        this.vent.on("filterByGenreId", this.filterByGenreId.bind(this));
         this.template = _.template($('.js-app-template').html());
 
         this.render();
@@ -42,9 +42,9 @@ App.AppView = Backbone.View.extend({
             vent: this.vent.bind(this)
         });
     },
-    filterEventsView: function(res) {
-        console.log("AppView.filterEventsView" + res);
-        this.eventsView.filter(res);
+    filterByGenreId: function(res) {
+        console.log("AppView.filterByGenreId" + res);
+        this.eventsView.filterByGenreId(res);
     },
     renderFiltersView: function() {
         console.log('AppView.renderFiltersView');
