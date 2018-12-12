@@ -6,6 +6,7 @@ App.EventModalView = Backbone.View.extend({
     el:'body',
     initialize: function() {
         this.template = $('.js-event-modal-template').html();
+        this.render();
     },
     render: function() {
         //this.$el.html(Mustache.render(this.template, this.model.toJSON()));
@@ -13,7 +14,7 @@ App.EventModalView = Backbone.View.extend({
         this.$el.html(template(this.model.toJSON()));
 
         
-//this.$el.html(this.template(this.model.toJSON()));
+        //this.$el.html(this.template(this.model.toJSON()));
         return this;
     },
     clear: function() {

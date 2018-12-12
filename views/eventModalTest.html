@@ -2,12 +2,7 @@
 <html lang="en">
   <head>
     
-<<<<<<< HEAD
     <script src='/js/vendors/jquery.min.js'></script>    
-=======
-    <script src='/js/vendors/jquery.min.js'></script>
-    <!--<script src='/js/vendors/mustache.js'></script>-->
->>>>>>> 8600e65e20b952d3034ff746938b068984cd66c8
     <script src='/js/vendors/underscore.js'></script>
     <script src='/js/vendors/backbone.js'></script>
     <!-- TODO: add a moment.js to development -->
@@ -22,11 +17,8 @@
 
     <!-- Views -->
     <script src='/js/views/eventModalView.js'></script>
-<<<<<<< HEAD
-=======
     <script src='/js/vendors/bootstrap.min.js'></script>
     <link rel='stylesheet' href='/css/bootstrap.min.css' />    
->>>>>>> 8600e65e20b952d3034ff746938b068984cd66c8
 
     <script>
       'use strict';
@@ -36,9 +28,8 @@
             App.AppView = App.AppView || {};
             App.EventModalView = App.EventModalView || {};
             App.EventModel = App.EventModel || {};
-            let model = new App.EventModel({event});
-            /*
-            let model = new App.EventModel({
+            
+            let event = {
                 title: "Long Event",
                 start: "2018-12-01",
                 end: "2018-12-10",
@@ -57,10 +48,11 @@
                     genreId: [],
                     subGenreId: []
                 }
-            });
-            */
+            };
+
+            let model = new App.EventModel(event);            
             let view = new App.EventModalView({model: model});
-            view.render();
+            //view.render();
             
             $('#myModal').modal('toggle');
         });
@@ -68,11 +60,6 @@
   </head>
   <body>
       <script type="text/template" class="js-event-modal-template">
-<<<<<<< HEAD
-    <div>
-        hello {{Title}}
-    </div>
-=======
         <div>
             <div class="modal fade" id="myModal" role="dialog">
                     <div class="modal-dialog">
@@ -97,7 +84,6 @@
                     </div>
                 </div>
         </div>
->>>>>>> 8600e65e20b952d3034ff746938b068984cd66c8
       </script>
   </body>
  </html>
