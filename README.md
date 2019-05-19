@@ -14,13 +14,12 @@ Like the stackoverflow users, each user will have the ability to modify/create e
 
 In order to make the events view more custom, each user will be able to save its own various filters.
 Filter types:
--Target Audience.
--Duration.
--Time.
--Genre.
--SubGenre.
--Location.
--City.
--Address.
--Price.
-
+    Target Audience.
+    Duration.
+    Time.
+    Genre.
+    SubGenre.
+    Location.
+    City.
+    Address.
+    Price.
