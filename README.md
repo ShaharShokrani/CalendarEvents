@@ -23,3 +23,22 @@ Filter types:
     City.
     Address.
     Price.
+    
+    
+Step1:
+git clone the project to a local folder.
+
+Step2:
+Inside the git terminal press npm i.
+
+Step3:
+Inside the git terminal press node app.js.
+
+Step4:
+Fro your web browser access the app with: http://localhost:3000/appTest/
+(In order to see mock data https://github.com/ShaharShokrani/CalendarEvents/blob/master/static/events.json navigate to December 2018).
+
+You can filter only by genre at the moment https://github.com/ShaharShokrani/CalendarEvents/blob/master/static/filters.json.
+
+
+
