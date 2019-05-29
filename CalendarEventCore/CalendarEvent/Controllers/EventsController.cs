@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CalendarEvents.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalendarEvent.Controllers
@@ -10,18 +11,23 @@ namespace CalendarEvent.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {
+        private static IEnumerable<Event> _eventList = new List<Event>()
+        {
+            new Event() {Id = Guid.NewGuid() , Title = "Title1", Start = new DateTime(2018, 12, 1), End = new DateTime(2018, 12, 10)}           
+        };
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<Event>> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(_eventList); 
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public ActionResult<Event> Get(Guid id)
         {
-            return "value";
+            return Ok(_eventList.Where(e => e.Id == id).FirstOrDefault());
         }
 
         // POST api/values
