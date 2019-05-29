@@ -8,7 +8,7 @@ namespace CalendarEvent.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class EventsController : ControllerBase
     {
         // GET api/values
         [HttpGet]
