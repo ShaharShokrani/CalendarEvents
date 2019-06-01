@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.Models
 {
-    public class Event
+    public class EventModel
     {
         public Guid Id { get; set; }
         public string Title { get; set; }

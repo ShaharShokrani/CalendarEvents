@@ -5,47 +5,86 @@ using System.Threading.Tasks;
 using CalendarEvents.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CalendarEvent.Controllers
+namespace CalendarEvents.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
     {
-        private static IEnumerable<Event> _eventList = new List<Event>()
+        //TODO: remove this dependency into IService, IRepository using autofac.
+        private CalendarDbContext _dbContext;        
+
+        public EventsController(CalendarDbContext dbContext)
         {
-            new Event() {Id = Guid.NewGuid() , Title = "Title1", Start = new DateTime(2018, 12, 1), End = new DateTime(2018, 12, 10)}           
-        };
+            this._dbContext = dbContext;
+        }
 
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<Event>> Get()
+        public ActionResult<IEnumerable<EventModel>> Get()
         {
-            return Ok(_eventList); 
+            return Ok(this._dbContext.Events); 
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<Event> Get(Guid id)
+        [HttpGet("{id}", Name = "GET")]
+        public ActionResult<EventModel> Get(Guid id)
         {
-            return Ok(_eventList.Where(e => e.Id == id).FirstOrDefault());
+            var @event = this._dbContext.Events.Find(id);
+            return Ok(@event);
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] EventModel item)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            _dbContext.Events.Add(item);
+            _dbContext.SaveChanges();
+
+            return CreatedAtAction("Post", new { Id = item.Id }, item);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(Guid id, [FromBody] EventModel item)
         {
+            var entity = this._dbContext.Events.Find(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            entity.Title = item.Title;
+            entity.IsAllDay = item.IsAllDay;
+            entity.Start = item.Start;
+            entity.End = item.End;
+
+            this._dbContext.SaveChanges();
+            return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(Guid id)
         {
+            var entity = this._dbContext.Events.Find(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Events.Remove(entity);
+            _dbContext.SaveChanges();
+            return Ok();
         }
     }
 }

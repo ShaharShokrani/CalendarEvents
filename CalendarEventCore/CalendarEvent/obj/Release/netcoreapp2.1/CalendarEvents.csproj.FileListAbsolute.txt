@@ -11,3 +11,4 @@ C:\Users\ShaharShokrani\Repositories\CalendarEvents\CalendarEventCore\CalendarEv
 C:\Users\ShaharShokrani\Repositories\CalendarEvents\CalendarEventCore\CalendarEvent\obj\Release\netcoreapp2.1\CalendarEvents.RazorTargetAssemblyInfo.cache
 C:\Users\ShaharShokrani\Repositories\CalendarEvents\CalendarEventCore\CalendarEvent\obj\Release\netcoreapp2.1\CalendarEvents.dll
 C:\Users\ShaharShokrani\Repositories\CalendarEvents\CalendarEventCore\CalendarEvent\obj\Release\netcoreapp2.1\CalendarEvents.pdb
+C:\Users\ShaharShokrani\Repositories\CalendarEvents\CalendarEventCore\CalendarEvent\obj\Release\netcoreapp2.1\CalendarEvents.csprojAssemblyReference.cache
