@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CalendarEvents.Models;
+using CalendarEvents.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalendarEvents.Controllers
@@ -12,29 +13,44 @@ namespace CalendarEvents.Controllers
     public class EventsController : ControllerBase
     {
         //TODO: remove this dependency into IService, IRepository using autofac.
-        private CalendarDbContext _dbContext;        
+        private readonly IEventsService _eventsService;        
 
-        public EventsController(CalendarDbContext dbContext)
+        public EventsController(IEventsService eventsService)
         {
-            this._dbContext = dbContext;
+            this._eventsService = eventsService;
         }
 
-        // GET api/values
+        // GET api/events
         [HttpGet]
         public ActionResult<IEnumerable<EventModel>> Get()
         {
-            return Ok(this._dbContext.Events); 
+            ResultService<IEnumerable<EventModel>> result = this._eventsService.GetAllItems();
+            if (result.Success)
+            {
+                return Ok(result.Value);
+            }
+            else
+            {
+                return StatusCode(500, result.ErrorCode);
+            }            
         }
 
-        // GET api/values/5
+        // GET api/events/c4df7159-2402-4f49-922c-1a2caef02de2
         [HttpGet("{id}", Name = "GET")]
         public ActionResult<EventModel> Get(Guid id)
         {
-            var @event = this._dbContext.Events.Find(id);
-            return Ok(@event);
+            ResultService<EventModel> result = this._eventsService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result.Value);
+            }
+            else
+            {
+                return StatusCode(500, result.ErrorCode);
+            }
         }
 
-        // POST api/values
+        // POST api/events
         [HttpPost]
         public ActionResult Post([FromBody] EventModel item)
         {
@@ -42,49 +58,56 @@ namespace CalendarEvents.Controllers
             {
                 return BadRequest();
             }
-            _dbContext.Events.Add(item);
-            _dbContext.SaveChanges();
 
-            return CreatedAtAction("Post", new { Id = item.Id }, item);
+            ResultService result = this._eventsService.Add(item);
+            if (result.Success)
+            {
+                return CreatedAtAction("Post", new { item.Id }, result);
+            }
+            else
+            {
+                return StatusCode(500, result.ErrorCode);
+            }
         }
 
-        // PUT api/values/5
+        // PUT api/events/c4df7159-2402-4f49-922c-1a2caef02de2
         [HttpPut("{id}")]
         public ActionResult Put(Guid id, [FromBody] EventModel item)
         {
-            var entity = this._dbContext.Events.Find(id);
-
-            if (entity == null)
-            {
-                return NotFound();
-            }
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            entity.Title = item.Title;
-            entity.IsAllDay = item.IsAllDay;
-            entity.Start = item.Start;
-            entity.End = item.End;
-
-            this._dbContext.SaveChanges();
-            return Ok();
+            ResultService result = this._eventsService.Update(id, item);
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode(500, result.ErrorCode);
+            }
         }
 
-        // DELETE api/values/5
+        // DELETE api/events/c4df7159-2402-4f49-922c-1a2caef02de2
         [HttpDelete("{id}")]
         public ActionResult Delete(Guid id)
         {
-            var entity = this._dbContext.Events.Find(id);
-            if (entity == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            _dbContext.Events.Remove(entity);
-            _dbContext.SaveChanges();
-            return Ok();
+            ResultService result = this._eventsService.Remove(id);
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode(500, result.ErrorCode);
+            }
         }
     }
 }

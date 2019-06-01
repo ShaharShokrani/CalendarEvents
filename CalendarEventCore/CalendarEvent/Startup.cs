@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CalendarEvents.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +30,7 @@ namespace CalendarEvents
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //This line needded in order to configure the EntityFramework.
             services.AddDbContext<CalendarEvents.CalendarDbContext>(options => options.UseSqlServer(@"Data Source=.\SQLEXPRESS;Initial Catalog=CalendarDB;Integrated Security=True")); //Copied from Server explorer properties.
+            services.AddScoped<IEventsService, EventsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

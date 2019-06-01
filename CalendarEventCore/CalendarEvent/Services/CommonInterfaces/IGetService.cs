@@ -5,9 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace CalendarEvents.Services
-{
-    public interface IRemoveService<T> where T : struct
+{    
+    public interface IGetService<T,U> where U : struct
     {
-        void Remove(T id);
+        ResultService<IEnumerable<T>> GetAllItems();
+        ResultService<T> GetById(U id);
     }
 }
