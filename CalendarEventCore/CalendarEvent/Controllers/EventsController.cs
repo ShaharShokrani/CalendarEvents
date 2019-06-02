@@ -11,8 +11,7 @@ namespace CalendarEvents.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
-    {
-        //TODO: remove this dependency into IService, IRepository using autofac.
+    {        
         private readonly IEventsService _eventsService;        
 
         public EventsController(IEventsService eventsService)

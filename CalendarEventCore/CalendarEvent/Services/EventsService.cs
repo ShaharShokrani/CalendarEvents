@@ -15,6 +15,7 @@ namespace CalendarEvents.Services
 
     public class EventsService : IEventsService
     {
+        //TODO: Move this dependancy into IRepository.
         private CalendarDbContext _dbContext;
 
         public EventsService(CalendarDbContext dbContext)
@@ -25,7 +26,7 @@ namespace CalendarEvents.Services
         public ResultService<EventModel> Add(EventModel item)
         {
             try
-            {                
+            {
                 _dbContext.Events.Add(item);
                 _dbContext.SaveChanges();
 
