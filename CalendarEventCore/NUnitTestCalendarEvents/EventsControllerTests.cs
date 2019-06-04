@@ -88,8 +88,7 @@ namespace NUnitTestCalendarEvents
             ActionResult<EventModel> actionResult = controller.Get(new Guid());
 
             //Assert
-            Assert.IsNotNull(actionResult);
-            Assert.IsInstanceOf<BadRequestResult>(actionResult.Result);
+            AssertBadRequestResult(actionResult);
         }
         [Test] public void GetById_WhenCalled_ShouldReturnOk()
         {
@@ -157,8 +156,7 @@ namespace NUnitTestCalendarEvents
             ActionResult<EventModel> actionResult = controller.Post(expectedItem);
 
             //Assert
-            Assert.IsNotNull(actionResult);
-            Assert.IsInstanceOf<BadRequestResult>(actionResult.Result);
+            AssertBadRequestResult(actionResult);
         }
         [Test] public void Post_WhenCalled_ShouldReturnPost()
         {
@@ -229,8 +227,7 @@ namespace NUnitTestCalendarEvents
             ActionResult<EventModel> actionResult = controller.Put(Guid.NewGuid(), expectedItem);
 
             //Assert
-            Assert.IsNotNull(actionResult);
-            Assert.IsInstanceOf<BadRequestResult>(actionResult.Result);
+            AssertBadRequestResult(actionResult);
         }
         [Test] public void Put_RequestIdNotValid_ShouldReturnBadRequest()
         {
@@ -303,8 +300,7 @@ namespace NUnitTestCalendarEvents
             ActionResult<EventModel> actionResult = controller.Delete(new Guid());
 
             //Assert
-            Assert.IsNotNull(actionResult);
-            Assert.IsInstanceOf<BadRequestResult>(actionResult.Result);
+            AssertBadRequestResult(actionResult);
         }
         [Test] public void Delete_WhenCalled_ShouldReturnOk()
         {
@@ -349,6 +345,17 @@ namespace NUnitTestCalendarEvents
         }
         #endregion
 
+        [TearDown] public void CleanUp()
+        {
+            if (_mock != null)
+                _mock.Dispose();
+        }
+
+        private void AssertBadRequestResult(ActionResult<EventModel> actionResult)
+        {
+            Assert.IsNotNull(actionResult);
+            Assert.IsInstanceOf<BadRequestResult>(actionResult.Result);
+        }
         private void AssertStatusCode500(ObjectResult objectResult, ErrorCode errorCode)
         {
             Assert.IsNotNull(objectResult.Value);
@@ -356,11 +363,7 @@ namespace NUnitTestCalendarEvents
             Assert.AreEqual(objectResult.StatusCode, 500);
             Assert.AreEqual((ErrorCode)objectResult.Value, errorCode);
         }
-        [TearDown] public void CleanUp()
-        {
-            if (_mock != null)
-                _mock.Dispose();
-        }
+
     }
 
 }
