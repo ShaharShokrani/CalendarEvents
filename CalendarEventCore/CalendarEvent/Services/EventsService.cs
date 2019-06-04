@@ -10,7 +10,7 @@ namespace CalendarEvents.Services
                                       IUpdateService<EventModel,Guid>,
                                       IAddService<EventModel>,
                                       IRemoveService<Guid>
-    {
+    {        
     }
 
     public class EventsService : IEventsService
@@ -37,7 +37,7 @@ namespace CalendarEvents.Services
                 return ResultService.Fail<EventModel>(ex);
             }
         }
-
+        //TODO: Change to IQueryable.
         public ResultService<IEnumerable<EventModel>> GetAllItems()
         {
             try

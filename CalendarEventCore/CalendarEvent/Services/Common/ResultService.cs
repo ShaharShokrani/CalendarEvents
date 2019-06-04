@@ -18,7 +18,7 @@ namespace CalendarEvents.Services
             get { return !Success; }
         }
 
-        protected ResultService(bool success, ErrorCode errorCode)
+        public ResultService(bool success, ErrorCode errorCode)
         {
             Contract.Requires(success);            
 
@@ -26,7 +26,7 @@ namespace CalendarEvents.Services
             ErrorCode = errorCode;
         }
 
-        protected ResultService(Exception error)
+        public ResultService(Exception error)
         {
             Contract.Requires(error != null);            
 
@@ -93,7 +93,7 @@ namespace CalendarEvents.Services
             private set { _value = value; }
         }
 
-        protected internal ResultService(T value, bool success, ErrorCode errorCode)
+        public ResultService(T value, bool success, ErrorCode errorCode)
             : base(success, errorCode)
         {
             Contract.Requires(value != null || !success);
@@ -101,7 +101,7 @@ namespace CalendarEvents.Services
             Value = value;
         }
 
-        protected internal ResultService(Exception exception)
+        public ResultService(Exception exception)
             : base(exception)
         {                        
         }

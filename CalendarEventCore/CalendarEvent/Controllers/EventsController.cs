@@ -26,7 +26,8 @@ namespace CalendarEvents.Controllers
             ResultService<IEnumerable<EventModel>> result = this._eventsService.GetAllItems();
             if (result.Success)
             {
-                return Ok(result.Value);
+                IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
+                return Ok(list);
             }
             else
             {
@@ -38,6 +39,11 @@ namespace CalendarEvents.Controllers
         [HttpGet("{id}", Name = "GET")]
         public ActionResult<EventModel> Get(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
             ResultService<EventModel> result = this._eventsService.GetById(id);
             if (result.Success)
             {
@@ -53,15 +59,17 @@ namespace CalendarEvents.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] EventModel item)
         {
+            item.Id = Guid.NewGuid();
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            ResultService result = this._eventsService.Add(item);
+            ResultService<EventModel> result = this._eventsService.Add(item);
             if (result.Success)
             {
-                return CreatedAtAction("Post", new { item.Id }, result);
+                return CreatedAtAction("Post", new { Id = result.Value.Id }, result.Value as EventModel);
             }
             else
             {
@@ -73,7 +81,7 @@ namespace CalendarEvents.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(Guid id, [FromBody] EventModel item)
         {
-            if (!ModelState.IsValid)
+            if (id == Guid.Empty || !ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -93,7 +101,7 @@ namespace CalendarEvents.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(Guid id)
         {
-            if (!ModelState.IsValid)
+            if (id == Guid.Empty)
             {
                 return BadRequest();
             }
