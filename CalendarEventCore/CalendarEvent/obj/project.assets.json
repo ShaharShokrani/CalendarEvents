@@ -4442,6 +4442,9 @@
       "CalendarEvents.Models/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.2",
+        "dependencies": {
+          "Microsoft.AspNetCore.App": "2.2.0"
+        },
         "compile": {
           "bin/placeholder/CalendarEvents.Models.dll": {}
         },
