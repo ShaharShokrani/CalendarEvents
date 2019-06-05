@@ -4449,11 +4449,25 @@
           "bin/placeholder/CalendarEvents.Models.dll": {}
         }
       },
-      "CalendarEvents.Services/1.0.0": {
+      "CalendarEvents.Repositories/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.2",
         "dependencies": {
           "CalendarEvents.Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/CalendarEvents.Repositories.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CalendarEvents.Repositories.dll": {}
+        }
+      },
+      "CalendarEvents.Services/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.2",
+        "dependencies": {
+          "CalendarEvents.Models": "1.0.0",
+          "CalendarEvents.Repositories": "1.0.0"
         },
         "compile": {
           "bin/placeholder/CalendarEvents.Services.dll": {}
@@ -12093,6 +12107,11 @@
       "type": "project",
       "path": "../CalendarEvents.Models/CalendarEvents.Models.csproj",
       "msbuildProject": "../CalendarEvents.Models/CalendarEvents.Models.csproj"
+    },
+    "CalendarEvents.Repositories/1.0.0": {
+      "type": "project",
+      "path": "../CalendarEvents.Repositories/CalendarEvents.Repositories.csproj",
+      "msbuildProject": "../CalendarEvents.Repositories/CalendarEvents.Repositories.csproj"
     },
     "CalendarEvents.Services/1.0.0": {
       "type": "project",

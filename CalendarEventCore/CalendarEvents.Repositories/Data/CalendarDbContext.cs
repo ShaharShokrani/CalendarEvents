@@ -1,7 +1,7 @@
 ﻿using CalendarEvents.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CalendarEvents.Services
+namespace CalendarEvents.Repositories
 {
     public class CalendarDbContext : DbContext
     {

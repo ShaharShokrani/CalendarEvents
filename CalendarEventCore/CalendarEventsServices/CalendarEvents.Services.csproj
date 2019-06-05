@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CalendarEvents.Models\CalendarEvents.Models.csproj" />
+    <ProjectReference Include="..\CalendarEvents.Repositories\CalendarEvents.Repositories.csproj" />
   </ItemGroup>
 
   <ItemGroup>
