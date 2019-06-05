@@ -8,8 +8,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Moq" Version="4.11.0" />
-    <PackageReference Include="NUnit" Version="3.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CalendarEvents.Models\CalendarEvents.Models.csproj" />
+    <ProjectReference Include="..\CalendarEventsServices\CalendarEvents.Services.csproj" />
   </ItemGroup>
 
 </Project>

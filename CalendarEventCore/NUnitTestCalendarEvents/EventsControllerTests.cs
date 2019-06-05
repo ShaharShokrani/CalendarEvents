@@ -6,9 +6,6 @@ using Autofac.Extras.Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Moq;
-using NUnitTestCalendarEvents;
 using Microsoft.AspNetCore.Routing;
 
 namespace NUnitTestCalendarEvents

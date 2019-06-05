@@ -1,4 +1,4 @@
-﻿namespace CalendarEvents.Services
+﻿namespace CalendarEvents.Models
 {
     public enum ErrorCode
     {
