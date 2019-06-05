@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Routing;
 
-namespace NUnitTestCalendarEvents
+namespace CalendarEvents.Tests
 {
     public class EventsControllerTests
     {
@@ -27,7 +27,7 @@ namespace NUnitTestCalendarEvents
 
             ResultService<IEnumerable<EventModel>> expected = ResultService.Ok(expectedList); ;
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.GetAllItems())
                 .Returns(() => expected);
 
@@ -49,13 +49,12 @@ namespace NUnitTestCalendarEvents
             Assert.AreEqual(okResultList.Count, (expectedList as List<EventModel>).Count);
             Assert.AreEqual(okResultList[0].GetHashCode(), (expectedList as List<EventModel>)[0].GetHashCode());
         }
-
         [Test] public void Get_WhenServiceHasError_ShouldReturnStatusCode500()
         {
             //Arrange
             ResultService<IEnumerable<EventModel>> expectedResultService = ResultService.Fail<IEnumerable<EventModel>>(ErrorCode.Unknown);
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.GetAllItems())
                 .Returns(() => expectedResultService);
 
@@ -94,7 +93,7 @@ namespace NUnitTestCalendarEvents
 
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.GetById(expectedItem.Id))
                 .Returns(() => expectedResultService);
 
@@ -121,7 +120,7 @@ namespace NUnitTestCalendarEvents
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
             Guid id = Guid.NewGuid();
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.GetById(id))
                 .Returns(() => expectedResultService);
 
@@ -162,7 +161,7 @@ namespace NUnitTestCalendarEvents
 
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.Add(expectedItem))
                 .Returns(() => expectedResultService);
 
@@ -192,7 +191,7 @@ namespace NUnitTestCalendarEvents
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
             EventModel eventModel = TestsFacade.EventsFacade.BuildEventModel();
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.Add(eventModel))
                 .Returns(() => expectedResultService);
 
@@ -221,7 +220,7 @@ namespace NUnitTestCalendarEvents
 
             //Act
             controller.ModelState.AddModelError("Title", "Required");
-            ActionResult<EventModel> actionResult = controller.Put(Guid.NewGuid(), expectedItem);
+            ActionResult<EventModel> actionResult = controller.Put(expectedItem);
 
             //Assert
             AssertBadRequestResult(actionResult);
@@ -230,11 +229,12 @@ namespace NUnitTestCalendarEvents
         {
             //Arrange
             EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            expectedItem.Id = new Guid();
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<EventModel> actionResult = controller.Put(new Guid(), expectedItem);
+            ActionResult<EventModel> actionResult = controller.Put(expectedItem);
 
             //Assert
             Assert.IsNotNull(actionResult);
@@ -245,16 +245,16 @@ namespace NUnitTestCalendarEvents
             //Arrange
             EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
 
-            ResultService expectedResultService = ResultService.Ok(expectedItem);
+            ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
-            _mock.Mock<IEventsService>()
-                .Setup(items => items.Update(expectedItem.Id, expectedItem))
+            _mock.Mock<IService<EventModel>>()
+                .Setup(items => items.Update(expectedItem))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult actionResult = controller.Put(expectedItem.Id, expectedItem);
+            ActionResult actionResult = controller.Put(expectedItem);
 
             //Assert
             Assert.IsNotNull(actionResult);
@@ -264,17 +264,16 @@ namespace NUnitTestCalendarEvents
         {
             //Arrange
             EventModel eventModel = TestsFacade.EventsFacade.BuildEventModel();
-            ResultService expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
-            Guid id = Guid.NewGuid();
+            ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);            
 
-            _mock.Mock<IEventsService>()
-                .Setup(items => items.Update(id, eventModel))
+            _mock.Mock<IService<EventModel>>()
+                .Setup(items => items.Update(eventModel))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<EventModel> actionResult = controller.Put(id, eventModel);
+            ActionResult<EventModel> actionResult = controller.Put(eventModel);
 
             //Assert
             Assert.IsNotNull(actionResult);
@@ -305,7 +304,7 @@ namespace NUnitTestCalendarEvents
             ResultService expectedResultService = ResultService.Ok();
             Guid id = Guid.NewGuid();
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.Remove(id))
                 .Returns(() => expectedResultService);
 
@@ -324,7 +323,7 @@ namespace NUnitTestCalendarEvents
             ResultService expectedResultService = ResultService.Fail(ErrorCode.Unknown);
             Guid id = Guid.NewGuid();
 
-            _mock.Mock<IEventsService>()
+            _mock.Mock<IService<EventModel>>()
                 .Setup(items => items.Remove(id))
                 .Returns(() => expectedResultService);
 

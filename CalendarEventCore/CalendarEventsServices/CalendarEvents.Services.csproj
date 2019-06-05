@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CalendarEvents.DataAccess\CalendarEvents.DataAccess.csproj" />
     <ProjectReference Include="..\CalendarEvents.Models\CalendarEvents.Models.csproj" />
-    <ProjectReference Include="..\CalendarEvents.Repositories\CalendarEvents.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

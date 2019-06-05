@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CalendarEvents.Migrations
+namespace CalendarEvents.DataAccess.Migrations
 {
     public partial class Init : Migration
     {

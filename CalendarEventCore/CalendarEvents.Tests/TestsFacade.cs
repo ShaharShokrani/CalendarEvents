@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NUnitTestCalendarEvents
+namespace CalendarEvents.Tests
 {
     public class TestsFacade
     {

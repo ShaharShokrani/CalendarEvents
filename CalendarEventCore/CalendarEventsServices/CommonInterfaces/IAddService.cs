@@ -2,6 +2,6 @@
 {
     public interface IAddService<T>
     {
-        ResultService<T> Add(T item);
+        ResultService<T> Add(T obj);
     }
 }

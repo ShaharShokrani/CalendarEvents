@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CalendarEvents.Services
+namespace CalendarEvents.DataAccess
 {
-    public interface IUpdateService<T>
+    public interface IDeleteRepository<T>
     {
-        ResultService<T> Update(T obj);
+        bool Delete(object id);
     }
 }

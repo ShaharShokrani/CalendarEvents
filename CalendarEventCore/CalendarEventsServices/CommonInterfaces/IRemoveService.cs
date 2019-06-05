@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.Services
 {
-    public interface IRemoveService<T> where T : struct
+    public interface IRemoveService
     {
-        ResultService Remove(T id);
+        ResultService Remove(object id);
     }
 }

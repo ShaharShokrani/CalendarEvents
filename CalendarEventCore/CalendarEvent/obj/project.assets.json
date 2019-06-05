@@ -4439,6 +4439,20 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
+      "CalendarEvents.DataAccess/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.2",
+        "dependencies": {
+          "CalendarEvents.Models": "1.0.0",
+          "Microsoft.AspNetCore.App": "2.2.0"
+        },
+        "compile": {
+          "bin/placeholder/CalendarEvents.DataAccess.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CalendarEvents.DataAccess.dll": {}
+        }
+      },
       "CalendarEvents.Models/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.2",
@@ -4452,25 +4466,12 @@
           "bin/placeholder/CalendarEvents.Models.dll": {}
         }
       },
-      "CalendarEvents.Repositories/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.2",
-        "dependencies": {
-          "CalendarEvents.Models": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/CalendarEvents.Repositories.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/CalendarEvents.Repositories.dll": {}
-        }
-      },
       "CalendarEvents.Services/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.2",
         "dependencies": {
-          "CalendarEvents.Models": "1.0.0",
-          "CalendarEvents.Repositories": "1.0.0"
+          "CalendarEvents.DataAccess": "1.0.0",
+          "CalendarEvents.Models": "1.0.0"
         },
         "compile": {
           "bin/placeholder/CalendarEvents.Services.dll": {}
@@ -12106,15 +12107,15 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
+    "CalendarEvents.DataAccess/1.0.0": {
+      "type": "project",
+      "path": "../CalendarEvents.DataAccess/CalendarEvents.DataAccess.csproj",
+      "msbuildProject": "../CalendarEvents.DataAccess/CalendarEvents.DataAccess.csproj"
+    },
     "CalendarEvents.Models/1.0.0": {
       "type": "project",
       "path": "../CalendarEvents.Models/CalendarEvents.Models.csproj",
       "msbuildProject": "../CalendarEvents.Models/CalendarEvents.Models.csproj"
-    },
-    "CalendarEvents.Repositories/1.0.0": {
-      "type": "project",
-      "path": "../CalendarEvents.Repositories/CalendarEvents.Repositories.csproj",
-      "msbuildProject": "../CalendarEvents.Repositories/CalendarEvents.Repositories.csproj"
     },
     "CalendarEvents.Services/1.0.0": {
       "type": "project",

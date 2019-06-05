@@ -1,117 +1,122 @@
-﻿using CalendarEvents.Models;
-using CalendarEvents.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using CalendarEvents.Models;
+//using CalendarEvents.DataAccess;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Threading.Tasks;
 
-namespace CalendarEvents.Services
-{
-    public interface IEventsService : IGetService<EventModel, Guid>, 
-                                      IUpdateService<EventModel,Guid>,
-                                      IAddService<EventModel>,
-                                      IRemoveService<Guid>
-    {        
-    }
+//namespace CalendarEvents.Services
+//{
+//    public class EventsService : GenericService<EventModel>
+//    {
+//        //TODO: Move this dependancy into IRepository.
+//        private IGenericRepository<EventModel> _dbContext;
 
-    public class EventsService : IEventsService
-    {
-        //TODO: Move this dependancy into IRepository.
-        private CalendarDbContext _dbContext;
+//        public EventsService()
+//        {
 
-        public EventsService(CalendarDbContext dbContext)
-        {
-            this._dbContext = dbContext;
-        }
+//        }
 
-        public ResultService<EventModel> Add(EventModel item)
-        {
-            try
-            {
-                _dbContext.Events.Add(item);
-                _dbContext.SaveChanges();
+//        public EventsService(IGenericRepository<EventModel> dbContext)
+//        {
+//            this._dbContext = dbContext;
+//        }
 
-                return ResultService.Ok<EventModel>(item);
-            }
-            catch (Exception ex)
-            {
-                return ResultService.Fail<EventModel>(ex);
-            }
-        }
-        //TODO: Change to IQueryable.
-        public ResultService<IEnumerable<EventModel>> GetAllItems()
-        {
-            try
-            {
-                var result = this._dbContext.Events;
-                if (result == null)
-                {
-                    return ResultService.Fail<IEnumerable<EventModel>>(ErrorCode.NotFound);
-                }
-                return ResultService.Ok<IEnumerable<EventModel>>(this._dbContext.Events);
-            }
-            catch (Exception ex)
-            {
-                return ResultService.Fail<IEnumerable<EventModel>>(ex);
-            }
-        }
+//        public ResultService<EventModel> Add(EventModel item)
+//        {
+//            try
+//            {
+//                _dbContext.Events.Add(item);
+//                _dbContext.SaveChanges();
 
-        public ResultService<EventModel> GetById(Guid id)
-        {
-            try
-            {
-                var entity = this._dbContext.Events.Find(id);
-                if (entity == null)
-                {
-                    return ResultService.Fail<EventModel>(ErrorCode.NotFound);
-                }
+//                return ResultService.Ok<EventModel>(item);
+//            }
+//            catch (Exception ex)
+//            {
+//                return ResultService.Fail<EventModel>(ex);
+//            }
+//        }
+//        //TODO: Change to IQueryable.
+//        public ResultService<IEnumerable<EventModel>> GetAllItems()
+//        {
+//            try
+//            {
+//                var result = this._dbContext.Events;
+//                if (result == null)
+//                {
+//                    return ResultService.Fail<IEnumerable<EventModel>>(ErrorCode.NotFound);
+//                }
+//                return ResultService.Ok<IEnumerable<EventModel>>(this._dbContext.Events);
+//            }
+//            catch (Exception ex)
+//            {
+//                return ResultService.Fail<IEnumerable<EventModel>>(ex);
+//            }
+//        }
 
-                return ResultService.Ok<EventModel>(entity);
-            }
-            catch (Exception ex)
-            {
-                return ResultService.Fail<EventModel>(ex);
-            }
-        }
+//        public ResultService<EventModel> GetById(Guid id)
+//        {
+//            try
+//            {
+//                var entity = this._dbContext.Events.Find(id);
+//                if (entity == null)
+//                {
+//                    return ResultService.Fail<EventModel>(ErrorCode.NotFound);
+//                }
 
-        public ResultService Remove(Guid id)
-        {
-            try
-            {
-                var entity = this._dbContext.Events.Find(id);
-                if (entity == null)
-                {
-                    return ResultService.Fail(ErrorCode.NotFound);
-                }
-                this._dbContext.Events.Remove(entity);
-                this._dbContext.SaveChanges();
+//                return ResultService.Ok<EventModel>(entity);
+//            }
+//            catch (Exception ex)
+//            {
+//                return ResultService.Fail<EventModel>(ex);
+//            }
+//        }
 
-                return ResultService.Ok();
-            }
-            catch (Exception ex)
-            {
-                return ResultService.Fail(ex);
-            }
-        }
+//        public ResultService Remove(Guid id)
+//        {
+//            try
+//            {
+//                var entity = this._dbContext.Events.Find(id);
+//                if (entity == null)
+//                {
+//                    return ResultService.Fail(ErrorCode.NotFound);
+//                }
+//                this._dbContext.Events.Remove(entity);
+//                this._dbContext.SaveChanges();
 
-        public ResultService Update(Guid id, EventModel item)
-        {
-            var entity = this._dbContext.Events.Find(id);
+//                return ResultService.Ok();
+//            }
+//            catch (Exception ex)
+//            {
+//                return ResultService.Fail(ex);
+//            }
+//        }
 
-            if (entity == null)
-            {
-                return ResultService.Fail(ErrorCode.NotFound);
-            }
+//        public ResultService Update(Guid id, EventModel item)
+//        {
+//            try
+//            {
+//                var entity = this._dbContext.Events.Find(id);
 
-            //TODO: add AutoMapper
-            entity.Title = item.Title;
-            entity.IsAllDay = item.IsAllDay;
-            entity.Start = item.Start;
-            entity.End = item.End;
+//                if (entity == null)
+//                {
+//                    return ResultService.Fail(ErrorCode.NotFound);
+//                }
 
-            this._dbContext.SaveChanges();
+//                //TODO: add AutoMapper
+//                entity.Title = item.Title;
+//                entity.IsAllDay = item.IsAllDay;
+//                entity.Start = item.Start;
+//                entity.End = item.End;
 
-            return ResultService.Ok();
-        }
-    }
-}
+//                this._dbContext.SaveChanges();
+
+//                return ResultService.Ok();
+//            }
+//            catch (Exception ex)
+//            {
+//                return ResultService.Fail(ex);
+//            }
+//        }
+//    }
+//}
