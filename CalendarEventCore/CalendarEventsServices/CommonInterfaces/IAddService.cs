@@ -1,7 +1,7 @@
 ﻿namespace CalendarEvents.Services
 {
-    public interface IAddService<T>
+    public interface IInsertService<T>
     {
-        ResultService<T> Add(T obj);
+        ResultService Insert(T obj);
     }
 }

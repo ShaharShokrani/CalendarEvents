@@ -1,7 +1,8 @@
 ﻿namespace CalendarEvents.DataAccess
 {
-    public interface IInsertRepository<T>
+    //TODO: Add async method.
+    public interface IInsertRepository<TEntity>
     {
-        T Insert(T item);
+        void Insert(TEntity entity);
     }
 }

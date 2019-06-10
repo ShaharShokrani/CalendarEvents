@@ -19,6 +19,7 @@ namespace CalendarEvents.Tests
             _mock = AutoMock.GetLoose();
         }
 
+        //TODO: add filter and orderBy and include.
         #region Get
         [Test] public void Get_WhenCalled_ShouldReturnOk()
         {
@@ -27,8 +28,8 @@ namespace CalendarEvents.Tests
 
             ResultService<IEnumerable<EventModel>> expected = ResultService.Ok(expectedList); ;
 
-            _mock.Mock<IService<EventModel>>()
-                .Setup(items => items.GetAllItems())
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Get(null, null, ""))
                 .Returns(() => expected);
 
             var controller = _mock.Create<EventsController>();
@@ -54,8 +55,8 @@ namespace CalendarEvents.Tests
             //Arrange
             ResultService<IEnumerable<EventModel>> expectedResultService = ResultService.Fail<IEnumerable<EventModel>>(ErrorCode.Unknown);
 
-            _mock.Mock<IService<EventModel>>()
-                .Setup(items => items.GetAllItems())
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Get(null, null, ""))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
@@ -76,7 +77,7 @@ namespace CalendarEvents.Tests
         [Test] public void Put_RequestNotValid_ShouldReturnBadRequest()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
 
             var controller = _mock.Create<EventsController>();
 
@@ -89,11 +90,11 @@ namespace CalendarEvents.Tests
         [Test] public void GetById_WhenCalled_ShouldReturnOk()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
 
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
-            _mock.Mock<IService<EventModel>>()
+            _mock.Mock<IGenericService<EventModel>>()
                 .Setup(items => items.GetById(expectedItem.Id))
                 .Returns(() => expectedResultService);
 
@@ -120,7 +121,7 @@ namespace CalendarEvents.Tests
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
             Guid id = Guid.NewGuid();
 
-            _mock.Mock<IService<EventModel>>()
+            _mock.Mock<IGenericService<EventModel>>()
                 .Setup(items => items.GetById(id))
                 .Returns(() => expectedResultService);
 
@@ -142,8 +143,8 @@ namespace CalendarEvents.Tests
         [Test] public void Post_RequestNotValid_ShouldReturnBadRequest()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
-            expectedItem.Title = null;
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
+            expectedItem.Name = null;
 
             var controller = _mock.Create<EventsController>();
 
@@ -157,12 +158,12 @@ namespace CalendarEvents.Tests
         [Test] public void Post_WhenCalled_ShouldReturnPost()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
 
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
-            _mock.Mock<IService<EventModel>>()
-                .Setup(items => items.Add(expectedItem))
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Insert(expectedItem))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
@@ -189,10 +190,10 @@ namespace CalendarEvents.Tests
         {
             //Arrange
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
-            EventModel eventModel = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel eventModel = TestsFacade.EventsFacade.BuildEventModelItem();
 
-            _mock.Mock<IService<EventModel>>()
-                .Setup(items => items.Add(eventModel))
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Insert(eventModel))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
@@ -213,8 +214,8 @@ namespace CalendarEvents.Tests
         [Test] public void Put_RequestStateNotValid_ShouldReturnBadRequest()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
-            expectedItem.Title = null;
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
+            expectedItem.Name = null;
 
             var controller = _mock.Create<EventsController>();
 
@@ -228,7 +229,7 @@ namespace CalendarEvents.Tests
         [Test] public void Put_RequestIdNotValid_ShouldReturnBadRequest()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
             expectedItem.Id = new Guid();
 
             var controller = _mock.Create<EventsController>();
@@ -243,11 +244,11 @@ namespace CalendarEvents.Tests
         [Test] public void Put_WhenCalled_ShouldReturnPut()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
 
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
-            _mock.Mock<IService<EventModel>>()
+            _mock.Mock<IGenericService<EventModel>>()
                 .Setup(items => items.Update(expectedItem))
                 .Returns(() => expectedResultService);
 
@@ -263,10 +264,10 @@ namespace CalendarEvents.Tests
         [Test] public void Put_WhenServiceHasError_ShouldReturnStatusCode500()
         {
             //Arrange
-            EventModel eventModel = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel eventModel = TestsFacade.EventsFacade.BuildEventModelItem();
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);            
 
-            _mock.Mock<IService<EventModel>>()
+            _mock.Mock<IGenericService<EventModel>>()
                 .Setup(items => items.Update(eventModel))
                 .Returns(() => expectedResultService);
 
@@ -288,7 +289,7 @@ namespace CalendarEvents.Tests
         [Test] public void Delete_RequestNotValid_ShouldReturnBadRequest()
         {
             //Arrange
-            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModel();
+            EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
 
             var controller = _mock.Create<EventsController>();
 
@@ -304,8 +305,8 @@ namespace CalendarEvents.Tests
             ResultService expectedResultService = ResultService.Ok();
             Guid id = Guid.NewGuid();
 
-            _mock.Mock<IService<EventModel>>()
-                .Setup(items => items.Remove(id))
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Delete(id))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
@@ -323,8 +324,8 @@ namespace CalendarEvents.Tests
             ResultService expectedResultService = ResultService.Fail(ErrorCode.Unknown);
             Guid id = Guid.NewGuid();
 
-            _mock.Mock<IService<EventModel>>()
-                .Setup(items => items.Remove(id))
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Delete(id))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();

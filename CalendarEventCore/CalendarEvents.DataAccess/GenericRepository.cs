@@ -1,57 +1,145 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CalendarEvents.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace CalendarEvents.DataAccess
 {
-    public interface IRepository<T> : IGetRepository<T>, 
-                                    IInsertRepository<T>,
-                                    IUpdateRepository<T>,
-                                    IDeleteRepository<T>                                   
+    public interface IGenericRepository<TEntity> : IGetRepository<TEntity>, 
+                                    IInsertRepository<TEntity>,
+                                    IUpdateRepository<TEntity>,
+                                    IRemoveRepository<TEntity>,
+                                    IDisposable
     {
-        void Save();
+        //TODO: Add async method.
+        void SaveChanges();
     }
 
-    public class GenericRepository<T> : IRepository<T> where T : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IBaseModel
     {
-        private CalendarDbContext _context = null;
+        private readonly ICalendarDbContext _context = null;
+        private readonly DbSet<TEntity> _dbSet;
 
-        public GenericRepository()
+        //TODO: check for intergation test.
+        //public GenericRepository()
+        //{
+        //    DbContextOptions<CalendarDbContext> options = new DbContextOptions<CalendarDbContext>();
+        //    this._context = new CalendarDbContext(options);
+        //}
+
+        public GenericRepository(ICalendarDbContext context)
         {
-            DbContextOptions<CalendarDbContext> options = new DbContextOptions<CalendarDbContext>();
-            this._context = new CalendarDbContext(options);
+            this._context = context ?? throw new ArgumentNullException(nameof(context));
+            _dbSet = this._context.Set<TEntity>();
         }
 
-        public bool Delete(object id)
+        public virtual void SaveChanges()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
         }
 
-        public IEnumerable<T> GetAllItems()
+        public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, 
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
+            string includeProperties = "")
         {
-            throw new NotImplementedException();
+            IQueryable<TEntity> query = this._dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            var properties = includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var includeProperty in properties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).ToList();
+            }
+
+            return query.ToList();
         }
 
-        public T GetById(object id)
+        public virtual TEntity GetById(object id)
         {
-            throw new NotImplementedException();
+            return _dbSet.Find(id);
         }
 
-        public T Insert(T item)
+        public virtual void Insert(TEntity entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Add(entity);
         }
 
-        public void Save()
+        public virtual void Update(TEntity entity)
         {
-            throw new NotImplementedException();
+            if (entity != null)
+            {
+                _dbSet.Attach(entity);
+                _context.SetEntityState<TEntity>(entity, EntityState.Modified);
+            }
         }
 
-        public T Update(T item)
+        public virtual void Remove(object id)
         {
-            throw new NotImplementedException();
+            TEntity entity = _dbSet.Find(id);
+            if (!EqualityComparer<TEntity>.Default.Equals(entity, default)) //TODO: move this into common extension.
+            {
+                Remove(entity);
+            }
         }
+
+        private void Remove(TEntity entity)
+        {
+            if (_context.GetEntityState(entity) == EntityState.Detached)
+            {
+                _dbSet.Attach(entity);
+            }            
+            _dbSet.Remove(entity);
+        }
+
+        //TODO: Add IDisposable support.
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~GenericRepository()
+        // {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        void IDisposable.Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 
 }

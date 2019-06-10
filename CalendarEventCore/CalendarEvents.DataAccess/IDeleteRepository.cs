@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.DataAccess
 {
-    public interface IDeleteRepository<T>
+    //TODO: Add async method.
+    public interface IRemoveRepository<TEntity>
     {
-        bool Delete(object id);
+        void Remove(object id);
     }
 }

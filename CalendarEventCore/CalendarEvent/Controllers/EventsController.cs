@@ -10,9 +10,9 @@ namespace CalendarEvents.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {        
-        private readonly IService<EventModel> _eventsService;        
+        private readonly IGenericService<EventModel> _eventsService;        
 
-        public EventsController(IService<EventModel> eventsService)
+        public EventsController(IGenericService<EventModel> eventsService)
         {
             this._eventsService = eventsService;
         }
@@ -21,7 +21,7 @@ namespace CalendarEvents.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<EventModel>> Get()
         {
-            ResultService<IEnumerable<EventModel>> result = this._eventsService.GetAllItems();
+            ResultService<IEnumerable<EventModel>> result = this._eventsService.Get();
             if (result.Success)
             {
                 IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
@@ -64,10 +64,10 @@ namespace CalendarEvents.Controllers
                 return BadRequest();
             }
 
-            ResultService<EventModel> result = this._eventsService.Add(item);
+            ResultService result = this._eventsService.Insert(item);
             if (result.Success)
             {
-                return CreatedAtAction("Post", new { Id = result.Value.Id }, result.Value as EventModel);
+                return CreatedAtAction("Post", new { item.Id }, item);
             }
             else
             {
@@ -104,7 +104,7 @@ namespace CalendarEvents.Controllers
                 return BadRequest();
             }
 
-            ResultService result = this._eventsService.Remove(id);
+            ResultService result = this._eventsService.Delete(id);
             if (result.Success)
             {
                 return Ok();

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.DataAccess
 {
-    public interface IUpdateRepository<T>
+    //TODO: Add async method.
+    public interface IUpdateRepository<TEntity>
     {
-        T Update(T item);
+        void Update(TEntity entity);
     }
 }

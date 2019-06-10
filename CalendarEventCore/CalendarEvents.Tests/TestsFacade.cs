@@ -1,6 +1,7 @@
 ﻿using CalendarEvents.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CalendarEvents.Tests
 {
@@ -8,14 +9,20 @@ namespace CalendarEvents.Tests
     {
         public static class EventsFacade
         {
-            public static List<EventModel> BuildEventModelList()
+            public static List<EventModel> BuildEventModelList(int count = 1)
             {
-                return new List<EventModel>()
+                List<EventModel> resultList = new List<EventModel>(count);
+
+                while (count > 0)
                 {
-                    BuildEventModel()
-                };
-            }
-            public static EventModel BuildEventModel()
+                    resultList.Add(BuildEventModelItem());
+                    count--;
+                }
+
+                return resultList;
+            }            
+
+            public static EventModel BuildEventModelItem()
             {
                 return new EventModel()
                 {
@@ -23,7 +30,7 @@ namespace CalendarEvents.Tests
                     Id = Guid.NewGuid(),
                     IsAllDay = false,
                     Start = DateTime.UtcNow.AddMinutes(1),
-                    Title = Guid.NewGuid().ToString(),
+                    Name = Guid.NewGuid().ToString(),
                     URL = Guid.NewGuid().ToString()
                 };
             }
