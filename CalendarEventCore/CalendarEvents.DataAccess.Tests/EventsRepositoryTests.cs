@@ -82,7 +82,7 @@ namespace CalendarEvents.Repository.Tests
         [Test] public void Get_WhenCalledWithFilter_ShouldReturnList()
         {
             //Arrange
-            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(2);
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(20);
             EventModel filteredItem = expectedList.ToList()[0];
 
             var dbSetMock = _mock.Mock<DbSet<EventModel>>();

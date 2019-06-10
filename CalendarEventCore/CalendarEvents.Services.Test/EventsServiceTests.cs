@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using CalendarEvents.Tests;
 using CalendarEvents.DataAccess;
 using System.Linq;
+using System.Linq.Expressions;
+using Moq;
 
 namespace CalendarEvents.Services.Tests
 {
@@ -85,27 +87,29 @@ namespace CalendarEvents.Services.Tests
             Assert.IsTrue(result.Success);
             Assert.IsInstanceOf<IEnumerable<EventModel>>(result.Value);
 
-            List<EventModel> resultList = result.Value as List<EventModel>;
+            IEnumerable<EventModel> resultList = result.Value;
 
             Assert.IsNotNull(resultList);
-            Assert.AreEqual(resultList.Count, (expectedList as List<EventModel>).Count);
-            Assert.AreEqual(resultList[0].GetHashCode(), (expectedList as List<EventModel>)[0].GetHashCode());
+            Assert.AreEqual(resultList.Count(), expectedList.Count());
+            Assert.AreEqual(resultList.First().GetHashCode(), expectedList.First().GetHashCode());
         }
         [Test] public void Get_WhenCalledWithFilter_ShouldReturnList()
         {
             //Arrange
-            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList();
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(20);
             EventModel filteredItem = expectedList.ToList()[0];
+            //TODO: Build an expression builder service.
+            //Expression<Func<EventModel, bool>> expression = BuildEqualExpression<EventModel>("Id", filteredItem.Id);
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
-                .Setup(items => items.Get(a => a.Id == filteredItem.Id, null, ""))
+                .Setup(items => items.Get(It.IsAny<Expression<Func<EventModel, bool>>>(), null, ""))
                 .Returns(() => expectedList);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get(a => a.Id == filteredItem.Id, null, "");
+            ResultService<IEnumerable<EventModel>> result = service.Get(a => a.Id == new Guid(), null, "");
 
             //Assert
             Assert.IsNotNull(result);
@@ -113,26 +117,38 @@ namespace CalendarEvents.Services.Tests
             Assert.IsTrue(result.Success);
             Assert.IsInstanceOf<IEnumerable<EventModel>>(result.Value);
 
-            List<EventModel> resultList = result.Value as List<EventModel>;
+            IEnumerable<EventModel> resultList = result.Value;
 
             Assert.IsNotNull(resultList);
-            Assert.IsTrue(resultList.Count() == 1);
-            Assert.AreEqual(filteredItem, resultList.ToList()[0]);
+            Assert.AreEqual(resultList.Count(), expectedList.Count());
+            Assert.AreEqual(resultList.First().GetHashCode(), expectedList.First().GetHashCode());
         }
+        private Expression<Func<TEntity, bool>> BuildEqualExpression<TEntity>(string property, object value) where TEntity : class
+        {
+            var parameter = Expression.Parameter(typeof(TEntity), "x");
+            var member = Expression.Property(parameter, property); //x.Id
+            var constant = Expression.Constant(value);
+            var body = Expression.Equal(member, constant); //x.Id >= 3
+            var finalExpression = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
+            return finalExpression;
+        }
+
         [Test] public void Get_WhenCalledWithOrder_ShouldReturnList()
         {
             //Arrange
-            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(10);
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(10);            
 
+            //TODO: Add IOrderby builder.
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
+            
             repositoryMock
-                .Setup(items => items.Get(null, query => query.OrderBy(a => a.Name), ""))
+                .Setup(items => items.Get(null, It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(), ""))
                 .Returns(() => expectedList);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get(null, query=>query.OrderBy(a=>a.Name), "");
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, query => query.OrderBy(a => a.Name), "");
 
             //Assert
             Assert.IsNotNull(result);
@@ -140,12 +156,40 @@ namespace CalendarEvents.Services.Tests
             Assert.IsTrue(result.Success);
             Assert.IsInstanceOf<IEnumerable<EventModel>>(result.Value);
 
-            List<EventModel> resultList = result.Value as List<EventModel>;
+            //TODO: convert all the list to behave like this:
+            IEnumerable<EventModel> resultList = result.Value;
 
             Assert.IsNotNull(resultList);
-            Assert.AreEqual(resultList.Count, (expectedList as List<EventModel>).Count);
-            //TODO: Complete this:
-            //Assert.AreEqual(resultList, (expectedListOrderBy(a => a.Name));
+            Assert.AreEqual(resultList.Count(), expectedList.Count());
+            Assert.AreEqual(resultList, expectedList);
+        }
+        [Test] public void Get_WhenCalledWithInclude_ShouldReturnList()
+        {
+            //Arrange
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(10);
+            string include = "Id";
+
+            var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
+            repositoryMock
+                .Setup(items => items.Get(null, null, include))
+                .Returns(() => expectedList);
+
+            GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
+
+            //Act
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, null, include);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ResultService<IEnumerable<EventModel>>>(result);
+            Assert.IsTrue(result.Success);
+            Assert.IsInstanceOf<IEnumerable<EventModel>>(result.Value);
+
+            IEnumerable<EventModel> resultList = result.Value;
+
+            Assert.IsNotNull(resultList);
+            Assert.AreEqual(resultList.Count(), expectedList.Count());
+            Assert.AreEqual(resultList, expectedList);
         }
         [Test] public void Get_WhenRepositoryReturnsNull_ShouldReturnNotFound()
         {
