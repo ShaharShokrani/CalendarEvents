@@ -11,7 +11,7 @@ using Moq;
 
 namespace CalendarEvents.Services.Tests
 {
-    public class EventsServiceTests
+    public class EventsServiceTests : BaseTest
     {
         private AutoMock _mock = null;
 
@@ -109,7 +109,8 @@ namespace CalendarEvents.Services.Tests
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get(a => a.Id == new Guid(), null, "");
+            //TODO: Test scenarios for IFilterStatements.
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, null, "");
 
             //Assert
             Assert.IsNotNull(result);
@@ -202,7 +203,7 @@ namespace CalendarEvents.Services.Tests
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get();
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, null, "");
 
             //Assert
             Assert.IsNotNull(result);
@@ -223,13 +224,10 @@ namespace CalendarEvents.Services.Tests
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get();
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, null, "");
 
             //Assert
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result.Success);
-            Assert.IsNull(result.Value);
-            Assert.IsTrue(result.Exception == expectedException);
+            AssertResultServiceException<IEnumerable<EventModel>>(result, expectedException);
         }
         #endregion
 
@@ -298,10 +296,7 @@ namespace CalendarEvents.Services.Tests
             ResultService<EventModel> result = service.GetById(id);
 
             //Assert
-            Assert.IsNotNull(result);
-            Assert.IsFalse(result.Success);
-            Assert.IsNull(result.Value);
-            Assert.IsTrue(result.Exception == expectedException);
+            AssertResultServiceException<EventModel>(result, expectedException);
         }
         #endregion
 

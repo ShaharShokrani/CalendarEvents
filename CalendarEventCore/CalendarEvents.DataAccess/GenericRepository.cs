@@ -75,6 +75,7 @@ namespace CalendarEvents.DataAccess
         public virtual void Insert(TEntity entity)
         {
             _dbSet.Add(entity);
+            this.SaveChanges();
         }
 
         public virtual void Update(TEntity entity)
@@ -83,6 +84,7 @@ namespace CalendarEvents.DataAccess
             {
                 _dbSet.Attach(entity);
                 _context.SetEntityState<TEntity>(entity, EntityState.Modified);
+                this.SaveChanges();
             }
         }
 
@@ -100,11 +102,11 @@ namespace CalendarEvents.DataAccess
             if (_context.GetEntityState(entity) == EntityState.Detached)
             {
                 _dbSet.Attach(entity);
-            }            
+            }
             _dbSet.Remove(entity);
+            this.SaveChanges();
         }
 
-        //TODO: Add IDisposable support.
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
@@ -114,22 +116,11 @@ namespace CalendarEvents.DataAccess
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    this._context.Dispose();
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
                 disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~GenericRepository()
-        // {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         // This code added to correctly implement the disposable pattern.
         void IDisposable.Dispose()

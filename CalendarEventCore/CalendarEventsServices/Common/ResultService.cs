@@ -6,6 +6,7 @@ namespace CalendarEvents.Services
 {
     public class ResultService
     {
+        //TODO: Add a custom message property.
         public bool Success { get; private set; }
         public ErrorCode ErrorCode { get; private set; }
         public Exception Exception { get; private set; }
@@ -44,7 +45,7 @@ namespace CalendarEvents.Services
 
         public static ResultService<T> Fail<T>(ErrorCode errorCode)
         {
-            return new ResultService<T>(default(T), false, errorCode);
+            return new ResultService<T>(default, false, errorCode);
         }
 
         public static ResultService<T> Fail<T>(Exception exception)

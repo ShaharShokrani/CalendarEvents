@@ -35,7 +35,8 @@ namespace CalendarEvents.Tests
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<IEnumerable<EventModel>> result = controller.Get();
+            //TODO: add execution path to test when the request is not null.
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(null);
 
             //Assert
             Assert.IsNotNull(result);
@@ -62,7 +63,7 @@ namespace CalendarEvents.Tests
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<IEnumerable<EventModel>> result = controller.Get();
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(null);
 
             //Assert
             Assert.IsNotNull(result);

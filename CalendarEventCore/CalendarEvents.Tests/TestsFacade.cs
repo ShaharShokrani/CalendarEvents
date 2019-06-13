@@ -21,7 +21,6 @@ namespace CalendarEvents.Tests
 
                 return resultList;
             }            
-
             public static EventModel BuildEventModelItem()
             {
                 return new EventModel()
@@ -32,6 +31,31 @@ namespace CalendarEvents.Tests
                     Start = DateTime.UtcNow.AddMinutes(1),
                     Name = Guid.NewGuid().ToString(),
                     URL = Guid.NewGuid().ToString()
+                };
+            }
+        }
+
+        public static class FilterStatementFacade
+        {
+            public static IEnumerable<FilterStatement<TEntity>> BuildFilterStatementList<TEntity>(int count = 1) where TEntity : IBaseModel
+            {
+                List<FilterStatement<TEntity>> resultList = new List<FilterStatement<TEntity>>(count);
+
+                while (count > 0)
+                {
+                    resultList.Add(BuildFilterStatement<TEntity>());
+                    count--;
+                }
+
+                return resultList;
+            }
+            public static FilterStatement<TEntity> BuildFilterStatement<TEntity>() where TEntity : IBaseModel
+            {
+                return new FilterStatement<TEntity>()
+                {
+                    Operation = FilterOperation.Equal,
+                    PropertyName = "Id",
+                    Value = Guid.NewGuid().ToString()
                 };
             }
         }

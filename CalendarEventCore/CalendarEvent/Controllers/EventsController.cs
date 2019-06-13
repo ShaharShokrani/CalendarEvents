@@ -19,9 +19,14 @@ namespace CalendarEvents.Controllers
 
         // GET api/events
         [HttpGet]
-        public ActionResult<IEnumerable<EventModel>> Get()
+        public ActionResult<IEnumerable<EventModel>> Get(GenericRequest<EventModel> genericRequest)
         {
-            ResultService<IEnumerable<EventModel>> result = this._eventsService.Get();
+            //TODO: Detemine if this line is needed, cause we want to handle every get request, not only not nulls.
+            // But on the other hande, we reference with dot operator.
+            if (genericRequest == null)
+                genericRequest = new GenericRequest<EventModel>();
+
+            ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, null, genericRequest.IncludeProperties);
             if (result.Success)
             {
                 IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;

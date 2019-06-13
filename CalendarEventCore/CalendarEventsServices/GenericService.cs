@@ -5,17 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Collections;
 
 namespace CalendarEvents.Services
 {
     public interface IGenericService<T> : IGetService<T>, 
                                       IUpdateService<T>,
                                       IInsertService<T>,
-                                      IDeleteService
-    {        
+                                      IDeleteService where T : IBaseModel
+    {
     }
 
-    public class GenericService<T> : IGenericService<T> where T : IBaseModel
+    public class GenericService<T> : IGenericService<T> where T : class, IBaseModel
     {
         private IGenericRepository<T> _repository;
 
@@ -30,6 +31,7 @@ namespace CalendarEvents.Services
             {
                 obj.Id = Guid.NewGuid();
                 obj.CreateDate = DateTime.UtcNow;
+                obj.UpdateDate = DateTime.UtcNow;
                 this._repository.Insert(obj);
 
                 return ResultService.Ok();
@@ -40,11 +42,27 @@ namespace CalendarEvents.Services
             }
         }
 
-        public ResultService<IEnumerable<T>> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "")
+
+        public ResultService<IEnumerable<T>> Get(IEnumerable<FilterStatement<T>> filterStatements,
+                                                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                                string includeProperties = "")
         {
             try
             {
-                var result = this._repository.Get(filter, orderBy, includeProperties);
+                Expression<Func<T, bool>> filters = null;
+
+                if (filterStatements != null && filterStatements.Any())
+                {                    
+                    var filterService = new FiltersService<T>(filterStatements);
+                    var filtersResult = filterService.BuildExpression();
+                    if (!filtersResult.Success)
+                    {
+                        return ResultService.Fail<IEnumerable<T>>(filtersResult.ErrorCode);
+                    }
+                    filters = filtersResult.Value as Expression<Func<T, bool>>;
+                }
+
+                var result = this._repository.Get(filters, orderBy, includeProperties);
                 if (result == null)
                 {
                     return ResultService.Fail<IEnumerable<T>>(ErrorCode.NotFound);

@@ -11,7 +11,7 @@ namespace CalendarEvents.DataAccess
     public interface IGetRepository<TEntity>
     {
         IEnumerable<TEntity> Get(
-            Expression<Func<TEntity, bool>> filter = null,
+            Expression<Func<TEntity, bool>> filters = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
         TEntity GetById(object id);

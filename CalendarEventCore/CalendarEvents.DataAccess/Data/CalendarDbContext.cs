@@ -7,7 +7,7 @@ using System.IO;
 
 namespace CalendarEvents.DataAccess
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         int SaveChanges();
     }
