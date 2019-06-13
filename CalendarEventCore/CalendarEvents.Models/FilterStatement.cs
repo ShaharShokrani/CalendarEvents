@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace CalendarEvents.Models
 {
@@ -20,18 +22,25 @@ namespace CalendarEvents.Models
         /// Constant value that will interact with the property defined in this filter statement.
         /// </summary>
         public object Value { get; set; }
-        //TODO: Update the IsValid of Value is truly valid value type of TEntity.
         public bool IsValid
         {
             get
             {
-                //Type propertyType = typeof(TEntity).GetProperty(this.PropertyName).PropertyType;
+                PropertyInfo propertyInfo = typeof(TEntity).GetProperty(this.PropertyName);
 
-                return typeof(TEntity).GetProperty(PropertyName) != null && 
-                    //Value.GetType() == propertyType &&
-                    Operation != FilterOperation.Undefined;
+                if (propertyInfo != null && // First validate if PropertyName Is valid.
+                    Operation != FilterOperation.Undefined)
+                {
+                    Type propType = propertyInfo.PropertyType;
+                    TypeConverter converter = TypeDescriptor.GetConverter(propType);
+                    if (converter.CanConvertFrom(this.Value.GetType()))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
-        
     }
 }

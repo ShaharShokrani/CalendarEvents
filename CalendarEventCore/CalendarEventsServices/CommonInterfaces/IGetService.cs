@@ -9,7 +9,6 @@ namespace CalendarEvents.Services
 {    
     public interface IGetService<TEntity> where TEntity : IBaseModel
     {
-        //TODO: Like filter expression builder, prepare a IQueryable builder.
         ResultService<IEnumerable<TEntity>> Get(IEnumerable<FilterStatement<TEntity>> filterStatements,
                                                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
                                                 string includeProperties = "");

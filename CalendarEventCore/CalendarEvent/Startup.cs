@@ -23,7 +23,6 @@ namespace CalendarEvents
         public void ConfigureServices(IServiceCollection services)
         {                    
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            //This line needded in order to configure the EntityFramework.
             services.AddDbContext<CalendarDbContext>(options => 
                 options.UseSqlServer(
                     @"Data Source=.\SQLEXPRESS;Initial Catalog=CalendarDB;Integrated Security=True", 

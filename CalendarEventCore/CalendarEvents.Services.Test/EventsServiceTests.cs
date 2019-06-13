@@ -65,7 +65,6 @@ namespace CalendarEvents.Services.Tests
         #endregion  
 
         #region Get
-        //TODO: add sort and filter.
         [Test] public void Get_WhenCalled_ShouldReturnList()
         {
             //Arrange
@@ -98,8 +97,6 @@ namespace CalendarEvents.Services.Tests
             //Arrange
             IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(20);
             EventModel filteredItem = expectedList.ToList()[0];
-            //TODO: Build an expression builder service.
-            //Expression<Func<EventModel, bool>> expression = BuildEqualExpression<EventModel>("Id", filteredItem.Id);
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
@@ -109,7 +106,6 @@ namespace CalendarEvents.Services.Tests
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            //TODO: Test scenarios for IFilterStatements.
             ResultService<IEnumerable<EventModel>> result = service.Get(null, null, "");
 
             //Assert
@@ -139,7 +135,6 @@ namespace CalendarEvents.Services.Tests
             //Arrange
             IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(10);            
 
-            //TODO: Add IOrderby builder.
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             
             repositoryMock
@@ -157,7 +152,6 @@ namespace CalendarEvents.Services.Tests
             Assert.IsTrue(result.Success);
             Assert.IsInstanceOf<IEnumerable<EventModel>>(result.Value);
 
-            //TODO: convert all the list to behave like this:
             IEnumerable<EventModel> resultList = result.Value;
 
             Assert.IsNotNull(resultList);

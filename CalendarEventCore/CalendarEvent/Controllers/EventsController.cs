@@ -19,42 +19,56 @@ namespace CalendarEvents.Controllers
 
         // GET api/events
         [HttpGet]
-        public ActionResult<IEnumerable<EventModel>> Get(GenericRequest<EventModel> genericRequest)
+        public ActionResult<IEnumerable<EventModel>> Get([FromQuery]GenericRequest<EventModel> genericRequest = null)
         {
-            //TODO: Detemine if this line is needed, cause we want to handle every get request, not only not nulls.
-            // But on the other hande, we reference with dot operator.
-            if (genericRequest == null)
-                genericRequest = new GenericRequest<EventModel>();
+            try
+            {
+                if (genericRequest == null)
+                    genericRequest = new GenericRequest<EventModel>();
 
-            ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, null, genericRequest.IncludeProperties);
-            if (result.Success)
-            {
-                IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
-                return Ok(list);
+                ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, null, genericRequest.IncludeProperties);
+                if (result.Success)
+                {
+                    IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
+                    return Ok(list);
+                }
+                else
+                {
+                    return StatusCode(500, result.ErrorCode);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(500, result.ErrorCode);
-            }            
+                return StatusCode(500, ErrorCode.Unknown);
+                //TODO: Log the Exception.
+            }
         }
 
         // GET api/events/c4df7159-2402-4f49-922c-1a2caef02de2
         [HttpGet("{id}", Name = "GET")]
         public ActionResult<EventModel> Get(Guid id)
         {
-            if (id == Guid.Empty)
+            try
             {
-                return BadRequest();
-            }
+                if (id == Guid.Empty)
+                {
+                    return BadRequest();
+                }
 
-            ResultService<EventModel> result = this._eventsService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result.Value);
+                ResultService<EventModel> result = this._eventsService.GetById(id);
+                if (result.Success)
+                {
+                    return Ok(result.Value);
+                }
+                else
+                {
+                    return StatusCode(500, result.ErrorCode);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(500, result.ErrorCode);
+                return StatusCode(500, ErrorCode.Unknown);
+                //TODO: Log the Exception.
             }
         }
 
@@ -62,21 +76,29 @@ namespace CalendarEvents.Controllers
         [HttpPost]
         public ActionResult Post([FromBody] EventModel item)
         {
-            item.Id = Guid.NewGuid();
+            try
+            {
+                item.Id = Guid.NewGuid();
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
 
-            ResultService result = this._eventsService.Insert(item);
-            if (result.Success)
-            {
-                return CreatedAtAction("Post", new { item.Id }, item);
+                ResultService result = this._eventsService.Insert(item);
+                if (result.Success)
+                {
+                    return CreatedAtAction("Post", new { item.Id }, item);
+                }
+                else
+                {
+                    return StatusCode(500, result.ErrorCode);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(500, result.ErrorCode);
+                return StatusCode(500, ErrorCode.Unknown);
+                //TODO: Log the Exception.
             }
         }
 
@@ -84,19 +106,27 @@ namespace CalendarEvents.Controllers
         [HttpPut("{id}")]
         public ActionResult Put([FromBody] EventModel item)
         {
-            if (item.Id == Guid.Empty || !ModelState.IsValid)
+            try
             {
-                return BadRequest();
-            }
+                if (item.Id == Guid.Empty || !ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
 
-            ResultService result = this._eventsService.Update(item);
-            if (result.Success)
-            {
-                return Ok();
+                ResultService result = this._eventsService.Update(item);
+                if (result.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(500, result.ErrorCode);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(500, result.ErrorCode);
+                return StatusCode(500, ErrorCode.Unknown);
+                //TODO: Log the Exception.
             }
         }
 
@@ -104,19 +134,27 @@ namespace CalendarEvents.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(Guid id)
         {
-            if (id == Guid.Empty)
+            try
             {
-                return BadRequest();
-            }
+                if (id == Guid.Empty)
+                {
+                    return BadRequest();
+                }
 
-            ResultService result = this._eventsService.Delete(id);
-            if (result.Success)
-            {
-                return Ok();
+                ResultService result = this._eventsService.Delete(id);
+                if (result.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return StatusCode(500, result.ErrorCode);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return StatusCode(500, result.ErrorCode);
+                return StatusCode(500, ErrorCode.Unknown);
+                //TODO: Log the Exception.
             }
         }
     }

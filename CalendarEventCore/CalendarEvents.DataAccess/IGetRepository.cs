@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.DataAccess
 {   
-    //TODO: Add async method.
     public interface IGetRepository<TEntity>
     {
         IEnumerable<TEntity> Get(

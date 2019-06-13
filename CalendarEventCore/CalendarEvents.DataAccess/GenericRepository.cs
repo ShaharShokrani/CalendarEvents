@@ -14,7 +14,6 @@ namespace CalendarEvents.DataAccess
                                     IRemoveRepository<TEntity>,
                                     IDisposable
     {
-        //TODO: Add async method.
         void SaveChanges();
     }
 
@@ -22,13 +21,6 @@ namespace CalendarEvents.DataAccess
     {
         private readonly ICalendarDbContext _context = null;
         private readonly DbSet<TEntity> _dbSet;
-
-        //TODO: check for intergation test.
-        //public GenericRepository()
-        //{
-        //    DbContextOptions<CalendarDbContext> options = new DbContextOptions<CalendarDbContext>();
-        //    this._context = new CalendarDbContext(options);
-        //}
 
         public GenericRepository(ICalendarDbContext context)
         {
@@ -91,7 +83,7 @@ namespace CalendarEvents.DataAccess
         public virtual void Remove(object id)
         {
             TEntity entity = _dbSet.Find(id);
-            if (!EqualityComparer<TEntity>.Default.Equals(entity, default)) //TODO: move this into common extension.
+            if (!EqualityComparer<TEntity>.Default.Equals(entity, default))
             {
                 Remove(entity);
             }

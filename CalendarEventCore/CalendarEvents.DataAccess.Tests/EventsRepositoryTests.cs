@@ -29,9 +29,6 @@ namespace CalendarEvents.Repository.Tests
             _mock = AutoMock.GetLoose();
         }
 
-        //TODO: add seperate test only for ctor (Set<>)
-        //TODO: remove the ICalendarDbContext and use InMemory DbContext
-
         #region Insert
         [Test] public void Insert_WhenCalled_ShouldCallDbSetContextAdd()
         {

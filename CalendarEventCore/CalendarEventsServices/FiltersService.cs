@@ -30,7 +30,6 @@ namespace CalendarEvents.Services
             this._filterStatements = filterStatements ?? throw new ArgumentNullException(nameof(filterStatements));
         }
 
-        //TODO: Add unit test for this method.
         public ResultService<Expression<Func<TEntity, bool>>> BuildExpression()
         {
             try
@@ -45,17 +44,14 @@ namespace CalendarEvents.Services
                         return ResultService.Fail<Expression<Func<TEntity, bool>>>(ErrorCode.EntityNotValid);
                     }
 
-                    //TODO: Move this to another location:
                     Type propType = typeof(TEntity).GetProperty(statement.PropertyName).PropertyType;
                     TypeConverter converter = TypeDescriptor.GetConverter(propType);
                     object convertedObject = converter.ConvertFrom(statement.Value);
                     
-
                     var member = Expression.Property(parameterExpression, statement.PropertyName);
                     var constant = Expression.Constant(convertedObject);
                     Expression expression = null;
 
-                    //TODO: Complete this operation for Contains.
                     switch (statement.Operation)
                     {
                         case FilterOperation.Equal:
@@ -99,7 +95,6 @@ namespace CalendarEvents.Services
             catch (Exception ex)
             {
                 return ResultService.Fail<Expression<Func<TEntity, bool>>>(ex);
-                //TODO: Refer to a Log Service.
             }
         }
     }

@@ -59,5 +59,35 @@ namespace CalendarEvents.Tests
                 };
             }
         }
+
+        public static class GenericRequestfacade
+        {
+            public static GenericRequest<TEntity> BuildGenericRequest<TEntity>() where TEntity : IBaseModel
+            {
+                return new GenericRequest<TEntity>()
+                {
+                    Filters = BuildFilterList<TEntity>(),
+                    IncludeProperties = "Id,CreateDate"
+                };
+            }
+
+            public static IEnumerable<FilterStatement<TEntity>> BuildFilterList<TEntity>() where TEntity : IBaseModel
+            {
+                return new List<FilterStatement<TEntity>>()
+                {
+                    BuildFilterStatement<TEntity>()
+                };
+            }
+
+            public static FilterStatement<TEntity> BuildFilterStatement<TEntity>() where TEntity : IBaseModel
+            {
+                return new FilterStatement<TEntity>()
+                {
+                    Operation = FilterOperation.Equal,
+                    PropertyName = "Id",
+                    Value = Guid.NewGuid()
+                };
+            }
+        }
     }
 }

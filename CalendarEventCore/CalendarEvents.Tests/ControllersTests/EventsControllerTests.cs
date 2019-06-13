@@ -7,10 +7,12 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Routing;
+using System.Linq;
+using Moq;
 
 namespace CalendarEvents.Tests
 {
-    public class EventsControllerTests
+    public class EventsControllerTests : BaseTest
     {
         private AutoMock _mock = null;
 
@@ -19,24 +21,25 @@ namespace CalendarEvents.Tests
             _mock = AutoMock.GetLoose();
         }
 
-        //TODO: add filter and orderBy and include.
         #region Get
         [Test] public void Get_WhenCalled_ShouldReturnOk()
         {
             //Arrange
-            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(); ;
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList();
+            GenericRequest<EventModel> genericRequest = TestsFacade.GenericRequestfacade.BuildGenericRequest<EventModel>();
 
-            ResultService<IEnumerable<EventModel>> expected = ResultService.Ok(expectedList); ;
+            ResultService<IEnumerable<EventModel>> expected = ResultService.Ok(expectedList);
 
             _mock.Mock<IGenericService<EventModel>>()
-                .Setup(items => items.Get(null, null, ""))
+                .Setup(items => items.Get(It.IsAny<IEnumerable<FilterStatement<EventModel>>>(),
+                                        It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(),
+                                        It.IsAny<string>()))
                 .Returns(() => expected);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            //TODO: add execution path to test when the request is not null.
-            ActionResult<IEnumerable<EventModel>> result = controller.Get(null);
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(genericRequest);
 
             //Assert
             Assert.IsNotNull(result);
@@ -45,25 +48,60 @@ namespace CalendarEvents.Tests
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult.Value);
 
-            List<EventModel> okResultList = okResult.Value as List<EventModel>;
+            IEnumerable<EventModel> resultList = okResult.Value as IEnumerable<EventModel>;
 
-            Assert.IsNotNull(okResultList);
-            Assert.AreEqual(okResultList.Count, (expectedList as List<EventModel>).Count);
-            Assert.AreEqual(okResultList[0].GetHashCode(), (expectedList as List<EventModel>)[0].GetHashCode());
+            Assert.IsNotNull(resultList);
+            Assert.AreEqual(resultList.Count(), expectedList.Count());
+            Assert.AreEqual(resultList, expectedList);
+        }
+        [Test] public void Get_WhenCalledWithNull_ShouldReturnOk()
+        {
+            //Arrange
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList();
+            GenericRequest<EventModel> genericRequest = null;
+
+            ResultService<IEnumerable<EventModel>> expected = ResultService.Ok(expectedList);
+
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Get(It.IsAny<IEnumerable<FilterStatement<EventModel>>>(),
+                                        It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(),
+                                        It.IsAny<string>()))
+                .Returns(() => expected);
+
+            var controller = _mock.Create<EventsController>();
+
+            //Act
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(genericRequest);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<OkObjectResult>(result.Result);
+
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult.Value);
+
+            IEnumerable<EventModel> resultList = okResult.Value as IEnumerable<EventModel>;
+
+            Assert.IsNotNull(resultList);
+            Assert.AreEqual(resultList.Count(), expectedList.Count());
+            Assert.AreEqual(resultList, expectedList);
         }
         [Test] public void Get_WhenServiceHasError_ShouldReturnStatusCode500()
         {
             //Arrange
             ResultService<IEnumerable<EventModel>> expectedResultService = ResultService.Fail<IEnumerable<EventModel>>(ErrorCode.Unknown);
+            GenericRequest<EventModel> genericRequest = TestsFacade.GenericRequestfacade.BuildGenericRequest<EventModel>();
 
             _mock.Mock<IGenericService<EventModel>>()
-                .Setup(items => items.Get(null, null, ""))
+                .Setup(items => items.Get(It.IsAny<IEnumerable<FilterStatement<EventModel>>>(),
+                                        It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(),
+                                        It.IsAny<string>()))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<IEnumerable<EventModel>> result = controller.Get(null);
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(genericRequest);
 
             //Assert
             Assert.IsNotNull(result);
@@ -72,10 +110,34 @@ namespace CalendarEvents.Tests
             ObjectResult objectResult = result.Result as ObjectResult;
             AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
         }
+        [Test] public void Get_WhenServiceThrowException_ShouldReturnStatusCode500()
+        {
+            //Arrange
+            ResultService<IEnumerable<EventModel>> expectedResultService = ResultService.Fail<IEnumerable<EventModel>>(ErrorCode.Unknown);
+            GenericRequest<EventModel> genericRequest = TestsFacade.GenericRequestfacade.BuildGenericRequest<EventModel>();
+
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Get(It.IsAny<IEnumerable<FilterStatement<EventModel>>>(),
+                                        It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(),
+                                        It.IsAny<string>()))
+                .Throws(new Exception());
+
+            var controller = _mock.Create<EventsController>();
+
+            //Act
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(genericRequest);
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ObjectResult>(result.Result);
+
+            ObjectResult objectResult = result.Result as ObjectResult;            
+            AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
+        }
         #endregion
 
         #region GetById
-        [Test] public void Put_RequestNotValid_ShouldReturnBadRequest()
+        [Test] public void GetById_RequestNotValid_ShouldReturnBadRequest()
         {
             //Arrange
             EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
@@ -92,17 +154,16 @@ namespace CalendarEvents.Tests
         {
             //Arrange
             EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
-
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
             _mock.Mock<IGenericService<EventModel>>()
-                .Setup(items => items.GetById(expectedItem.Id))
+                .Setup(items => items.GetById(It.IsAny<Guid>()))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<EventModel> actionResult = controller.Get(expectedItem.Id);
+            ActionResult<EventModel> actionResult = controller.Get(Guid.NewGuid());
 
             //Assert
             Assert.IsNotNull(actionResult);
@@ -120,22 +181,42 @@ namespace CalendarEvents.Tests
         {
             //Arrange
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
-            Guid id = Guid.NewGuid();
 
             _mock.Mock<IGenericService<EventModel>>()
-                .Setup(items => items.GetById(id))
+                .Setup(items => items.GetById(It.IsAny<Guid>()))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<EventModel> actionResult = controller.Get(id);
+            ActionResult<EventModel> actionResult = controller.Get(Guid.NewGuid());
 
             //Assert
             Assert.IsNotNull(actionResult);
             Assert.IsInstanceOf<ObjectResult>(actionResult.Result);
 
             var objectResult = actionResult.Result as ObjectResult;
+            AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
+        }
+        [Test] public void GetById_WhenServiceThrowException_ShouldReturnStatusCode500()
+        {
+            //Arrange
+            ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
+
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.GetById(It.IsAny<Guid>()))
+                .Throws(new Exception());
+
+            var controller = _mock.Create<EventsController>();
+
+            //Act
+            ActionResult<IEnumerable<EventModel>> result = controller.Get(new GenericRequest<EventModel>());
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ObjectResult>(result.Result);
+
+            ObjectResult objectResult = result.Result as ObjectResult;
             AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
         }
         #endregion
@@ -164,13 +245,13 @@ namespace CalendarEvents.Tests
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
 
             _mock.Mock<IGenericService<EventModel>>()
-                .Setup(items => items.Insert(expectedItem))
+                .Setup(items => items.Insert(It.IsAny<EventModel>()))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<EventModel> actionResult = controller.Post(expectedItem);
+            ActionResult<EventModel> actionResult = controller.Post(new EventModel());
 
             //Assert
             Assert.IsNotNull(actionResult);
@@ -191,22 +272,42 @@ namespace CalendarEvents.Tests
         {
             //Arrange
             ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
-            EventModel eventModel = TestsFacade.EventsFacade.BuildEventModelItem();
 
             _mock.Mock<IGenericService<EventModel>>()
-                .Setup(items => items.Insert(eventModel))
+                .Setup(items => items.Insert(It.IsAny<EventModel>()))
                 .Returns(() => expectedResultService);
 
             var controller = _mock.Create<EventsController>();
 
             //Act
-            ActionResult<EventModel> actionResult = controller.Post(eventModel);
+            ActionResult<EventModel> actionResult = controller.Post(new EventModel());
 
             //Assert
             Assert.IsNotNull(actionResult);
             Assert.IsInstanceOf<ObjectResult>(actionResult.Result);
 
             var objectResult = actionResult.Result as ObjectResult;
+            AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
+        }
+        [Test] public void Post_WhenServiceThrowException_ShouldReturnStatusCode500()
+        {
+            //Arrange
+            ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
+
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Insert(It.IsAny<EventModel>()))
+                .Throws(new Exception());
+
+            var controller = _mock.Create<EventsController>();
+
+            //Act
+            ActionResult<IEnumerable<EventModel>> result = controller.Post(new EventModel());
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ObjectResult>(result.Result);
+
+            ObjectResult objectResult = result.Result as ObjectResult;
             AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
         }
         #endregion
@@ -284,6 +385,27 @@ namespace CalendarEvents.Tests
             var objectResult = actionResult.Result as ObjectResult;
             AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
         }
+        [Test] public void Put_WhenServiceThrowException_ShouldReturnStatusCode500()
+        {
+            //Arrange
+            ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
+
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Update(It.IsAny<EventModel>()))
+                .Throws(new Exception());
+
+            var controller = _mock.Create<EventsController>();
+
+            //Act
+            ActionResult<IEnumerable<EventModel>> result = controller.Put(new EventModel());
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ObjectResult>(result.Result);
+
+            ObjectResult objectResult = result.Result as ObjectResult;
+            AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
+        }
         #endregion
 
         #region Delete
@@ -339,6 +461,27 @@ namespace CalendarEvents.Tests
             Assert.IsInstanceOf<ObjectResult>(actionResult);
 
             var objectResult = actionResult as ObjectResult;
+            AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
+        }
+        [Test] public void Delete_WhenServiceThrowException_ShouldReturnStatusCode500()
+        {
+            //Arrange
+            ResultService<EventModel> expectedResultService = ResultService.Fail<EventModel>(ErrorCode.Unknown);
+
+            _mock.Mock<IGenericService<EventModel>>()
+                .Setup(items => items.Delete(It.IsAny<Guid>()))
+                .Throws(new Exception());
+
+            var controller = _mock.Create<EventsController>();
+
+            //Act
+            ActionResult<IEnumerable<EventModel>> result = controller.Delete(Guid.NewGuid());
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOf<ObjectResult>(result.Result);
+
+            ObjectResult objectResult = result.Result as ObjectResult;
             AssertStatusCode500(objectResult, expectedResultService.ErrorCode);
         }
         #endregion
