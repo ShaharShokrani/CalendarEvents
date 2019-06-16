@@ -44,11 +44,14 @@ namespace CalendarEvents.DataAccess
                 query = query.Where(filter);
             }
 
-            var properties = includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var includeProperty in properties)
+            if (includeProperties != null)
             {
-                query = query.Include(includeProperty);
+                var properties = includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var includeProperty in properties)
+                {
+                    query = query.Include(includeProperty);
+                }
             }
 
             if (orderBy != null)

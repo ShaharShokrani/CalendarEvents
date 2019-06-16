@@ -18,7 +18,7 @@ namespace CalendarEvents.Services
 
     public class GenericService<T> : IGenericService<T> where T : class, IBaseModel
     {
-        private IGenericRepository<T> _repository;
+        private readonly IGenericRepository<T> _repository;
 
         public GenericService(IGenericRepository<T> repository)
         {
@@ -42,15 +42,13 @@ namespace CalendarEvents.Services
             }
         }
 
-
         public ResultService<IEnumerable<T>> Get(IEnumerable<FilterStatement<T>> filterStatements,
-                                                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                                OrderByStatement<T> orderByStatement = null,
                                                 string includeProperties = "")
         {
             try
             {
                 Expression<Func<T, bool>> filters = null;
-
                 if (filterStatements != null && filterStatements.Any())
                 {                    
                     var filterService = new FiltersService<T>(filterStatements);
@@ -60,6 +58,18 @@ namespace CalendarEvents.Services
                         return ResultService.Fail<IEnumerable<T>>(filtersResult.ErrorCode);
                     }
                     filters = filtersResult.Value as Expression<Func<T, bool>>;
+                }
+
+                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null;
+                if (orderByStatement != null)
+                {
+                    var orderByService = new OrderByService();
+                    var orderByResult = orderByService.GetOrderBy<T>(orderByStatement);
+                    if (!orderByResult.Success)
+                    {
+                        return ResultService.Fail<IEnumerable<T>>(orderByResult.ErrorCode);
+                    }
+                    orderBy = orderByResult.Value as Func<IQueryable<T>, IOrderedQueryable<T>>;
                 }
 
                 var result = this._repository.Get(filters, orderBy, includeProperties);

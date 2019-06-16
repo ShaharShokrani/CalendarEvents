@@ -10,7 +10,7 @@ namespace CalendarEvents.Services
     public interface IGetService<TEntity> where TEntity : IBaseModel
     {
         ResultService<IEnumerable<TEntity>> Get(IEnumerable<FilterStatement<TEntity>> filterStatements,
-                                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                                OrderByStatement<TEntity> orderBy = null,
                                                 string includeProperties = "");
         ResultService<TEntity> GetById(object id);
     }

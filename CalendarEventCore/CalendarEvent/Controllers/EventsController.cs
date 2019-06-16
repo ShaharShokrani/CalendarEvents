@@ -19,14 +19,14 @@ namespace CalendarEvents.Controllers
 
         // GET api/events
         [HttpGet]
-        public ActionResult<IEnumerable<EventModel>> Get([FromQuery]GenericRequest<EventModel> genericRequest = null)
+        public ActionResult<IEnumerable<EventModel>> Get([FromBody]GenericRequest<EventModel> genericRequest = null)
         {
             try
             {
                 if (genericRequest == null)
                     genericRequest = new GenericRequest<EventModel>();
 
-                ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, null, genericRequest.IncludeProperties);
+                ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, genericRequest.OrderBy, genericRequest.IncludeProperties);
                 if (result.Success)
                 {
                     IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
@@ -108,7 +108,8 @@ namespace CalendarEvents.Controllers
         {
             try
             {
-                if (item.Id == Guid.Empty || !ModelState.IsValid)
+                //TODO: move this item.Id == Guid.Empty to ModelState.IsValid.
+                if (!ModelState.IsValid)
                 {
                     return BadRequest();
                 }

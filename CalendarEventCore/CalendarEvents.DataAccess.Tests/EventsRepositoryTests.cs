@@ -40,6 +40,8 @@ namespace CalendarEvents.Repository.Tests
             context
                 .Setup(c => c.Set<EventModel>())
                 .Returns(dbSetMock.Object);
+            context
+                .Setup(c => c.SaveChanges());
 
             GenericRepository<EventModel> repository = _mock.Create<GenericRepository<EventModel>>();
 
@@ -48,6 +50,7 @@ namespace CalendarEvents.Repository.Tests
 
             //Assert
             dbSetMock.Verify(x => x.Add(It.Is<EventModel>(y => y == expectedItem)), Times.Once, "Add failed");
+            context.Verify(x => x.SaveChanges(), Times.Once, "Save failed");
         }       
         #endregion  
 
@@ -101,7 +104,7 @@ namespace CalendarEvents.Repository.Tests
 
             //Assert
             Assert.IsTrue(resultList.Count() == 1);
-            Assert.AreEqual(filteredItem, resultList.ToList()[0]);
+            Assert.AreEqual(expectedList.Where(x => x.Id == filteredItem.Id), resultList);
         }
         [Test] public void Get_WhenCalledWithOrder_ShouldReturnList()
         {
@@ -198,6 +201,8 @@ namespace CalendarEvents.Repository.Tests
             context
                 .Setup(c => c.GetEntityState<EventModel>(expectedItem))
                 .Returns(EntityState.Added);
+            context
+                .Setup(c => c.SaveChanges());
 
             GenericRepository<EventModel> repository = _mock.Create<GenericRepository<EventModel>>();
 
@@ -206,6 +211,7 @@ namespace CalendarEvents.Repository.Tests
 
             //Assert
             context.Verify(x => x.GetEntityState<EventModel>(expectedItem), Times.Once, "GetEntityState Failed");
+            context.Verify(x => x.SaveChanges(), Times.Once, "Save failed");
 
             dbSetMock.Verify(x => x.Remove(It.Is<EventModel>(y => y == expectedItem)), Times.Once, "Remove Failed");
             dbSetMock.Verify(x => x.Find(It.Is<Guid>(y => y == expectedItem.Id)), Times.Once, "Remove Failed");
@@ -277,6 +283,8 @@ namespace CalendarEvents.Repository.Tests
             context
                 .Setup(c => c.Set<EventModel>())
                 .Returns(dbSetMock.Object);
+            context
+                .Setup(c => c.SaveChanges());
 
             GenericRepository<EventModel> repository = _mock.Create<GenericRepository<EventModel>>();
 
@@ -285,6 +293,8 @@ namespace CalendarEvents.Repository.Tests
 
             //Assert
             context.Verify(x => x.SetEntityState<EventModel>(expectedItem, EntityState.Modified), Times.Once, "GetEntityState Failed");
+            context.Verify(x => x.SaveChanges(), Times.Once, "Save failed");
+
             dbSetMock.Verify(x => x.Attach(It.Is<EventModel>(y => y == expectedItem)), Times.Once, "Remove Failed");
         }
         [Test] public void Update_NotFind_ShouldDoNothing()
@@ -317,5 +327,4 @@ namespace CalendarEvents.Repository.Tests
                 _mock.Dispose();
         }
     }
-
 }

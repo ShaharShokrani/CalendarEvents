@@ -120,16 +120,6 @@ namespace CalendarEvents.Services.Tests
             Assert.AreEqual(resultList.Count(), expectedList.Count());
             Assert.AreEqual(resultList.First().GetHashCode(), expectedList.First().GetHashCode());
         }
-        private Expression<Func<TEntity, bool>> BuildEqualExpression<TEntity>(string property, object value) where TEntity : class
-        {
-            var parameter = Expression.Parameter(typeof(TEntity), "x");
-            var member = Expression.Property(parameter, property); //x.Id
-            var constant = Expression.Constant(value);
-            var body = Expression.Equal(member, constant); //x.Id >= 3
-            var finalExpression = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
-            return finalExpression;
-        }
-
         [Test] public void Get_WhenCalledWithOrder_ShouldReturnList()
         {
             //Arrange
@@ -144,7 +134,7 @@ namespace CalendarEvents.Services.Tests
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get(null, query => query.OrderBy(a => a.Name), "");
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, new OrderByStatement<EventModel>(), "");
 
             //Assert
             Assert.IsNotNull(result);

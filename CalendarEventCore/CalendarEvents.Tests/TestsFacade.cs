@@ -60,6 +60,18 @@ namespace CalendarEvents.Tests
             }
         }
 
+        public static class OrderBytatementFacade
+        {
+            public static OrderByStatement<TEntity> BuildOrderByStatement<TEntity>() where TEntity : IBaseModel
+            {
+                return new OrderByStatement<TEntity>()
+                {
+                    PropertyName = "Id",
+                    Direction = OrderByDirection.Desc
+                };
+            }
+        }
+
         public static class GenericRequestfacade
         {
             public static GenericRequest<TEntity> BuildGenericRequest<TEntity>() where TEntity : IBaseModel
