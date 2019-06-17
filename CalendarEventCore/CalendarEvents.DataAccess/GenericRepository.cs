@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace CalendarEvents.DataAccess
 {
@@ -19,10 +18,10 @@ namespace CalendarEvents.DataAccess
 
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IBaseModel
     {
-        private readonly ICalendarDbContext _context = null;
+        private readonly CalendarDbContext _context = null;
         private readonly DbSet<TEntity> _dbSet;
 
-        public GenericRepository(ICalendarDbContext context)
+        public GenericRepository(CalendarDbContext context)
         {
             this._context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = this._context.Set<TEntity>();
@@ -77,8 +76,11 @@ namespace CalendarEvents.DataAccess
         {
             if (entity != null)
             {
-                _dbSet.Attach(entity);
-                _context.SetEntityState<TEntity>(entity, EntityState.Modified);
+                _context.Entry(entity).State = EntityState.Modified;
+                
+                //Specify the fields that should not be updated.
+                _context.Entry(entity).Property(x => x.CreateDate).IsModified = false;
+
                 this.SaveChanges();
             }
         }
@@ -94,7 +96,7 @@ namespace CalendarEvents.DataAccess
 
         private void Remove(TEntity entity)
         {
-            if (_context.GetEntityState(entity) == EntityState.Detached)
+            if (_context.Entry(entity).State == EntityState.Detached)
             {
                 _dbSet.Attach(entity);
             }
@@ -127,5 +129,4 @@ namespace CalendarEvents.DataAccess
         }
         #endregion
     }
-
 }

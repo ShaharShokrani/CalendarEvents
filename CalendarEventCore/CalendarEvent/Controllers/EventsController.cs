@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AutoMapper;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,27 +11,31 @@ namespace CalendarEvents.Controllers
     [ApiController]
     public class EventsController : ControllerBase
     {        
-        private readonly IGenericService<EventModel> _eventsService;        
+        private readonly IGenericService<EventModel> _eventsService;
+        private readonly IMapper _mapper;
 
-        public EventsController(IGenericService<EventModel> eventsService)
+        public EventsController(IGenericService<EventModel> eventsService, IMapper mapper)
         {
             this._eventsService = eventsService;
+            this._mapper = mapper;
         }
 
         // GET api/events
         [HttpGet]
-        public ActionResult<IEnumerable<EventModel>> Get([FromBody]GenericRequest<EventModel> genericRequest = null)
+        public ActionResult<IEnumerable<EventModelDTO>> Get([FromQuery]GetRequest<EventModelDTO> genericRequestDTO = null)
         {
             try
             {
-                if (genericRequest == null)
-                    genericRequest = new GenericRequest<EventModel>();
+                if (genericRequestDTO == null)
+                    genericRequestDTO = new GetRequest<EventModelDTO>();
 
+                GetRequest<EventModel> genericRequest = _mapper.Map<GetRequest<EventModel>>(genericRequestDTO);
                 ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, genericRequest.OrderBy, genericRequest.IncludeProperties);
                 if (result.Success)
                 {
                     IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
-                    return Ok(list);
+                    IEnumerable<EventModelDTO> listDTO = _mapper.Map<IEnumerable<EventModelDTO>>(list);
+                    return Ok(listDTO);
                 }
                 else
                 {
@@ -46,7 +51,7 @@ namespace CalendarEvents.Controllers
 
         // GET api/events/c4df7159-2402-4f49-922c-1a2caef02de2
         [HttpGet("{id}", Name = "GET")]
-        public ActionResult<EventModel> Get(Guid id)
+        public ActionResult<EventModelDTO> Get(Guid id)
         {
             try
             {
@@ -73,22 +78,21 @@ namespace CalendarEvents.Controllers
         }
 
         // POST api/events
-        [HttpPost]
-        public ActionResult Post([FromBody] EventModel item)
+        [HttpPost]        
+        public ActionResult Post([FromBody] EventPostRequest request = null)
         {
             try
             {
-                item.Id = Guid.NewGuid();
-
                 if (!ModelState.IsValid)
                 {
                     return BadRequest();
                 }
 
+                EventModel item = _mapper.Map<EventModel>(request);
                 ResultService result = this._eventsService.Insert(item);
                 if (result.Success)
-                {
-                    return CreatedAtAction("Post", new { item.Id }, item);
+                {                    
+                    return CreatedAtAction("Post", new { item.Id }, item.Id);
                 }
                 else
                 {
@@ -102,18 +106,18 @@ namespace CalendarEvents.Controllers
             }
         }
 
-        // PUT api/events/c4df7159-2402-4f49-922c-1a2caef02de2
-        [HttpPut("{id}")]
-        public ActionResult Put([FromBody] EventModel item)
+        // PUT api/events/
+        [HttpPut]
+        public ActionResult Put([FromBody] EventPutRequest request)
         {
             try
-            {
-                //TODO: move this item.Id == Guid.Empty to ModelState.IsValid.
+            {                
                 if (!ModelState.IsValid)
                 {
                     return BadRequest();
                 }
 
+                EventModel item = _mapper.Map<EventModel>(request);
                 ResultService result = this._eventsService.Update(item);
                 if (result.Success)
                 {

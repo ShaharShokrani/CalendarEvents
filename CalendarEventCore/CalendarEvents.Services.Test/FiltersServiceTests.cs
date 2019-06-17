@@ -61,6 +61,28 @@ namespace CalendarEvents.Services.Tests
             Assert.IsTrue(result.ErrorCode == ErrorCode.EntityNotValid);
         }
 
+        [Test] public void BuildExpression_WhenPropertyNull_ShouldReturnFail()
+        {
+            //Arrange
+            FilterStatement<EventModel> filterStatement = TestsFacade.FilterStatementFacade.BuildFilterStatement<EventModel>();
+            filterStatement.PropertyName = null;
+            IEnumerable<FilterStatement<EventModel>> filterStatements = new List<FilterStatement<EventModel>>()
+            {
+                filterStatement
+            };
+
+            FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
+
+            //Act
+            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Success);
+            Assert.IsNull(result.Value);
+            Assert.IsTrue(result.ErrorCode == ErrorCode.EntityNotValid);
+        }
+
         [Test] public void BuildExpression_WhenValueNotValid_ShouldReturnFail()
         {
             //Arrange
@@ -83,6 +105,30 @@ namespace CalendarEvents.Services.Tests
             Assert.IsNull(result.Value);
             Assert.IsTrue(result.ErrorCode == ErrorCode.EntityNotValid);
         }
+
+        [Test] public void BuildExpression_WhenValueNull_ShouldReturnFail()
+        {
+            //Arrange
+            FilterStatement<EventModel> filterStatement = TestsFacade.FilterStatementFacade.BuildFilterStatement<EventModel>();
+            filterStatement.Value = null;
+            filterStatement.PropertyName = "Id";
+            IEnumerable<FilterStatement<EventModel>> filterStatements = new List<FilterStatement<EventModel>>()
+            {
+                filterStatement
+            };
+
+            FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
+
+            //Act
+            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result.Success);
+            Assert.IsNull(result.Value);
+            Assert.IsTrue(result.ErrorCode == ErrorCode.EntityNotValid);
+        }
+
 
         [Test] public void BuildExpression_WhenOperationNotValid_ShouldReturnFail()
         {

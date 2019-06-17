@@ -17,7 +17,6 @@ namespace CalendarEvents.Models
             if (emptyField == null) return true;
 
             var emptyValue = emptyField.GetValue(null);
-
             return !value.Equals(emptyValue);
         }
     }

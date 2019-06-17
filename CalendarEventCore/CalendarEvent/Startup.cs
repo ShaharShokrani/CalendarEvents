@@ -1,4 +1,5 @@
-﻿using CalendarEvents.DataAccess;
+﻿using AutoMapper;
+using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +22,17 @@ namespace CalendarEvents
         
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {                    
+        {
+            #region Auto Mapper Configurations
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            #endregion
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddDbContext<CalendarDbContext>(options => 
                 options.UseSqlServer(
@@ -29,9 +40,9 @@ namespace CalendarEvents
                     b => b.MigrationsAssembly("CalendarEvents.DataAccess")
                 )
             ); //Copied from Server explorer properties.
+            //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();
             services.AddScoped<IGenericRepository<EventModel>, GenericRepository<EventModel>>();
-            services.AddScoped<ICalendarDbContext, CalendarDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -123,7 +123,8 @@ namespace CalendarEvents.Services.Tests
         [Test] public void Get_WhenCalledWithOrder_ShouldReturnList()
         {
             //Arrange
-            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(10);            
+            IEnumerable<EventModel> expectedList = TestsFacade.EventsFacade.BuildEventModelList(10);
+            OrderByStatement<EventModel> orderByStatement = TestsFacade.OrderBytatementFacade.BuildOrderByStatement<EventModel>();
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             
@@ -134,7 +135,7 @@ namespace CalendarEvents.Services.Tests
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
             //Act
-            ResultService<IEnumerable<EventModel>> result = service.Get(null, new OrderByStatement<EventModel>(), "");
+            ResultService<IEnumerable<EventModel>> result = service.Get(null, orderByStatement, "");
 
             //Assert
             Assert.IsNotNull(result);
@@ -378,7 +379,7 @@ namespace CalendarEvents.Services.Tests
             EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
 
             _mock.Mock<IGenericRepository<EventModel>>()
-                .Setup(items => items.Update(expectedItem));
+                .Setup(items => items.Update(It.IsAny<EventModel>()));
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
 
@@ -401,7 +402,7 @@ namespace CalendarEvents.Services.Tests
                 .Setup(items => items.GetById(expectedItem.Id))
                 .Returns(expectedItem);
             repositoryMock
-                .Setup(items => items.Update(expectedItem))
+                .Setup(items => items.Update(It.IsAny<EventModel>()))
                 .Throws(expectedException);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();

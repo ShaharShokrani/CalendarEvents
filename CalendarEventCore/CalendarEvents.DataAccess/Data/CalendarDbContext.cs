@@ -7,20 +7,7 @@ using System.IO;
 
 namespace CalendarEvents.DataAccess
 {
-    public interface IUnitOfWork : IDisposable
-    {
-        int SaveChanges();
-    }
-
-    public interface ICalendarDbContext : IUnitOfWork
-    {
-        DbSet<EventModel> Events { get; set; }
-        DbSet<TEntity> Set<TEntity>() where TEntity : class;
-        EntityState GetEntityState<TEntity>(TEntity entity);
-        void SetEntityState<TEntity>(TEntity entity, EntityState entityState);
-    }
-
-    public class CalendarDbContext : DbContext, ICalendarDbContext
+    public class CalendarDbContext : DbContext
     {
         public CalendarDbContext(DbContextOptions<CalendarDbContext> options) : base(options)
         {
@@ -37,13 +24,9 @@ namespace CalendarEvents.DataAccess
             return base.Entry(entity).State;
         }
 
-        public void SetEntityState<TEntity>(TEntity entity, EntityState entityState)
+        public void SetValues<TEntity>(TEntity entity, TEntity updatedEntity)
         {
-            if (entity == null)
-            {
-                return;
-            }
-            base.Entry(entity).State = entityState;
+            base.Entry(entity).CurrentValues.SetValues(updatedEntity);
         }
     }
 }

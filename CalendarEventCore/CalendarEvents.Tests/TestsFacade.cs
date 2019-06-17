@@ -33,6 +33,30 @@ namespace CalendarEvents.Tests
                     URL = Guid.NewGuid().ToString()
                 };
             }
+            public static List<EventModelDTO> BuildEventModelDTOList(int count = 1)
+            {
+                List<EventModelDTO> resultList = new List<EventModelDTO>(count);
+
+                while (count > 0)
+                {
+                    resultList.Add(BuildEventModelDTOItem());
+                    count--;
+                }
+
+                return resultList;
+            }
+            public static EventModelDTO BuildEventModelDTOItem()
+            {
+                return new EventModelDTO()
+                {
+                    End = DateTime.UtcNow.AddHours(1),
+                    Id = Guid.NewGuid(),
+                    IsAllDay = false,
+                    Start = DateTime.UtcNow.AddMinutes(1),
+                    Name = Guid.NewGuid().ToString(),
+                    URL = Guid.NewGuid().ToString()
+                };
+            }
         }
 
         public static class FilterStatementFacade
@@ -74,9 +98,9 @@ namespace CalendarEvents.Tests
 
         public static class GenericRequestfacade
         {
-            public static GenericRequest<TEntity> BuildGenericRequest<TEntity>() where TEntity : IBaseModel
+            public static GetRequest<TEntity> BuildGenericRequest<TEntity>() where TEntity : IBaseModel
             {
-                return new GenericRequest<TEntity>()
+                return new GetRequest<TEntity>()
                 {
                     Filters = BuildFilterList<TEntity>(),
                     IncludeProperties = "Id,CreateDate"

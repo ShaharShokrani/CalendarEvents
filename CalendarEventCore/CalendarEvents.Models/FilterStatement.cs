@@ -26,6 +26,11 @@ namespace CalendarEvents.Models
         {
             get
             {
+                if (this.PropertyName == null || this.Value == null)
+                {
+                    return false;
+                }
+
                 PropertyInfo propertyInfo = typeof(TEntity).GetProperty(this.PropertyName);
 
                 if (propertyInfo != null && // First validate if PropertyName Is valid.

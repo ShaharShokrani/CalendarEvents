@@ -3,9 +3,7 @@ using CalendarEvents.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Linq.Expressions;
-using System.Collections;
 
 namespace CalendarEvents.Services
 {
@@ -112,7 +110,7 @@ namespace CalendarEvents.Services
                 {
                     return ResultService.Fail(ErrorCode.NotFound);
                 }
-                this._repository.Remove(entity);
+                this._repository.Remove(id);
 
                 return ResultService.Ok();
             }
@@ -131,7 +129,8 @@ namespace CalendarEvents.Services
                 {
                     return ResultService.Fail<T>(ErrorCode.NotFound);
                 }
-                this._repository.Update(obj);
+                entity.UpdateDate = DateTime.UtcNow;
+                this._repository.Update(entity);
                 return ResultService.Ok(entity);
             }
             catch (Exception ex)
