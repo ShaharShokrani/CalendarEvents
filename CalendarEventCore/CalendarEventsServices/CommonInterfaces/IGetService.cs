@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.Services
 {    
-    public interface IGetService<TEntity> where TEntity : IBaseModel
+    public interface IGetService<TEntity>
     {
         ResultService<IEnumerable<TEntity>> Get(IEnumerable<FilterStatement<TEntity>> filterStatements,
                                                 OrderByStatement<TEntity> orderBy = null,

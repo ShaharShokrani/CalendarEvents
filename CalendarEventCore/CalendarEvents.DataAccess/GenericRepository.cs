@@ -11,12 +11,12 @@ namespace CalendarEvents.DataAccess
                                     IInsertRepository<TEntity>,
                                     IUpdateRepository<TEntity>,
                                     IRemoveRepository<TEntity>,
-                                    IDisposable
+                                    IDisposable where TEntity : class
     {
         void SaveChanges();
     }
 
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IBaseModel
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly ApplicationDbContext _context = null;
         private readonly DbSet<TEntity> _dbSet;
@@ -76,11 +76,7 @@ namespace CalendarEvents.DataAccess
         {
             if (entity != null)
             {
-                _context.Entry(entity).State = EntityState.Modified;
-                
-                //Specify the fields that should not be updated.
-                _context.Entry(entity).Property(x => x.CreateDate).IsModified = false;
-
+                _context.Entry(entity).State = EntityState.Modified;               
                 this.SaveChanges();
             }
         }

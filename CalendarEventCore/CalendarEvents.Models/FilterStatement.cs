@@ -7,7 +7,7 @@ namespace CalendarEvents.Models
     /// <summary>
     /// Defines how a property should be filtered.
     /// </summary>
-    public class FilterStatement<TEntity> where TEntity : IBaseModel
+    public class FilterStatement<TEntity>
     {
         /// <summary>
         /// Name of the property.

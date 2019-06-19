@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace CalendarEvents.Models
 {
-    public class OrderByStatement<TEntity> where TEntity : IBaseModel
+    public class OrderByStatement<TEntity>
     {
         public string PropertyName { get; set; }
         public OrderByDirection Direction { get; set; }

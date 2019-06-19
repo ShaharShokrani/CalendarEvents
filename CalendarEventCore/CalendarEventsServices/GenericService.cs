@@ -10,11 +10,11 @@ namespace CalendarEvents.Services
     public interface IGenericService<T> : IGetService<T>, 
                                       IUpdateService<T>,
                                       IInsertService<T>,
-                                      IDeleteService where T : IBaseModel
+                                      IDeleteService
     {
     }
 
-    public class GenericService<T> : IGenericService<T> where T : class, IBaseModel
+    public class GenericService<T> : IGenericService<T> where T : class
     {
         private readonly IGenericRepository<T> _repository;
 
@@ -27,9 +27,6 @@ namespace CalendarEvents.Services
         {
             try
             {
-                obj.Id = Guid.NewGuid();
-                obj.CreateDate = DateTime.UtcNow;
-                obj.UpdateDate = DateTime.UtcNow;
                 this._repository.Insert(obj);
 
                 return ResultService.Ok();
@@ -123,15 +120,9 @@ namespace CalendarEvents.Services
         public ResultService Update(T obj)
         {
             try
-            {
-                var entity = this._repository.GetById(obj.Id);
-                if (entity == null)
-                {
-                    return ResultService.Fail<T>(ErrorCode.NotFound);
-                }
-                entity.UpdateDate = DateTime.UtcNow;
-                this._repository.Update(entity);
-                return ResultService.Ok(entity);
+            {                
+                this._repository.Update(obj);
+                return ResultService.Ok(obj);
             }
             catch (Exception ex)
             {

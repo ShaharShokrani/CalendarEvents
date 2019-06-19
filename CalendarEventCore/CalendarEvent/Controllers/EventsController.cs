@@ -63,7 +63,10 @@ namespace CalendarEvents.Controllers
                 ResultService<EventModel> result = this._eventsService.GetById(id);
                 if (result.Success)
                 {
-                    return Ok(result.Value);
+                    EventModel eventModel = result.Value as EventModel;
+                    EventModelDTO eventModelDTO = _mapper.Map<EventModelDTO>(eventModel);
+
+                    return Ok(eventModelDTO);
                 }
                 else
                 {
@@ -89,6 +92,9 @@ namespace CalendarEvents.Controllers
                 }
 
                 EventModel item = _mapper.Map<EventModel>(request);
+                item.Id = Guid.NewGuid();
+                item.CreateDate = DateTime.UtcNow;
+                item.UpdateDate = DateTime.UtcNow;
                 ResultService result = this._eventsService.Insert(item);
                 if (result.Success)
                 {                    
@@ -117,7 +123,20 @@ namespace CalendarEvents.Controllers
                     return BadRequest();
                 }
 
-                EventModel item = _mapper.Map<EventModel>(request);
+                ResultService<EventModel> getByIdResult = this._eventsService.GetById(request.Id);
+                if (!getByIdResult.Success)
+                {
+                    return StatusCode(500, getByIdResult.ErrorCode);
+                }
+
+                EventModel item = getByIdResult.Value as EventModel;
+                item.End = request.End;
+                item.IsAllDay = request.IsAllDay;
+                item.Name = request.Name;
+                item.Start = request.Start;
+                item.URL = request.URL;
+                item.UpdateDate = DateTime.UtcNow;
+                
                 ResultService result = this._eventsService.Update(item);
                 if (result.Success)
                 {

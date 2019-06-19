@@ -26,7 +26,7 @@ namespace CalendarEvents
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //TODO: move this into a solid function.
             #region Auto Mapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>
             {
@@ -51,7 +51,7 @@ namespace CalendarEvents
                         Configuration.GetConnectionString("DefaultConnection"),
                         b => b.MigrationsAssembly("CalendarEvents.DataAccess")
                     )
-                );.
+                );
             }
             //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();

@@ -10,41 +10,41 @@ namespace CalendarEvents.Services
     /// <summary>
     /// Defines a filter from which a expression will be built.
     /// </summary>
-    public interface IFiltersService<TEntity> where TEntity : class
+    public interface IFiltersService<T>
     {
         /// <summary>
         /// Builds a LINQ expression based upon the statements included in this filter.
         /// </summary>
         /// <returns></returns>
-        ResultService<Expression<Func<TEntity, bool>>> BuildExpression();
+        ResultService<Expression<Func<T, bool>>> BuildExpression();
     }
 
-    public class FiltersService<TEntity> : IFiltersService<TEntity> where TEntity : class, IBaseModel
+    public class FiltersService<T> : IFiltersService<T>
     {
         /// <summary>
         /// Group of statements that compose this filter.
         /// </summary>
-        private IEnumerable<FilterStatement<TEntity>> _filterStatements = null;
-        public FiltersService(IEnumerable<FilterStatement<TEntity>> filterStatements)
+        private readonly IEnumerable<FilterStatement<T>> _filterStatements = null;
+        public FiltersService(IEnumerable<FilterStatement<T>> filterStatements)
         {
             this._filterStatements = filterStatements ?? throw new ArgumentNullException(nameof(filterStatements));
         }
 
-        public ResultService<Expression<Func<TEntity, bool>>> BuildExpression()
+        public ResultService<Expression<Func<T, bool>>> BuildExpression()
         {
             try
             {
-                ParameterExpression parameterExpression = Expression.Parameter(typeof(TEntity), "x");
+                ParameterExpression parameterExpression = Expression.Parameter(typeof(T), "x");
                 Expression finalExpression = Expression.Constant(true);
 
                 foreach (var statement in _filterStatements)
                 {
                     if (!statement.IsValid)
                     {
-                        return ResultService.Fail<Expression<Func<TEntity, bool>>>(ErrorCode.EntityNotValid);
+                        return ResultService.Fail<Expression<Func<T, bool>>>(ErrorCode.EntityNotValid);
                     }
 
-                    Type propType = typeof(TEntity).GetProperty(statement.PropertyName).PropertyType;
+                    Type propType = typeof(T).GetProperty(statement.PropertyName).PropertyType;
                     TypeConverter converter = TypeDescriptor.GetConverter(propType);
                     object convertedObject = converter.ConvertFrom(statement.Value);
                     
@@ -89,12 +89,12 @@ namespace CalendarEvents.Services
                     finalExpression = Expression.AndAlso(finalExpression, expression);
                 }
 
-                Expression<Func<TEntity, bool>> result = Expression.Lambda<Func<TEntity, bool>>(finalExpression, parameterExpression);
-                return ResultService.Ok<Expression<Func<TEntity, bool>>>(result);
+                Expression<Func<T, bool>> result = Expression.Lambda<Func<T, bool>>(finalExpression, parameterExpression);
+                return ResultService.Ok<Expression<Func<T, bool>>>(result);
             }
             catch (Exception ex)
             {
-                return ResultService.Fail<Expression<Func<TEntity, bool>>>(ex);
+                return ResultService.Fail<Expression<Func<T, bool>>>(ex);
             }
         }
     }

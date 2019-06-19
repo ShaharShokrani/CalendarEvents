@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.Models
 {
-    public class EventModel : IBaseModel
+    public class EventModel
     {
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
@@ -18,7 +18,7 @@ namespace CalendarEvents.Models
         public string Name { get; set; }
     }
 
-    public class EventModelDTO : IBaseModel
+    public class EventModelDTO
     {
         public DateTime Start { get; set; }
         public DateTime End { get; set; }

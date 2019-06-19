@@ -10,7 +10,7 @@ namespace CalendarEvents.Services
 {
     public interface IOrderByService
     {
-        ResultService<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> GetOrderBy<TEntity>(OrderByStatement<TEntity> orderByStatement) where TEntity : class, IBaseModel;
+        ResultService<Func<IQueryable<T>, IOrderedQueryable<T>>> GetOrderBy<T>(OrderByStatement<T> orderByStatement);
     }
 
     public class OrderByService : IOrderByService
@@ -20,7 +20,7 @@ namespace CalendarEvents.Services
 
         }
 
-        public ResultService<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> GetOrderBy<TEntity>(OrderByStatement<TEntity> orderByStatement) where TEntity : class, IBaseModel
+        public ResultService<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> GetOrderBy<TEntity>(OrderByStatement<TEntity> orderByStatement)
         {
             try
             {

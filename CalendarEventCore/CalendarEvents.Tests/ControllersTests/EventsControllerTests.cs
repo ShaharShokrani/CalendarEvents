@@ -59,7 +59,7 @@ namespace CalendarEvents.Tests
 
             Assert.IsNotNull(resultListDTO);
             Assert.AreEqual(resultListDTO.Count(), expectedListDTO.Count());
-            Assert.AreEqual(resultListDTO, expectedListDTO);
+            Assert.AreEqual(resultListDTO.GetHashCode(), expectedListDTO.GetHashCode());
         }
         [Test] public void Get_WhenCalledWithNull_ShouldReturnOk()
         {
@@ -164,10 +164,15 @@ namespace CalendarEvents.Tests
             //Arrange
             EventModel expectedItem = TestsFacade.EventsFacade.BuildEventModelItem();
             ResultService<EventModel> expectedResultService = ResultService.Ok(expectedItem);
+            EventModelDTO expectedItemDTO = TestsFacade.EventsFacade.BuildEventModelDTOItem();
 
             _mock.Mock<IGenericService<EventModel>>()
                 .Setup(items => items.GetById(It.IsAny<Guid>()))
                 .Returns(() => expectedResultService);
+
+            _mock.Mock<IMapper>()
+                .Setup(items => items.Map<EventModelDTO>(It.IsAny<EventModel>()))
+                .Returns(() => expectedItemDTO);
 
             var controller = _mock.Create<EventsController>();
 
@@ -184,7 +189,7 @@ namespace CalendarEvents.Tests
             EventModelDTO okResultItem = okResult.Value as EventModelDTO;
 
             Assert.IsNotNull(okResultItem);
-            Assert.AreEqual(okResultItem.GetHashCode(), expectedItem.GetHashCode());
+            Assert.AreEqual(okResultItem.GetHashCode(), expectedItemDTO.GetHashCode());
         }
         [Test] public void GetById_WhenServiceHasError_ShouldReturnStatusCode500()
         {
@@ -350,7 +355,11 @@ namespace CalendarEvents.Tests
             //Arrange
             ResultService<EventModel> expectedResultService = ResultService.Ok(new EventModel());
 
-            _mock.Mock<IGenericService<EventModel>>()
+            Mock<IGenericService<EventModel>> service = _mock.Mock<IGenericService<EventModel>>();
+            service
+                .Setup(items => items.GetById(It.IsAny<Guid>()))
+                .Returns(() => expectedResultService);
+            service
                 .Setup(items => items.Update(It.IsAny<EventModel>()))
                 .Returns(() => expectedResultService);
 

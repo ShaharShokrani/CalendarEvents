@@ -65,7 +65,7 @@ namespace CalendarEvents.Tests
 
         public static class FilterStatementFacade
         {
-            public static IEnumerable<FilterStatement<TEntity>> BuildFilterStatementList<TEntity>(int count = 1) where TEntity : IBaseModel
+            public static IEnumerable<FilterStatement<TEntity>> BuildFilterStatementList<TEntity>(int count = 1)
             {
                 List<FilterStatement<TEntity>> resultList = new List<FilterStatement<TEntity>>(count);
 
@@ -77,7 +77,7 @@ namespace CalendarEvents.Tests
 
                 return resultList;
             }
-            public static FilterStatement<TEntity> BuildFilterStatement<TEntity>() where TEntity : IBaseModel
+            public static FilterStatement<TEntity> BuildFilterStatement<TEntity>()
             {
                 return new FilterStatement<TEntity>()
                 {
@@ -90,7 +90,7 @@ namespace CalendarEvents.Tests
 
         public static class OrderBytatementFacade
         {
-            public static OrderByStatement<TEntity> BuildOrderByStatement<TEntity>() where TEntity : IBaseModel
+            public static OrderByStatement<TEntity> BuildOrderByStatement<TEntity>()
             {
                 return new OrderByStatement<TEntity>()
                 {
@@ -102,7 +102,7 @@ namespace CalendarEvents.Tests
 
         public static class GenericRequestfacade
         {
-            public static GetRequest<TEntity> BuildGenericRequest<TEntity>() where TEntity : IBaseModel
+            public static GetRequest<TEntity> BuildGenericRequest<TEntity>()
             {
                 return new GetRequest<TEntity>()
                 {
@@ -111,7 +111,7 @@ namespace CalendarEvents.Tests
                 };
             }
 
-            public static IEnumerable<FilterStatement<TEntity>> BuildFilterList<TEntity>() where TEntity : IBaseModel
+            public static IEnumerable<FilterStatement<TEntity>> BuildFilterList<TEntity>()
             {
                 return new List<FilterStatement<TEntity>>()
                 {
@@ -119,7 +119,7 @@ namespace CalendarEvents.Tests
                 };
             }
 
-            public static FilterStatement<TEntity> BuildFilterStatement<TEntity>() where TEntity : IBaseModel
+            public static FilterStatement<TEntity> BuildFilterStatement<TEntity>()
             {
                 return new FilterStatement<TEntity>()
                 {
