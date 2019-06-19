@@ -4,10 +4,12 @@ using CalendarEvents.Models;
 using CalendarEvents.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace CalendarEvents
 {
@@ -37,6 +39,48 @@ namespace CalendarEvents
             services.AddSingleton(mapper);
             #endregion
 
+            #region Identity Configurations
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 6;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.Cookie.Expiration = TimeSpan.FromDays(150);
+                // If the LoginPath isn't set, ASP.NET Core defaults 
+                // the path to /Account/Login.
+                options.LoginPath = "/Account/Login";
+                // If the AccessDeniedPath isn't set, ASP.NET Core defaults 
+                // the path to /Account/AccessDenied.
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+            #endregion
+
+            // Add application services.
+            services.AddTransient<IEmailSender, EmailSender>();
+
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             
             if (CurrentEnvironment.IsEnvironment(Consts.TestingEnvironment))
@@ -64,15 +108,29 @@ namespace CalendarEvents
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseBrowserLink();
+                app.UseDatabaseErrorPage();
+
             }
             else
             {
-                app.UseHsts();
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts(); //TODO: Investigate.
             }
+
+            app.UseStaticFiles();
+
+            app.UseAuthentication();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             app.UseHttpsRedirection();
             eventsDbContext.Database.Migrate();
-            app.UseMvc();
         }
     }
 }
