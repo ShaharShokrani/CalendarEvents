@@ -13,7 +13,7 @@ using AutoMapper;
 
 namespace CalendarEvents.Tests
 {
-    public class EventsControllerTests : BaseTest
+    public class EventsControllerTests
     {
         private AutoMock _mock = null;
 

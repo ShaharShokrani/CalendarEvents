@@ -8,7 +8,7 @@ using System;
 
 namespace CalendarEvents.Services.Tests
 {
-    public class FiltersServiceTests : BaseTest
+    public class FiltersServiceTests
     {
         private AutoMock _mock = null;
 

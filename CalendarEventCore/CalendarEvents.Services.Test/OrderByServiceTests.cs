@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace CalendarEvents.Services.Tests
 {
-    public class OrderByServiceTests : BaseTest
+    public class OrderByServiceTests
     {
         [SetUp]
         public void Setup()

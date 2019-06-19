@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CalendarEvents.DataAccess
 {
-    [DbContext(typeof(CalendarDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20190611184243_initial")]
     partial class initial
     {

@@ -18,10 +18,10 @@ namespace CalendarEvents.DataAccess
 
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IBaseModel
     {
-        private readonly CalendarDbContext _context = null;
+        private readonly ApplicationDbContext _context = null;
         private readonly DbSet<TEntity> _dbSet;
 
-        public GenericRepository(CalendarDbContext context)
+        public GenericRepository(ApplicationDbContext context)
         {
             this._context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = this._context.Set<TEntity>();

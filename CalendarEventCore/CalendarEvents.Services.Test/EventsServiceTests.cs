@@ -11,7 +11,7 @@ using Moq;
 
 namespace CalendarEvents.Services.Tests
 {
-    public class EventsServiceTests : BaseTest
+    public class EventsServiceTests
     {
         private AutoMock _mock = null;
 
@@ -421,6 +421,14 @@ namespace CalendarEvents.Services.Tests
         {
             if (_mock != null)
                 _mock.Dispose();
+        }
+
+        private void AssertResultServiceException<T>(ResultService<T> resultService, Exception expectedException)
+        {
+            Assert.IsNotNull(resultService);
+            Assert.IsFalse(resultService.Success);
+            Assert.IsNull(resultService.Value);
+            Assert.IsTrue(resultService.Exception == expectedException);
         }
     }
 

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CalendarEvents.DataAccess
 {
-    [DbContext(typeof(CalendarDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20190529200514_Init")]
     partial class Init
     {
