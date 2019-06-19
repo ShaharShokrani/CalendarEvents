@@ -38,20 +38,20 @@ namespace CalendarEvents
             #endregion
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
             if (CurrentEnvironment.IsEnvironment(Consts.TestingEnvironment))
             {
                 services.AddEntityFrameworkInMemoryDatabase();
-                //services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("TestingDB"));
+                services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("TestingDB"));
             }
             else
-            {
-                //TODO: options => options.UseSqlServer(Configuration.GetConnectionString("database")),
+            {                
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        @"Data Source=.\SQLEXPRESS;Initial Catalog=CalendarDB;Integrated Security=True",
+                        Configuration.GetConnectionString("DefaultConnection"),
                         b => b.MigrationsAssembly("CalendarEvents.DataAccess")
                     )
-                ); //Copied from Server explorer properties.
+                );.
             }
             //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();
