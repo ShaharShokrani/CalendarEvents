@@ -31,10 +31,12 @@ namespace CalendarEvents.DataAccess
         {
             _context.SaveChanges();
         }
-
+        //TODO: Add paging support
         public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
-            string includeProperties = "")
+            string includeProperties = "",
+            int? pageIndex = null,
+            int? pageSize = null)
         {
             IQueryable<TEntity> query = this._dbSet;
 

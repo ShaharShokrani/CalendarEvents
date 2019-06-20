@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CalendarEvents.Controllers
@@ -21,6 +22,7 @@ namespace CalendarEvents.Controllers
         }
 
         // GET api/events
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<EventModelDTO>> Get([FromQuery]GetRequest<EventModelDTO> genericRequestDTO = null)
         {
@@ -50,6 +52,7 @@ namespace CalendarEvents.Controllers
         }
 
         // GET api/events/c4df7159-2402-4f49-922c-1a2caef02de2
+        [AllowAnonymous]
         [HttpGet("{id}", Name = "GET")]
         public ActionResult<EventModelDTO> Get(Guid id)
         {
@@ -81,6 +84,8 @@ namespace CalendarEvents.Controllers
         }
 
         // POST api/events
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpPost]        
         public ActionResult Post([FromBody] EventPostRequest request = null)
         {
@@ -113,6 +118,8 @@ namespace CalendarEvents.Controllers
         }
 
         // PUT api/events/
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpPut]
         public ActionResult Put([FromBody] EventPutRequest request)
         {
@@ -155,6 +162,8 @@ namespace CalendarEvents.Controllers
         }
 
         // DELETE api/events/c4df7159-2402-4f49-922c-1a2caef02de2
+        [Authorize]
+        [ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
         public ActionResult Delete(Guid id)
         {

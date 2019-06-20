@@ -12,7 +12,9 @@ namespace CalendarEvents.DataAccess
         IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>> filters = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
-            string includeProperties = "");
+            string includeProperties = "",
+            int? pageIndex = null,
+            int? pageSize = null);
         TEntity GetById(object id);
     }
 }
