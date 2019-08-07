@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace CalendarEvents
@@ -100,10 +101,13 @@ namespace CalendarEvents
             //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();
             services.AddScoped<IGenericRepository<EventModel>, GenericRepository<EventModel>>();
+            services.AddScoped<IScrapingService, ScrapingService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CalendarEvents.DataAccess.ApplicationDbContext eventsDbContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, CalendarEvents.DataAccess.ApplicationDbContext eventsDbContext,
+            ILoggerFactory loggerFactory, IApplicationLifetime appLifetime, IScrapingService scrapingService)
         {
             if (env.IsDevelopment())
             {
@@ -122,6 +126,9 @@ namespace CalendarEvents
 
             app.UseAuthentication();
 
+            loggerFactory.AddFile(Configuration.GetSection("Logging"));
+
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -131,6 +138,10 @@ namespace CalendarEvents
 
             app.UseHttpsRedirection();
             eventsDbContext.Database.Migrate();
+
+            // Start Scrapper Service whe application start, and stop it when stopping
+            appLifetime.ApplicationStarted.Register(scrapingService.Start);
+            appLifetime.ApplicationStopping.Register(scrapingService.Stop);
         }
     }
 }

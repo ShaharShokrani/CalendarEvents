@@ -234,3 +234,11 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Bin and Obj folders
+[Bb]in/
+[Oo]bj/
+
+# Logs files and folders
+[Ll]ogs/
+*.log

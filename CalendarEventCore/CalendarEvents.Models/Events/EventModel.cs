@@ -13,6 +13,8 @@ namespace CalendarEvents.Models
         public bool IsAllDay { get; set; }
         public string URL { get; set; }        
         public Guid Id { get; set; }
+        public string Base64Id { get; set; }
+
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public string Name { get; set; }
@@ -25,6 +27,8 @@ namespace CalendarEvents.Models
         public bool IsAllDay { get; set; }
         public string URL { get; set; }        
         public Guid Id { get; set; }
+        public string Base64Id { get; set; }
+
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public string Name { get; set; }

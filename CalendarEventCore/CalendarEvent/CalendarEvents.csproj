@@ -9,11 +9,12 @@
     <PackageReference Include="AutoMapper" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CalendarEvents.Models\CalendarEvents.Models.csproj" />
-    <ProjectReference Include="..\CalendarEventsServices\CalendarEvents.Services.csproj" />
+    <ProjectReference Include="..\CalendarEvents.Services\CalendarEvents.Services.csproj" />
   </ItemGroup>
 
 </Project>
