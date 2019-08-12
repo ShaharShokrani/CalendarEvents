@@ -80,8 +80,6 @@ namespace CalendarEvents
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
-
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             
             if (CurrentEnvironment.IsEnvironment(Consts.TestingEnvironment))
