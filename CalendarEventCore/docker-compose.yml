@@ -16,5 +16,17 @@ services:
     build:
       context: .
       dockerfile: CalendarEvent/Dockerfile
+    environment:
+      -CONNECTION_STRING: "Server=sql_db;Database=CalendarDB;User=sa;Password=BigPassw0rd;"
     depends_on:
       - sql_db
+
+  calendareventsclient:
+    image: ${DOCKER_REGISTRY-}client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - calendarevents

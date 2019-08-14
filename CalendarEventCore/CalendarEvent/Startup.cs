@@ -77,6 +77,11 @@ namespace CalendarEvents
             });
             #endregion
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => builder.AllowAnyOrigin());
+            });
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -88,10 +93,14 @@ namespace CalendarEvents
                 services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("TestingDB"));
             }
             else
-            {                
+            {
+                string connectionString = null;
+                try { connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING"); }
+                catch { }
+                connectionString = connectionString ?? Configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
-                        Configuration.GetConnectionString("DefaultConnection"),
+                        connectionString,
                         b => b.MigrationsAssembly("CalendarEvents.DataAccess")
                     )
                 );
@@ -126,6 +135,7 @@ namespace CalendarEvents
 
             loggerFactory.AddFile(Configuration.GetSection("Logging"));
 
+            app.UseCors();
 
             app.UseMvc(routes =>
             {
