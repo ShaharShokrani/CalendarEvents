@@ -20,10 +20,14 @@ namespace CalendarEvents
         public IConfiguration Configuration { get; }
         public IHostingEnvironment CurrentEnvironment { get; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment currentEnvironment)
+        private readonly ILogger<Startup> log;
+
+
+        public Startup(IConfiguration configuration, IHostingEnvironment currentEnvironment, ILogger<Startup> log)
         {
             Configuration = configuration;
             CurrentEnvironment = currentEnvironment;
+            this.log = log;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -98,6 +102,7 @@ namespace CalendarEvents
                 try { connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING"); }
                 catch { }
                 connectionString = connectionString ?? Configuration.GetConnectionString("DefaultConnection");
+                log.LogInformation($"Using connection string: {connectionString}");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(
                         connectionString,
@@ -149,7 +154,11 @@ namespace CalendarEvents
 
             // Start Scrapper Service whe application start, and stop it when stopping
             appLifetime.ApplicationStarted.Register(scrapingService.Start);
+            appLifetime.ApplicationStarted.Register( () => log.LogInformation("Application Started"));
             appLifetime.ApplicationStopping.Register(scrapingService.Stop);
+
+            appLifetime.ApplicationStopping.Register(() => log.LogInformation("Application Stopping"));
+
         }
     }
 }

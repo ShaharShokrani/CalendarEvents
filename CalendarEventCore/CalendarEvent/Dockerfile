@@ -21,4 +21,9 @@ RUN dotnet publish "CalendarEvents.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "CalendarEvents.dll"]
+# Add wait-for-it for db startup waitning
+# ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /app/wait-for-it.sh
+COPY "wait-for-it.sh" "wait-for-it.sh"
+RUN chmod +x ./wait-for-it.sh
+
+# ENTRYPOINT ["dotnet", "CalendarEvents.dll"]
