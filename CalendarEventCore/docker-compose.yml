@@ -1,0 +1,52 @@
+version: '3.4'
+
+services:
+  sql_db:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+        SA_PASSWORD: ${SA_PASSWORD}
+        ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:  
+      - ./data/mssql:/var/opt/mssql
+    networks:
+      - calendareventbackend
+
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  calendarevents:
+    image: ${DOCKER_REGISTRY-}calendarevents
+    build:
+      context: .
+      dockerfile: CalendarEvent/Dockerfile
+    environment:
+        CONNECTION_STRING: Server=sql_db;Database=CalendarDB;User=sa;Password=${SA_PASSWORD};
+    command: ["./wait-for-it.sh", "sql_db:1433", "-t", "60", "--", "dotnet", "./CalendarEvents.dll"]
+    depends_on:
+      - sql_db
+    networks:
+      - calendareventbackend
+      - calendareventfrontend
+
+
+  calendareventsclient:
+    image: ${DOCKER_REGISTRY-}client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - calendarevents
+    networks:
+      - calendareventfrontend
+
+networks:
+  calendareventfrontend:
+  calendareventbackend:
