@@ -72,7 +72,7 @@ namespace CalendarEvents.Services.Tests
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
-                .Setup(items => items.Get(null, null, ""))
+                .Setup(items => items.Get(null, null, "", null, null))
                 .Returns(() => expectedList);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
@@ -100,7 +100,7 @@ namespace CalendarEvents.Services.Tests
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
-                .Setup(items => items.Get(It.IsAny<Expression<Func<EventModel, bool>>>(), null, ""))
+                .Setup(items => items.Get(It.IsAny<Expression<Func<EventModel, bool>>>(), null, "", null, null))
                 .Returns(() => expectedList);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
@@ -129,7 +129,7 @@ namespace CalendarEvents.Services.Tests
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             
             repositoryMock
-                .Setup(items => items.Get(null, It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(), ""))
+                .Setup(items => items.Get(null, It.IsAny<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>>(), "", null, null))
                 .Returns(() => expectedList);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
@@ -157,7 +157,7 @@ namespace CalendarEvents.Services.Tests
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
-                .Setup(items => items.Get(null, null, include))
+                .Setup(items => items.Get(null, null, include, null, null))
                 .Returns(() => expectedList);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
@@ -182,7 +182,7 @@ namespace CalendarEvents.Services.Tests
             //Arrange
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
-                .Setup(items => items.Get(null, null, ""))
+                .Setup(items => items.Get(null, null, "", null, null))
                 .Returns(() => null);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();
@@ -203,7 +203,7 @@ namespace CalendarEvents.Services.Tests
 
             var repositoryMock = _mock.Mock<IGenericRepository<EventModel>>();
             repositoryMock
-                .Setup(items => items.Get(null, null, ""))
+                .Setup(items => items.Get(null, null, "", null, null))
                 .Throws(expectedException);
 
             GenericService<EventModel> service = _mock.Create<GenericService<EventModel>>();

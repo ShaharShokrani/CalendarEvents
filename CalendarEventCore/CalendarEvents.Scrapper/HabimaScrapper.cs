@@ -81,8 +81,4 @@ namespace CalendarEvents.Scrapper
             }
         }
     }
-
-
-
-
 }
