@@ -1,5 +1,4 @@
 ﻿using CalendarEvents.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalendarEvents.DataAccess

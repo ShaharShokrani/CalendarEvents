@@ -4,6 +4,7 @@ using CalendarEvents.Models;
 using CalendarEvents.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,8 +43,7 @@ namespace CalendarEvents
             services.AddSingleton(mapper);
             #endregion            
 
-            services.AddMvc(options => options.EnableEndpointRouting = false)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddControllers();
 
             services.AddCors(options =>
             {
@@ -69,13 +69,33 @@ namespace CalendarEvents
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostApplicationLifetime appLifetime, IScrapingService scrapingService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseAuthentication();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            //else
+            //{
+            //    app.UseExceptionHandler(appBuilder =>
+            //    {
+            //        appBuilder.Run(async context =>
+            //        {
+            //            // ensure generic 500 status code on fault.
+            //            context.Response.StatusCode = StatusCodes.Status500InternalServerError; ;
+            //            await context.Response.WriteAsync("An unexpected fault happened. Try again later.");
+            //        });
+            //    });
+            //    // The default HSTS value is 30 days. You may want to change this for 
+            //    // production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
 
-            loggerFactory.AddFile(Configuration.GetSection("Logging"));
+            //app.UseAuthentication();
 
-            app.UseCors();
+            //loggerFactory.AddFile(Configuration.GetSection("Logging"));
+
+            //app.UseCors();
 
             //app.UseMvc(routes =>
             //{
@@ -84,21 +104,27 @@ namespace CalendarEvents
             //        template: "{controller=Home}/{action=Index}/{id?}");
             //});
 
-            app.UseHttpsRedirection();            
-
-            app.UseStaticFiles();
-            app.UseMvc();
             app.UseRouting();
 
+            app.UseAuthorization();
+
+            //app.UseHttpsRedirection();            
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+            //app.UseStaticFiles();
+            //app.UseMvc();
+            
+            
             //eventsDbContext.Database.Migrate();
 
             // Start Scrapper Service whe application start, and stop it when stopping
-            appLifetime.ApplicationStarted.Register(scrapingService.Start);
-            appLifetime.ApplicationStarted.Register( () => log.LogInformation("Application Started"));
-            appLifetime.ApplicationStopping.Register(scrapingService.Stop);
+            //appLifetime.ApplicationStarted.Register(scrapingService.Start);
+            //appLifetime.ApplicationStarted.Register( () => log.LogInformation("Application Started"));
+            //appLifetime.ApplicationStopping.Register(scrapingService.Stop);
 
-            appLifetime.ApplicationStopping.Register(() => log.LogInformation("Application Stopping"));
-
+            //appLifetime.ApplicationStopping.Register(() => log.LogInformation("Application Stopping"));
         }
     }
 }
