@@ -1,0 +1,27 @@
+This program has encountered a fatal error and cannot continue running at Sat Dec 14 21:51:34 2019
+The following diagnostic information is available:
+
+         Reason: 0x00000006
+        Message: Kernel bug check
+        Address: 0x6c247e90
+     Parameters: 0x10861f590
+    Stack Trace:
+                 000000006c3358de
+                 000000006c247eeb
+                 000000006c23457e
+                 000000006c243155
+                 000000006c243326
+                 000000006c333bac
+                 000000006c33271f
+                 000000006c375c31
+        Process: 8 - sqlservr
+         Thread: 12 (application thread 0x4)
+    Instance Id: cec4a512-dcb0-4705-8eca-f77bc4ac1853
+       Crash Id: e2c74260-6106-4433-8707-bf9ca5ef7f01
+    Build stamp: 6a6e83dc254578c3da71f7665609db7a4a6639324d6ad5dd5db76e47cfc1a662
+   Distribution: Ubuntu 16.04.6 LTS
+     Processors: 2
+   Total Memory: 2096144384 bytes
+      Timestamp: Sat Dec 14 21:51:34 2019
+     Last errno: 2
+Last errno text: No such file or directory
