@@ -8,6 +8,6 @@ namespace CalendarEvents.DataAccess
 {
     public interface IUpdateRepository<TEntity>
     {
-        void Update(TEntity entity);
+        Task Update(TEntity entity);
     }
 }

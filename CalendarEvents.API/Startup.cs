@@ -4,15 +4,11 @@ using CalendarEvents.Models;
 using CalendarEvents.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace CalendarEvents
 {
@@ -44,23 +40,14 @@ namespace CalendarEvents
             #endregion            
 
             services.AddControllers();
-
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder => builder.AllowAnyOrigin());
-            });
             
-            string connectionString = null;
-            try { connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING"); }
-            catch { }
-            connectionString = connectionString ?? Configuration.GetConnectionString("DefaultConnection");
-            log.LogInformation($"Using connection string: {connectionString}");
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    connectionString,
+            {
+                options.UseSqlite(
+                    Configuration.GetConnectionString("DefaultConnection"), 
                     b => b.MigrationsAssembly("CalendarEvents.DataAccess")
-                )
-            );
+                );
+            });
             
             //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();

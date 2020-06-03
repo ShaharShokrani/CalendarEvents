@@ -8,6 +8,6 @@ namespace CalendarEvents.Services
 {
     public interface IUpdateService<T>
     {
-        ResultService Update(T obj);
+        Task<ResultHandler> Update(T obj);
     }
 }

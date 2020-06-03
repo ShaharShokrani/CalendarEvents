@@ -1,7 +1,9 @@
-﻿namespace CalendarEvents.Services
+﻿using System.Threading.Tasks;
+
+namespace CalendarEvents.Services
 {
     public interface IInsertService<T>
     {
-        ResultService Insert(T obj);
+        Task<ResultHandler> Insert(T obj);
     }
 }

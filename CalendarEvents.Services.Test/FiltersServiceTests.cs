@@ -31,11 +31,11 @@ namespace CalendarEvents.Services.Tests
             FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
 
             //Act
-            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+            ResultHandler<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<ResultService<Expression<Func<EventModel, bool>>>>(result);
+            Assert.IsInstanceOf<ResultHandler<Expression<Func<EventModel, bool>>>>(result);
             Assert.IsTrue(result.Success);
         }
 
@@ -52,7 +52,7 @@ namespace CalendarEvents.Services.Tests
             FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
 
             //Act
-            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+            ResultHandler<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
 
             //Assert
             Assert.IsNotNull(result);
@@ -74,7 +74,7 @@ namespace CalendarEvents.Services.Tests
             FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
 
             //Act
-            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+            ResultHandler<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
 
             //Assert
             Assert.IsNotNull(result);
@@ -97,7 +97,7 @@ namespace CalendarEvents.Services.Tests
             FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
 
             //Act
-            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+            ResultHandler<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
 
             //Assert
             Assert.IsNotNull(result);
@@ -120,7 +120,7 @@ namespace CalendarEvents.Services.Tests
             FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
 
             //Act
-            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+            ResultHandler<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
 
             //Assert
             Assert.IsNotNull(result);
@@ -143,7 +143,7 @@ namespace CalendarEvents.Services.Tests
             FiltersService<EventModel> service = new FiltersService<EventModel>(filterStatements);
 
             //Act
-            ResultService<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
+            ResultHandler<Expression<Func<EventModel, bool>>> result = service.BuildExpression();
 
             //Assert
             Assert.IsNotNull(result);

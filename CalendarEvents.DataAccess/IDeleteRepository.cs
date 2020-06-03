@@ -8,6 +8,6 @@ namespace CalendarEvents.DataAccess
 {
     public interface IRemoveRepository<TEntity>
     {
-        void Remove(object id);
+        Task Remove(TEntity entity);
     }
 }

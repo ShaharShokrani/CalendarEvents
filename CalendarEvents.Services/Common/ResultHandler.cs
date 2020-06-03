@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace CalendarEvents.Services
 {
-    public class ResultService
+    public class ResultHandler
     {
         public bool Success { get; private set; }
         public ErrorCode ErrorCode { get; private set; }
@@ -15,7 +15,7 @@ namespace CalendarEvents.Services
             get { return !Success; }
         }
 
-        public ResultService(bool success, ErrorCode errorCode)
+        public ResultHandler(bool success, ErrorCode errorCode)
         {
             Contract.Requires(success);            
 
@@ -23,7 +23,7 @@ namespace CalendarEvents.Services
             ErrorCode = errorCode;
         }
 
-        public ResultService(Exception error)
+        public ResultHandler(Exception error)
         {
             Contract.Requires(error != null);            
 
@@ -32,39 +32,39 @@ namespace CalendarEvents.Services
             ErrorCode = ErrorCode.Unknown;
         }
 
-        public static ResultService Fail(ErrorCode errorCode)
+        public static ResultHandler Fail(ErrorCode errorCode)
         {
-            return new ResultService(false, errorCode);
+            return new ResultHandler(false, errorCode);
         }
 
-        public static ResultService Fail(Exception exception)
+        public static ResultHandler Fail(Exception exception)
         {
-            return new ResultService(exception);
+            return new ResultHandler(exception);
         }
 
-        public static ResultService<T> Fail<T>(ErrorCode errorCode)
+        public static ResultHandler<T> Fail<T>(ErrorCode errorCode)
         {
-            return new ResultService<T>(default, false, errorCode);
+            return new ResultHandler<T>(default, false, errorCode);
         }
 
-        public static ResultService<T> Fail<T>(Exception exception)
+        public static ResultHandler<T> Fail<T>(Exception exception)
         {
-            return new ResultService<T>(exception);
+            return new ResultHandler<T>(exception);
         }
 
-        public static ResultService Ok()
+        public static ResultHandler Ok()
         {
-            return new ResultService(true, ErrorCode.Undefined);
+            return new ResultHandler(true, ErrorCode.Undefined);
         }
 
-        public static ResultService<T> Ok<T>(T value)
+        public static ResultHandler<T> Ok<T>(T value)
         {
-            return new ResultService<T>(value, true, ErrorCode.Undefined);
+            return new ResultHandler<T>(value, true, ErrorCode.Undefined);
         }
 
-        public static ResultService Combine(params ResultService[] results)
+        public static ResultHandler Combine(params ResultHandler[] results)
         {
-            foreach (ResultService result in results)
+            foreach (ResultHandler result in results)
             {
                 if (result.Failure)
                     return result;
@@ -75,7 +75,7 @@ namespace CalendarEvents.Services
     }
 
 
-    public class ResultService<T> : ResultService
+    public class ResultHandler<T> : ResultHandler
     {
         private T _value;
 
@@ -90,7 +90,7 @@ namespace CalendarEvents.Services
             private set { _value = value; }
         }
 
-        public ResultService(T value, bool success, ErrorCode errorCode)
+        public ResultHandler(T value, bool success, ErrorCode errorCode)
             : base(success, errorCode)
         {
             Contract.Requires(value != null || !success);
@@ -98,7 +98,7 @@ namespace CalendarEvents.Services
             Value = value;
         }
 
-        public ResultService(Exception exception)
+        public ResultHandler(Exception exception)
             : base(exception)
         {                        
         }

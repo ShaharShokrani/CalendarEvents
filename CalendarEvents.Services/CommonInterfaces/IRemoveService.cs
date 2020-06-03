@@ -8,6 +8,6 @@ namespace CalendarEvents.Services
 {
     public interface IDeleteService
     {
-        ResultService Delete(object id);
+        Task<ResultHandler> Delete(Guid id);
     }
 }

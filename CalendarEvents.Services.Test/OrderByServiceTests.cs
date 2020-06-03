@@ -31,11 +31,11 @@ namespace CalendarEvents.Services.Tests
             OrderByService service = new OrderByService();
 
             //Act
-            ResultService<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>> result = service.GetOrderBy<EventModel>(orderByStatement);
+            ResultHandler<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>> result = service.GetOrderBy<EventModel>(orderByStatement);
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<ResultService<Func<IQueryable<EventModel>,IOrderedQueryable<EventModel>>>>(result);
+            Assert.IsInstanceOf<ResultHandler<Func<IQueryable<EventModel>,IOrderedQueryable<EventModel>>>>(result);
             Assert.IsTrue(result.Success);
         }
         [Test] public void GetOrderBy_WhenOrderByStatementNull_ShouldReturnFail()
@@ -46,7 +46,7 @@ namespace CalendarEvents.Services.Tests
             OrderByService service = new OrderByService();
 
             //Act
-            ResultService<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>> result = service.GetOrderBy<EventModel>(orderByStatement);
+            ResultHandler<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>> result = service.GetOrderBy<EventModel>(orderByStatement);
 
             //Assert
             Assert.IsNotNull(result);
@@ -63,7 +63,7 @@ namespace CalendarEvents.Services.Tests
             OrderByService service = new OrderByService();
 
             //Act
-            ResultService<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>> result = service.GetOrderBy<EventModel>(orderByStatement);
+            ResultHandler<Func<IQueryable<EventModel>, IOrderedQueryable<EventModel>>> result = service.GetOrderBy<EventModel>(orderByStatement);
 
             //Assert
             Assert.IsNotNull(result);

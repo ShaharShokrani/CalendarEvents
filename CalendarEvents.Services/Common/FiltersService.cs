@@ -16,7 +16,7 @@ namespace CalendarEvents.Services
         /// Builds a LINQ expression based upon the statements included in this filter.
         /// </summary>
         /// <returns></returns>
-        ResultService<Expression<Func<T, bool>>> BuildExpression();
+        ResultHandler<Expression<Func<T, bool>>> BuildExpression();
     }
 
     public class FiltersService<T> : IFiltersService<T>
@@ -30,7 +30,7 @@ namespace CalendarEvents.Services
             this._filterStatements = filterStatements ?? throw new ArgumentNullException(nameof(filterStatements));
         }
 
-        public ResultService<Expression<Func<T, bool>>> BuildExpression()
+        public ResultHandler<Expression<Func<T, bool>>> BuildExpression()
         {
             try
             {
@@ -41,7 +41,7 @@ namespace CalendarEvents.Services
                 {
                     if (!statement.IsValid)
                     {
-                        return ResultService.Fail<Expression<Func<T, bool>>>(ErrorCode.EntityNotValid);
+                        return ResultHandler.Fail<Expression<Func<T, bool>>>(ErrorCode.EntityNotValid);
                     }
 
                     Type propType = typeof(T).GetProperty(statement.PropertyName).PropertyType;
@@ -90,11 +90,11 @@ namespace CalendarEvents.Services
                 }
 
                 Expression<Func<T, bool>> result = Expression.Lambda<Func<T, bool>>(finalExpression, parameterExpression);
-                return ResultService.Ok<Expression<Func<T, bool>>>(result);
+                return ResultHandler.Ok<Expression<Func<T, bool>>>(result);
             }
             catch (Exception ex)
             {
-                return ResultService.Fail<Expression<Func<T, bool>>>(ex);
+                return ResultHandler.Fail<Expression<Func<T, bool>>>(ex);
             }
         }
     }

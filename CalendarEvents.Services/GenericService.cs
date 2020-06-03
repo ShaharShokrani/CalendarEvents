@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace CalendarEvents.Services
 {
@@ -26,22 +27,21 @@ namespace CalendarEvents.Services
             this._log = log;
         }
 
-        public ResultService Insert(T obj)
+        public async Task<ResultHandler> Insert(T obj)
         {
             try
             {
-                this._repository.Insert(obj);
-
-                return ResultService.Ok();
+                await this._repository.Insert(obj);
+                return ResultHandler.Ok();
             }
             catch (Exception ex)
             {
                 _log.LogError(ex, "Failed inserting object to DB");
-                return ResultService.Fail(ex);
+                return ResultHandler.Fail(ex);
             }
         }
 
-        public ResultService<IEnumerable<T>> Get(IEnumerable<FilterStatement<T>> filterStatements,
+        public async Task<ResultHandler<IEnumerable<T>>> Get(IEnumerable<FilterStatement<T>> filterStatements,
                                                 OrderByStatement<T> orderByStatement = null,
                                                 string includeProperties = "")
         {
@@ -54,7 +54,7 @@ namespace CalendarEvents.Services
                     var filtersResult = filterService.BuildExpression();
                     if (!filtersResult.Success)
                     {
-                        return ResultService.Fail<IEnumerable<T>>(filtersResult.ErrorCode);
+                        return ResultHandler.Fail<IEnumerable<T>>(filtersResult.ErrorCode);
                     }
                     filters = filtersResult.Value as Expression<Func<T, bool>>;
                 }
@@ -66,75 +66,67 @@ namespace CalendarEvents.Services
                     var orderByResult = orderByService.GetOrderBy<T>(orderByStatement);
                     if (!orderByResult.Success)
                     {
-                        return ResultService.Fail<IEnumerable<T>>(orderByResult.ErrorCode);
+                        return ResultHandler.Fail<IEnumerable<T>>(orderByResult.ErrorCode);
                     }
                     orderBy = orderByResult.Value as Func<IQueryable<T>, IOrderedQueryable<T>>;
                 }
 
-                var result = this._repository.Get(filters, orderBy, includeProperties);
-                if (result == null)
-                {
-                    return ResultService.Fail<IEnumerable<T>>(ErrorCode.NotFound);
-                }
-                return ResultService.Ok<IEnumerable<T>>(result);
+                var result = await this._repository.Get(filters, orderBy, includeProperties);
+
+                return ResultHandler.Ok<IEnumerable<T>>(result);
             }
             catch (Exception ex)
             {
                 _log.LogError(ex, "Failed to get objects from DB");
-                return ResultService.Fail<IEnumerable<T>>(ex);
+                return ResultHandler.Fail<IEnumerable<T>>(ex);
             }
         }
 
-        public ResultService<T> GetById(object id)
+        public async Task<ResultHandler<T>> GetById(Guid id)
         {
             try
             {
-                var entity = this._repository.GetById(id);
-                if (entity == null)
-                {
-                    return ResultService.Fail<T>(ErrorCode.NotFound);
-                }
-
-                return ResultService.Ok<T>(entity);
+                var entity = await this._repository.GetById(id);
+                return ResultHandler.Ok<T>(entity);
             }
             catch (Exception ex)
             {
                 _log.LogError(ex, "Failed to get object with id: {0} from DB", id);
-                return ResultService.Fail<T>(ex);
+                return ResultHandler.Fail<T>(ex);
             }
         }
 
-        public ResultService Delete(object id)
+        public async Task<ResultHandler> Delete(Guid id)
         {
             try
             {
-                var entity = this._repository.GetById(id);
+                var entity = await this._repository.GetById(id);
                 if (entity == null)
                 {
-                    return ResultService.Fail(ErrorCode.NotFound);
+                    return ResultHandler.Fail(ErrorCode.NotFound);
                 }
-                this._repository.Remove(id);
+                await this._repository.Remove(entity);
 
-                return ResultService.Ok();
+                return ResultHandler.Ok();
             }
             catch (Exception ex)
             {
                 _log.LogError(ex, "Failed to  delete object with id: {0} from DB", id);
-                return ResultService.Fail(ex);
+                return ResultHandler.Fail(ex);
             }
         }
 
-        public ResultService Update(T obj)
+        public async Task<ResultHandler> Update(T obj)
         {
             try
             {                
-                this._repository.Update(obj);
-                return ResultService.Ok(obj);
+                await this._repository.Update(obj);
+                return ResultHandler.Ok(obj);
             }
             catch (Exception ex)
             {
                 _log.LogError(ex, "Failed to update object");
-                return ResultService.Fail(ex);
+                return ResultHandler.Fail(ex);
             }
         }        
     }

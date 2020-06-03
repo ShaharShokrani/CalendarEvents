@@ -9,12 +9,13 @@ namespace CalendarEvents.DataAccess
 {   
     public interface IGetRepository<TEntity>
     {
-        IEnumerable<TEntity> Get(
+        //TODO: Implement IAsyncEnumarable
+        Task<List<TEntity>> Get(
             Expression<Func<TEntity, bool>> filters = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "",
             int? pageIndex = null,
             int? pageSize = null);
-        TEntity GetById(object id);
+        Task<TEntity> GetById(Guid id);
     }
 }

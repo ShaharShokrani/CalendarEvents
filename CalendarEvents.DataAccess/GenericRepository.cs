@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace CalendarEvents.DataAccess
 {
@@ -13,10 +14,10 @@ namespace CalendarEvents.DataAccess
                                     IRemoveRepository<TEntity>,
                                     IDisposable where TEntity : class
     {
-        void SaveChanges();
+        Task<int> SaveChanges();
     }
 
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IGenericEntity
     {
         private readonly ApplicationDbContext _context = null;
         private readonly DbSet<TEntity> _dbSet;
@@ -27,12 +28,12 @@ namespace CalendarEvents.DataAccess
             _dbSet = this._context.Set<TEntity>();
         }
 
-        public virtual void SaveChanges()
+        public virtual async Task<int> SaveChanges()
         {
-            _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
         //TODO: Add paging support
-        public virtual IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null, 
+        public virtual Task<List<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
             string includeProperties = "",
             int? pageIndex = null,
@@ -57,50 +58,41 @@ namespace CalendarEvents.DataAccess
 
             if (orderBy != null)
             {
-                return orderBy(query).ToList();
+                return orderBy(query).ToListAsync();
             }
 
-            return query.ToList();
+            return query.ToListAsync();
         }
 
-        public virtual TEntity GetById(object id)
+        public virtual async Task<TEntity> GetById(Guid id)
+        {            
+            return await _dbSet.FirstOrDefaultAsync(item => item.Id == id);
+        }
+
+        public virtual async Task Insert(TEntity entity)
         {
-            return _dbSet.Find(id);
+            await _dbSet.AddAsync(entity);
+            await this.SaveChanges();
         }
 
-        public virtual void Insert(TEntity entity)
-        {
-            _dbSet.Add(entity);
-            this.SaveChanges();
-        }
-
-        public virtual void Update(TEntity entity)
+        public virtual async Task Update(TEntity entity)
         {
             if (entity != null)
             {
                 _context.Entry(entity).State = EntityState.Modified;               
-                this.SaveChanges();
+                await this.SaveChanges();
             }
         }
 
-        public virtual void Remove(object id)
-        {
-            TEntity entity = _dbSet.Find(id);
-            if (!EqualityComparer<TEntity>.Default.Equals(entity, default))
-            {
-                Remove(entity);
-            }
-        }
-
-        private void Remove(TEntity entity)
+        public virtual async Task Remove(TEntity entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
             {
                 _dbSet.Attach(entity);
             }
             _dbSet.Remove(entity);
-            this.SaveChanges();
-        }
+            await this.SaveChanges();
+        }       
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

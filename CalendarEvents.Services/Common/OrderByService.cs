@@ -10,7 +10,7 @@ namespace CalendarEvents.Services
 {
     public interface IOrderByService
     {
-        ResultService<Func<IQueryable<T>, IOrderedQueryable<T>>> GetOrderBy<T>(OrderByStatement<T> orderByStatement);
+        ResultHandler<Func<IQueryable<T>, IOrderedQueryable<T>>> GetOrderBy<T>(OrderByStatement<T> orderByStatement);
     }
 
     public class OrderByService : IOrderByService
@@ -20,14 +20,14 @@ namespace CalendarEvents.Services
 
         }
 
-        public ResultService<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> GetOrderBy<TEntity>(OrderByStatement<TEntity> orderByStatement)
+        public ResultHandler<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> GetOrderBy<TEntity>(OrderByStatement<TEntity> orderByStatement)
         {
             try
             {
                 if (orderByStatement == null ||
                     !orderByStatement.IsValid)
                 {
-                    return ResultService.Fail<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>(ErrorCode.EntityNotValid);
+                    return ResultHandler.Fail<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>(ErrorCode.EntityNotValid);
                 }
 
                 //1. Detemine method name.
@@ -60,11 +60,11 @@ namespace CalendarEvents.Services
                 var finalLambda = Expression.Lambda(resultExp, argQueryable);
 
                 Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> result = (Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>)finalLambda.Compile();
-                return ResultService.Ok(result);
+                return ResultHandler.Ok(result);
             }
             catch (Exception ex)
             {
-                return ResultService.Fail<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>(ex);
+                return ResultHandler.Fail<Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>(ex);
             }
         }
     }

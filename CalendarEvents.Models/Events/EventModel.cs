@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.Models
 {
-    public class EventModel
+    public class EventModel :IGenericEntity
     {
         public DateTime Start { get; set; }
         public DateTime End { get; set; }

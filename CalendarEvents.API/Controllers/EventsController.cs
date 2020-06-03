@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
+using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +26,7 @@ namespace CalendarEvents.Controllers
         // GET api/events
         [AllowAnonymous]
         [HttpGet]
-        public ActionResult<IEnumerable<EventModelDTO>> Get([FromQuery]GetRequest<EventModelDTO> genericRequestDTO = null)
+        public async Task<IActionResult> Get([FromQuery]GetRequest<EventModelDTO> genericRequestDTO = null)
         {
             try
             {
@@ -32,7 +34,7 @@ namespace CalendarEvents.Controllers
                     genericRequestDTO = new GetRequest<EventModelDTO>();
 
                 GetRequest<EventModel> genericRequest = _mapper.Map<GetRequest<EventModel>>(genericRequestDTO);
-                ResultService<IEnumerable<EventModel>> result = this._eventsService.Get(genericRequest.Filters, genericRequest.OrderBy, genericRequest.IncludeProperties);
+                ResultHandler<IEnumerable<EventModel>> result = await this._eventsService.Get(genericRequest.Filters, genericRequest.OrderBy, genericRequest.IncludeProperties);
                 if (result.Success)
                 {
                     IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
@@ -54,7 +56,7 @@ namespace CalendarEvents.Controllers
         // GET api/events/c4df7159-2402-4f49-922c-1a2caef02de2
         [AllowAnonymous]
         [HttpGet("{id}", Name = "GET")]
-        public ActionResult<EventModelDTO> Get(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             try
             {
@@ -63,7 +65,7 @@ namespace CalendarEvents.Controllers
                     return BadRequest();
                 }
 
-                ResultService<EventModel> result = this._eventsService.GetById(id);
+                ResultHandler<EventModel> result = await this._eventsService.GetById(id);
                 if (result.Success)
                 {
                     EventModel eventModel = result.Value as EventModel;
@@ -87,7 +89,7 @@ namespace CalendarEvents.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPost]        
-        public ActionResult Post([FromBody] EventPostRequest request = null)
+        public async Task<IActionResult> Post([FromBody] EventPostRequest request = null)
         {
             try
             {
@@ -100,14 +102,14 @@ namespace CalendarEvents.Controllers
                 item.Id = Guid.NewGuid();
                 item.CreateDate = DateTime.UtcNow;
                 item.UpdateDate = DateTime.UtcNow;
-                ResultService result = this._eventsService.Insert(item);
-                if (result.Success)
+                ResultHandler rh = await this._eventsService.Insert(item);
+                if (rh.Success)
                 {                    
                     return CreatedAtAction("Post", new { item.Id }, item.Id);
                 }
                 else
                 {
-                    return StatusCode(500, result.ErrorCode);
+                    return StatusCode(500, rh.ErrorCode);
                 }
             }
             catch (Exception ex)
@@ -121,7 +123,7 @@ namespace CalendarEvents.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpPut]
-        public ActionResult Put([FromBody] EventPutRequest request)
+        public async Task<IActionResult> Put([FromBody] EventPutRequest request)
         {
             try
             {                
@@ -130,7 +132,7 @@ namespace CalendarEvents.Controllers
                     return BadRequest();
                 }
 
-                ResultService<EventModel> getByIdResult = this._eventsService.GetById(request.Id);
+                ResultHandler<EventModel> getByIdResult = await this._eventsService.GetById(request.Id);
                 if (!getByIdResult.Success)
                 {
                     return StatusCode(500, getByIdResult.ErrorCode);
@@ -144,7 +146,7 @@ namespace CalendarEvents.Controllers
                 item.URL = request.URL;
                 item.UpdateDate = DateTime.UtcNow;
                 
-                ResultService result = this._eventsService.Update(item);
+                ResultHandler result = await this._eventsService.Update(item);
                 if (result.Success)
                 {
                     return Ok();
@@ -165,7 +167,7 @@ namespace CalendarEvents.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
-        public ActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
@@ -174,14 +176,14 @@ namespace CalendarEvents.Controllers
                     return BadRequest();
                 }
 
-                ResultService result = this._eventsService.Delete(id);
-                if (result.Success)
+                ResultHandler rh = await this._eventsService.Delete(id);
+                if (rh.Success)
                 {
                     return Ok();
                 }
                 else
                 {
-                    return StatusCode(500, result.ErrorCode);
+                    return StatusCode(500, rh.ErrorCode);
                 }
             }
             catch (Exception ex)
