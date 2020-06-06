@@ -69,9 +69,14 @@ namespace CalendarEvents.DataAccess
             return await _dbSet.FirstOrDefaultAsync(item => item.Id == id);
         }
 
-        public virtual async Task Insert(TEntity entity)
+        public virtual async Task Add(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
+            await this._dbSet.AddAsync(entity);
+            await this.SaveChanges();
+        }
+        public virtual async Task InsertRange(IEnumerable<TEntity> entities)
+        {
+            await this._dbSet.AddRangeAsync(entities);
             await this.SaveChanges();
         }
 

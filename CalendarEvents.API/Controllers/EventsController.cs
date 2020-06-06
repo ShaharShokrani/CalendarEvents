@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CalendarEvents.DataAccess;
@@ -19,8 +20,8 @@ namespace CalendarEvents.Controllers
 
         public EventsController(IGenericService<EventModel> eventsService, IMapper mapper)
         {
-            this._eventsService = eventsService;
-            this._mapper = mapper;
+            this._eventsService = eventsService ?? throw new ArgumentNullException(nameof(eventsService));
+            this._mapper = mapper?? throw new ArgumentNullException(nameof(mapper));
         }
 
         // GET api/events
@@ -33,12 +34,12 @@ namespace CalendarEvents.Controllers
                 if (genericRequestDTO == null)
                     genericRequestDTO = new GetRequest<EventModelDTO>();
 
-                GetRequest<EventModel> genericRequest = _mapper.Map<GetRequest<EventModel>>(genericRequestDTO);
+                GetRequest<EventModel> genericRequest = this._mapper.Map<GetRequest<EventModel>>(genericRequestDTO);
                 ResultHandler<IEnumerable<EventModel>> result = await this._eventsService.Get(genericRequest.Filters, genericRequest.OrderBy, genericRequest.IncludeProperties);
                 if (result.Success)
                 {
                     IEnumerable<EventModel> list = result.Value as IEnumerable<EventModel>;
-                    IEnumerable<EventModelDTO> listDTO = _mapper.Map<IEnumerable<EventModelDTO>>(list);
+                    IEnumerable<EventModelDTO> listDTO = this._mapper.Map<IEnumerable<EventModelDTO>>(list);
                     return Ok(listDTO);
                 }
                 else
@@ -69,7 +70,7 @@ namespace CalendarEvents.Controllers
                 if (result.Success)
                 {
                     EventModel eventModel = result.Value as EventModel;
-                    EventModelDTO eventModelDTO = _mapper.Map<EventModelDTO>(eventModel);
+                    EventModelDTO eventModelDTO = this._mapper.Map<EventModelDTO>(eventModel);
 
                     return Ok(eventModelDTO);
                 }
@@ -86,10 +87,15 @@ namespace CalendarEvents.Controllers
         }
 
         // POST api/events
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        [HttpPost]        
-        public async Task<IActionResult> Post([FromBody] EventPostRequest request = null)
+        //[Authorize]
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //TODO: Use a ModelBinder.
+        //public async Task<IActionResult> Post([FromBody] EventPostRequest request = null)
+
+        // POST api/events
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] IEnumerable<EventPostRequest> requests = null)
         {
             try
             {
@@ -97,15 +103,11 @@ namespace CalendarEvents.Controllers
                 {
                     return BadRequest();
                 }
-
-                EventModel item = _mapper.Map<EventModel>(request);
-                item.Id = Guid.NewGuid();
-                item.CreateDate = DateTime.UtcNow;
-                item.UpdateDate = DateTime.UtcNow;
-                ResultHandler rh = await this._eventsService.Insert(item);
+                IEnumerable<EventModel> items = this._mapper.Map<IEnumerable<EventModel>>(requests);
+                ResultHandler rh = await this._eventsService.InsertRange(items);
                 if (rh.Success)
-                {                    
-                    return CreatedAtAction("Post", new { item.Id }, item.Id);
+                {
+                    return CreatedAtAction("Post", items);
                 }
                 else
                 {
@@ -120,8 +122,8 @@ namespace CalendarEvents.Controllers
         }
 
         // PUT api/events/
-        [Authorize]
-        [ValidateAntiForgeryToken]
+        //[Authorize]
+        //[ValidateAntiForgeryToken]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] EventPutRequest request)
         {
@@ -141,7 +143,7 @@ namespace CalendarEvents.Controllers
                 EventModel item = getByIdResult.Value as EventModel;
                 item.End = request.End;
                 item.IsAllDay = request.IsAllDay;
-                item.Name = request.Name;
+                item.Title = request.Name;
                 item.Start = request.Start;
                 item.URL = request.URL;
                 item.UpdateDate = DateTime.UtcNow;
@@ -164,8 +166,8 @@ namespace CalendarEvents.Controllers
         }
 
         // DELETE api/events/c4df7159-2402-4f49-922c-1a2caef02de2
-        [Authorize]
-        [ValidateAntiForgeryToken]
+        //[Authorize]
+        //[ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -194,3 +196,4 @@ namespace CalendarEvents.Controllers
         }
     }
 }
+

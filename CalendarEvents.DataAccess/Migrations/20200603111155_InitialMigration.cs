@@ -15,11 +15,14 @@ namespace CalendarEvents.DataAccess.Migrations
                     Start = table.Column<DateTime>(nullable: false),
                     End = table.Column<DateTime>(nullable: false),
                     IsAllDay = table.Column<bool>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Details = table.Column<string>(nullable: true),
                     URL = table.Column<string>(nullable: true),
+                    ImagePath = table.Column<string>(nullable: true),
                     Base64Id = table.Column<string>(nullable: true),
                     CreateDate = table.Column<DateTime>(nullable: false),
-                    UpdateDate = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    UpdateDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

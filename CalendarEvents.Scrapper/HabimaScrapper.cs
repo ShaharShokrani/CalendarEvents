@@ -44,10 +44,10 @@ namespace CalendarEvents.Scrapper
             {
                 var rowCells = tableRows[i].SelectNodes("td");
                 EventModel e = new EventModel();
-                e.Name = rowCells[0].InnerText;
+                e.Title = rowCells[0].InnerText;
                 e.Start = GetDateFromString(rowCells[2].InnerText, rowCells[3].InnerText);
                 e.URL = rowCells[5].FirstChild.Attributes["href"].Value;
-                byte[] shaBytes = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(e.URL + e.Name + e.Start.ToString())); // Create base64 
+                byte[] shaBytes = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(e.URL + e.Title + e.Start.ToString())); // Create base64 
                 e.Base64Id = Convert.ToBase64String(shaBytes);
                 e.Id = Guid.NewGuid();
                 results.Add(e);

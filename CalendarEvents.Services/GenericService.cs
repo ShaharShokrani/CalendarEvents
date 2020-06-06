@@ -31,7 +31,20 @@ namespace CalendarEvents.Services
         {
             try
             {
-                await this._repository.Insert(obj);
+                await this._repository.Add(obj);
+                return ResultHandler.Ok();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "Failed inserting object to DB");
+                return ResultHandler.Fail(ex);
+            }
+        }
+        public async Task<ResultHandler> InsertRange(IEnumerable<T> items)
+        {
+            try
+            {
+                await this._repository.InsertRange(items);
                 return ResultHandler.Ok();
             }
             catch (Exception ex)

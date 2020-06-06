@@ -9,12 +9,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace CalendarEvents
 {
     //TODO: create a TestStartUp
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public IConfiguration Configuration { get; }        
 
         private readonly ILogger<Startup> log;
@@ -40,12 +43,26 @@ namespace CalendarEvents
             #endregion            
 
             services.AddControllers();
-            
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      //TODO: Use the config instead.
+                                      builder.WithOrigins("http://localhost:4200")
+                                      .AllowAnyHeader();
+                                  });
+            });
+
+            string migrationsAssembly = typeof(CalendarEvents.DataAccess.Migrations.InitialMigration)
+                .GetTypeInfo().Assembly.GetName().Name;
+
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection"), 
-                    b => b.MigrationsAssembly("CalendarEvents.DataAccess")
+                    b => b.MigrationsAssembly(migrationsAssembly)
                 );
             });
             
@@ -62,6 +79,9 @@ namespace CalendarEvents
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            
+
             //else
             //{
             //    app.UseExceptionHandler(appBuilder =>
@@ -80,9 +100,7 @@ namespace CalendarEvents
 
             //app.UseAuthentication();
 
-            //loggerFactory.AddFile(Configuration.GetSection("Logging"));
-
-            //app.UseCors();
+            //loggerFactory.AddFile(Configuration.GetSection("Logging"));           
 
             //app.UseMvc(routes =>
             //{
@@ -92,7 +110,7 @@ namespace CalendarEvents
             //});
 
             app.UseRouting();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
 
             //app.UseHttpsRedirection();            

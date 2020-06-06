@@ -33,7 +33,7 @@ namespace CalendarEvents.Tests
                     Id = Guid.NewGuid(),
                     IsAllDay = false,
                     Start = DateTime.UtcNow.AddMinutes(1),
-                    Name = Guid.NewGuid().ToString(),
+                    Title = Guid.NewGuid().ToString(),
                     URL = Guid.NewGuid().ToString()
                 };
             }
@@ -57,8 +57,13 @@ namespace CalendarEvents.Tests
                     Id = Guid.NewGuid(),
                     IsAllDay = false,
                     Start = DateTime.UtcNow.AddMinutes(1),
-                    Name = Guid.NewGuid().ToString(),
-                    URL = Guid.NewGuid().ToString()
+                    Base64Id = Guid.NewGuid().ToString(),
+                    CreateDate = DateTime.Now,
+                    Description = Guid.NewGuid().ToString(),
+                    Details = null,
+                    ImagePath = Guid.NewGuid().ToString(),
+                    Title = Guid.NewGuid().ToString(),
+                    UpdateDate = DateTime.Now
                 };
             }
         }

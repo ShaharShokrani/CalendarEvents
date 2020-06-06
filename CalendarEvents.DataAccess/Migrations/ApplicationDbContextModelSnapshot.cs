@@ -28,16 +28,25 @@ namespace CalendarEvents.DataAccess.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("End")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImagePath")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsAllDay")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<DateTime>("Start")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Start")
+                    b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("URL")
