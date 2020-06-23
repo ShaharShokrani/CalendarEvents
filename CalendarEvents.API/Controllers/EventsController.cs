@@ -6,6 +6,7 @@ using AutoMapper;
 using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
+using IdentityServer4;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -95,6 +96,7 @@ namespace CalendarEvents.Controllers
 
         // POST api/events
         [HttpPost]
+        [Authorize(Policy = "Events.Post")]
         public async Task<IActionResult> Post([FromBody] IEnumerable<EventPostRequest> requests = null)
         {
             try
@@ -103,7 +105,7 @@ namespace CalendarEvents.Controllers
                 {
                     return BadRequest();
                 }
-                IEnumerable<EventModel> items = this._mapper.Map<IEnumerable<EventModel>>(requests);
+                IEnumerable <EventModel> items = this._mapper.Map<IEnumerable<EventModel>>(requests);
                 ResultHandler rh = await this._eventsService.InsertRange(items);
                 if (rh.Success)
                 {

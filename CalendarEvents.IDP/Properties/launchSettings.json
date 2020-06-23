@@ -2,36 +2,23 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/CalendarEvents.IDP",
+      "sslPort": 0
+    },
     "iisExpress": {
-      "applicationUrl": "http://localhost:58784",
-      "sslPort": 44395
+      "applicationUrl": "http://localhost:59082/",
+      "sslPort": 44364
     }
   },
-  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "weatherforecast",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "CalendarEvents.IDP": {
+    "SelfHost": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
-      "publishAllPorts": true,
-      "useSSL": true
+      "applicationUrl": "https://localhost:5001"
     }
   }
 }

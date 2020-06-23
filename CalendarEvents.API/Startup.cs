@@ -2,6 +2,7 @@
 using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +10,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using System.Reflection;
+using System.Security.Claims;
 
 namespace CalendarEvents
 {
     //TODO: create a TestStartUp
     public class Startup
     {
+        private readonly ILogger<Startup> log;
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-        public IConfiguration Configuration { get; }        
-
-        private readonly ILogger<Startup> log;
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration, ILogger<Startup> log)
         {
@@ -40,9 +42,10 @@ namespace CalendarEvents
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
-            #endregion            
+            #endregion
 
-            services.AddControllers();
+            IdentityModelEventSource.ShowPII = true; //Add this line
+
 
             services.AddCors(options =>
             {
@@ -51,9 +54,26 @@ namespace CalendarEvents
                                   {
                                       //TODO: Use the config instead.
                                       builder.WithOrigins("http://localhost:4200")
-                                      .AllowAnyHeader();
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
                                   });
             });
+            services.AddControllers();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;                
+            }).AddJwtBearer(o =>
+            {
+                o.Authority = "https://localhost:5001/";
+                o.Audience = "calendareventsapi";
+                o.RequireHttpsMetadata = false;                
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Events.Post", policy => policy.RequireClaim("scope", "calendareventsapi.post"));
+            });            
 
             string migrationsAssembly = typeof(CalendarEvents.DataAccess.Migrations.InitialMigration)
                 .GetTypeInfo().Assembly.GetName().Name;
@@ -65,7 +85,7 @@ namespace CalendarEvents
                     b => b.MigrationsAssembly(migrationsAssembly)
                 );
             });
-            
+
             //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();
             services.AddScoped<IGenericRepository<EventModel>, GenericRepository<EventModel>>();
@@ -79,8 +99,6 @@ namespace CalendarEvents
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            
 
             //else
             //{
@@ -108,12 +126,13 @@ namespace CalendarEvents
             //        name: "default",
             //        template: "{controller=Home}/{action=Index}/{id?}");
             //});
-
-            app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
-            app.UseAuthorization();
+            //app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();                                   
 
-            //app.UseHttpsRedirection();            
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
