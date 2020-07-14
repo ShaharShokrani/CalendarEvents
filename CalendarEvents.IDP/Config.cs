@@ -15,7 +15,7 @@ namespace CalendarEvents.IDP
             IdentityServerConstants.StandardScopes.OpenId,
             IdentityServerConstants.StandardScopes.Profile,
             IdentityServerConstants.StandardScopes.Email,
-            "calendareventsapi.post"
+            "calendareventsapi"
         };
 
         public static IEnumerable<IdentityResource> Ids =>
@@ -31,9 +31,9 @@ namespace CalendarEvents.IDP
             {
                 new ApiResource("calendareventsapi", "Calendar Events API")
                 {
-                    Scopes =  { 
-                        new Scope("calendareventsapi.post")
-                    },
+                    //Scopes =  { 
+                    //    new Scope("calendareventsapi")
+                    //},
                     //UserClaims = Claims
                 }
             };
@@ -41,61 +41,27 @@ namespace CalendarEvents.IDP
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-                // client credentials flow client
                 new Client
                 {
-                    ClientId = "client",
-                    ClientName = "Client Credentials Client",
-
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
-
-                    AllowedScopes = { "api1" }
-                },
-                new Client()
-                {
-                    RequireConsent = false,
-                    ClientName = "Calendar Events UI",
                     ClientId = "calendareventsui",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientName = "Calendar Events UI",                    
+                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
-                    RedirectUris = new List<string>
-                    {
-                        "http://localhost:4200/auth-callback"
-                    },
-                    AllowedScopes = Claims,
-                    //ClientSecrets =
-                    //{
-                    //    new Secret("secret")
-                    //},
-                    //AllowedCorsOrigins = {"http://localhost:4200"},
                     AllowAccessTokensViaBrowser = true,
-                    AccessTokenLifetime = 3600
-                },
-                //// SPA client using code flow + pkce
-                //new Client
-                //{
-                //    ClientId = "spa",
-                //    ClientName = "SPA Client",
-                //    ClientUri = "http://identityserver.io",
-
-                //    AllowedGrantTypes = GrantTypes.Code,
-                //    RequirePkce = true,
-                //    RequireClientSecret = false,
-
-                //    RedirectUris =
-                //    {
-                //        "http://localhost:5002/index.html",
-                //        "http://localhost:5002/callback.html",
-                //        "http://localhost:5002/silent.html",
-                //        "http://localhost:5002/popup.html",
-                //    },
-
-                //    PostLogoutRedirectUris = { "http://localhost:5002/index.html" },
-                //    AllowedCorsOrigins = { "http://localhost:5002" },
-
-                //    AllowedScopes = { "openid", "profile", "api1" }
-                //}
+                    RequireConsent = false,
+                    RedirectUris =           { "http://localhost:4200/signin-callback", "http://localhost:4200/assets/silent-callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:4200/signout-callback" },
+                    AllowedCorsOrigins =     { "http://localhost:4200" },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "calendareventsapi"
+                    },
+                    AccessTokenLifetime = 600
+                }
             };
     }
 }

@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using CalendarEvents.API.Authorization;
 using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
+using IdentityServer4.Events;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,19 +50,32 @@ namespace CalendarEvents
 
             IdentityModelEventSource.ShowPII = true; //Add this line
 
-
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      //TODO: Use the config instead.
-                                      builder.WithOrigins("http://localhost:4200")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod();
+                                        //TODO: Use the config instead.
+                                        builder
+                                        .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod();
                                   });
             });
-            services.AddControllers();
+
+            //As a best practice its better to use authorization fro all of the controllers, and allow anonymous.
+            services.AddControllers(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IAuthorizationHandler, MustOwnHandler<EventModel>>();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,10 +87,25 @@ namespace CalendarEvents
                 o.RequireHttpsMetadata = false;                
             });
 
-            services.AddAuthorization(options =>
+            services.AddAuthorization(authorizationOptions =>
             {
-                options.AddPolicy("Events.Post", policy => policy.RequireClaim("scope", "calendareventsapi.post"));
-            });            
+                authorizationOptions.AddPolicy(
+                    "Events.Put",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireAuthenticatedUser();
+                        policyBuilder.AddRequirements(
+                            new MustOwnRequirement<EventModel>()
+                        );
+                        policyBuilder.RequireClaim("scope", "calendareventsapi");
+                    });
+                authorizationOptions.AddPolicy(
+                    "Events.Post",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireClaim("scope", "calendareventsapi");
+                    });
+            });
 
             string migrationsAssembly = typeof(CalendarEvents.DataAccess.Migrations.InitialMigration)
                 .GetTypeInfo().Assembly.GetName().Name;

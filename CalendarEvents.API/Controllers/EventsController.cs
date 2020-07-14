@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
 using CalendarEvents.Services;
-using IdentityServer4;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +16,12 @@ namespace CalendarEvents.Controllers
     {        
         private readonly IGenericService<EventModel> _eventsService;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
 
-        public EventsController(IGenericService<EventModel> eventsService, IMapper mapper)
+        public EventsController(
+            IAuthorizationService authorizationService,
+            IGenericService<EventModel> eventsService, 
+            IMapper mapper)
         {
             this._eventsService = eventsService ?? throw new ArgumentNullException(nameof(eventsService));
             this._mapper = mapper?? throw new ArgumentNullException(nameof(mapper));
@@ -97,7 +99,7 @@ namespace CalendarEvents.Controllers
         // POST api/events
         [HttpPost]
         [Authorize(Policy = "Events.Post")]
-        public async Task<IActionResult> Post([FromBody] IEnumerable<EventPostRequest> requests = null)
+        public async Task<IActionResult> Post([FromBody] IEnumerable<EventModelPostDTO> requests = null)
         {
             try
             {
@@ -105,7 +107,15 @@ namespace CalendarEvents.Controllers
                 {
                     return BadRequest();
                 }
-                IEnumerable <EventModel> items = this._mapper.Map<IEnumerable<EventModel>>(requests);
+                
+                IEnumerable<EventModel> items = this._mapper.Map<IEnumerable<EventModel>>(requests);
+
+                string ownerId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                foreach (var item in items)
+                {
+                    item.OwnerId = ownerId;
+                } 
+
                 ResultHandler rh = await this._eventsService.InsertRange(items);
                 if (rh.Success)
                 {
@@ -127,6 +137,7 @@ namespace CalendarEvents.Controllers
         //[Authorize]
         //[ValidateAntiForgeryToken]
         [HttpPut]
+        [Authorize(Policy = "Events.Put")]
         public async Task<IActionResult> Put([FromBody] EventPutRequest request)
         {
             try
@@ -141,6 +152,8 @@ namespace CalendarEvents.Controllers
                 {
                     return StatusCode(500, getByIdResult.ErrorCode);
                 }
+
+
 
                 EventModel item = getByIdResult.Value as EventModel;
                 item.End = request.End;
@@ -171,6 +184,7 @@ namespace CalendarEvents.Controllers
         //[Authorize]
         //[ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Events.Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -198,4 +212,3 @@ namespace CalendarEvents.Controllers
         }
     }
 }
-

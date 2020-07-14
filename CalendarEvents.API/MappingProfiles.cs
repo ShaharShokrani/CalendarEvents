@@ -10,10 +10,13 @@ namespace CalendarEvents
             // Add as many of these lines as you need to map your objects
             CreateMap<EventModel, EventModelDTO>();
             CreateMap<EventModelDTO, EventModel>();
-            CreateMap<EventModel, EventPostRequest>();
-            CreateMap<EventPostRequest, EventModel>();
+
+            CreateMap<EventModel, EventModelPostDTO>();
+            CreateMap<EventModelPostDTO, EventModel>();
+
             CreateMap<EventModel, EventPutRequest>();
             CreateMap<EventPutRequest, EventModel>();
+
             CreateMap<GetRequest<EventModelDTO>, GetRequest<EventModel>>();
             CreateMap<GetRequest<EventModel>, GetRequest<EventModelDTO>>();
         }

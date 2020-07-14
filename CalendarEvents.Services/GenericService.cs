@@ -10,13 +10,14 @@ using System.Threading.Tasks;
 namespace CalendarEvents.Services
 {
     public interface IGenericService<T> : IGetService<T>, 
-                                      IUpdateService<T>,
-                                      IInsertService<T>,
-                                      IDeleteService
+                                        IUpdateService<T>,
+                                        IInsertService<T>,
+                                        IOwnerService<T>,
+                                        IDeleteService
     {
     }
 
-    public class GenericService<T> : IGenericService<T> where T : class
+    public class GenericService<T> : IGenericService<T> where T : class, IGenericEntity
     {
         private readonly IGenericRepository<T> _repository;
         private readonly ILogger<GenericService<T>> _log;
@@ -43,7 +44,7 @@ namespace CalendarEvents.Services
         public async Task<ResultHandler> InsertRange(IEnumerable<T> items)
         {
             try
-            {
+            {                
                 await this._repository.InsertRange(items);
                 return ResultHandler.Ok();
             }
@@ -53,7 +54,6 @@ namespace CalendarEvents.Services
                 return ResultHandler.Fail(ex);
             }
         }
-
         public async Task<ResultHandler<IEnumerable<T>>> Get(IEnumerable<FilterStatement<T>> filterStatements,
                                                 OrderByStatement<T> orderByStatement = null,
                                                 string includeProperties = "")
@@ -94,7 +94,6 @@ namespace CalendarEvents.Services
                 return ResultHandler.Fail<IEnumerable<T>>(ex);
             }
         }
-
         public async Task<ResultHandler<T>> GetById(Guid id)
         {
             try
@@ -141,6 +140,20 @@ namespace CalendarEvents.Services
                 _log.LogError(ex, "Failed to update object");
                 return ResultHandler.Fail(ex);
             }
-        }        
+        }
+
+        public async Task<ResultHandler<bool>> IsOwner(Guid id, string ownerId)
+        {
+            try
+            {
+                var entity = await this._repository.IsOwner(id, ownerId);
+                return ResultHandler.Ok<bool>(entity);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "Failed to get object with id: {0} from DB", id);
+                return ResultHandler.Fail<bool>(ex);
+            }
+        }
     }
 }

@@ -12,7 +12,8 @@ namespace CalendarEvents.DataAccess
                                     IInsertRepository<TEntity>,
                                     IUpdateRepository<TEntity>,
                                     IRemoveRepository<TEntity>,
-                                    IDisposable where TEntity : class
+                                    IOwnerRepository<TEntity>,
+                                    IDisposable where TEntity : class, IGenericEntity
     {
         Task<int> SaveChanges();
     }
@@ -68,7 +69,6 @@ namespace CalendarEvents.DataAccess
         {            
             return await _dbSet.FirstOrDefaultAsync(item => item.Id == id);
         }
-
         public virtual async Task Add(TEntity entity)
         {
             await this._dbSet.AddAsync(entity);
@@ -79,7 +79,6 @@ namespace CalendarEvents.DataAccess
             await this._dbSet.AddRangeAsync(entities);
             await this.SaveChanges();
         }
-
         public virtual async Task Update(TEntity entity)
         {
             if (entity != null)
@@ -88,7 +87,6 @@ namespace CalendarEvents.DataAccess
                 await this.SaveChanges();
             }
         }
-
         public virtual async Task Remove(TEntity entity)
         {
             if (_context.Entry(entity).State == EntityState.Detached)
@@ -97,7 +95,11 @@ namespace CalendarEvents.DataAccess
             }
             _dbSet.Remove(entity);
             await this.SaveChanges();
-        }       
+        }
+        public Task<bool> IsOwner(Guid id, string ownerId)
+        {
+            return this._dbSet.AnyAsync(i => i.Id == id && i.OwnerId == ownerId);
+        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -121,7 +123,7 @@ namespace CalendarEvents.DataAccess
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
-        }
+        }       
         #endregion
     }
 }

@@ -1,13 +1,11 @@
 ﻿using CalendarEvents.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CalendarEvents.DataAccess
 {
-    public interface IRemoveRepository<TEntity>
+    public interface IOwnerRepository<TEntity> where TEntity : class, IGenericEntity
     {
-        Task Remove(TEntity entity);
+        Task<bool> IsOwner(Guid id, string ownerId);
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CalendarEvents.Models
 {
-    public class EventPostRequest
+    public class EventModelPostDTO
     {
         [Required]
         public DateTime Start { get; set; }
@@ -15,6 +15,6 @@ namespace CalendarEvents.Models
         [Required]
         public bool IsAllDay { get; set; }
         public string URL { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }        
     }
 }

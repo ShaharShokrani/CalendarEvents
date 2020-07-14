@@ -16,6 +16,8 @@ namespace CalendarEvents.IDP
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
@@ -29,7 +31,19 @@ namespace CalendarEvents.IDP
         {
             services.AddControllersWithViews();
 
-            services.AddCors(p => p.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      //TODO: Use the config instead.
+                                      builder
+                                      .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
+                                  });
+            });            
 
             // configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
             services.Configure<IISOptions>(iis =>
@@ -67,6 +81,7 @@ namespace CalendarEvents.IDP
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
 
+
             services.AddAuthentication()
                 .AddGoogle(options =>
                 {
@@ -87,7 +102,7 @@ namespace CalendarEvents.IDP
             }
 
             app.UseStaticFiles();
-            app.UseCors("AllowAll");
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseRouting();
             app.UseIdentityServer();
             app.UseAuthorization();
