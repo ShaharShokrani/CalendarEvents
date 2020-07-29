@@ -21,6 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.API", "Calen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.IDP", "CalendarEvents.IDP\CalendarEvents.IDP.csproj", "{B6D003A2-84B8-484B-B0D0-E64B920395EA}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{ED5DBE99-1803-4259-99C3-2E1AADE505D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3F8B323-4A58-4D65-926B-E5D39939EE69}"
+	ProjectSection(SolutionItems) = preProject
+		CalendarEvents.API\Dockerfile = CalendarEvents.API\Dockerfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +70,10 @@ Global
 		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

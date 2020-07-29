@@ -98,7 +98,7 @@ namespace CalendarEvents.Controllers
 
         // POST api/events
         [HttpPost]
-        [Authorize(Policy = "Events.Post")]
+        //[Authorize(Policy = "Events.Post")]
         public async Task<IActionResult> Post([FromBody] IEnumerable<EventModelPostDTO> requests = null)
         {
             try
@@ -137,7 +137,7 @@ namespace CalendarEvents.Controllers
         //[Authorize]
         //[ValidateAntiForgeryToken]
         [HttpPut]
-        [Authorize(Policy = "Events.Put")]
+        //[Authorize(Policy = "Events.Put")]
         public async Task<IActionResult> Put([FromBody] EventPutRequest request)
         {
             try
@@ -184,7 +184,7 @@ namespace CalendarEvents.Controllers
         //[Authorize]
         //[ValidateAntiForgeryToken]
         [HttpDelete("{id}")]
-        [Authorize(Policy = "Events.Delete")]
+        //[Authorize(Policy = "Events.Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try

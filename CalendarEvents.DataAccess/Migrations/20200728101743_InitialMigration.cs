@@ -22,7 +22,8 @@ namespace CalendarEvents.DataAccess.Migrations
                     ImagePath = table.Column<string>(nullable: true),
                     Base64Id = table.Column<string>(nullable: true),
                     CreateDate = table.Column<DateTime>(nullable: false),
-                    UpdateDate = table.Column<DateTime>(nullable: false)
+                    UpdateDate = table.Column<DateTime>(nullable: false),
+                    OwnerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

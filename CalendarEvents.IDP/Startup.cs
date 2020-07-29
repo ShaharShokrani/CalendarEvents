@@ -60,7 +60,7 @@ namespace CalendarEvents.IDP
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -99,6 +99,7 @@ namespace CalendarEvents.IDP
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                InitializeDatabase(app);
             }
 
             app.UseStaticFiles();
@@ -110,6 +111,14 @@ namespace CalendarEvents.IDP
             {
                 endpoints.MapDefaultControllerRoute();
             });
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
+            }
         }
     }
 }

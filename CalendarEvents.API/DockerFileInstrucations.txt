@@ -1,0 +1,2 @@
+goto root.
+docker build -t calendareventsapi -f CalendarEvents.API\Dockerfile .

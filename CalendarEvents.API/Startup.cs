@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CalendarEvents.API;
 using CalendarEvents.API.Authorization;
 using CalendarEvents.DataAccess;
 using CalendarEvents.Models;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
+using System;
 using System.Reflection;
 using System.Security.Claims;
 
@@ -48,7 +50,7 @@ namespace CalendarEvents
             services.AddSingleton(mapper);
             #endregion
 
-            IdentityModelEventSource.ShowPII = true; //Add this line
+            //IdentityModelEventSource.ShowPII = true; //Add this line
 
             services.AddCors(options =>
             {
@@ -63,60 +65,80 @@ namespace CalendarEvents
                                   });
             });
 
-            //As a best practice its better to use authorization fro all of the controllers, and allow anonymous.
-            services.AddControllers(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                                .RequireAuthenticatedUser()
-                                .Build();
-                options.Filters.Add(new AuthorizeFilter(policy));
-            });
+            ////As a best practice its better to use authorization fro all of the controllers, and allow anonymous.
+            ////services.AddControllers(options =>
+            ////{
+            ////    var policy = new AuthorizationPolicyBuilder()
+            ////                    .RequireAuthenticatedUser()
+            ////                    .Build();
+            ////    options.Filters.Add(new AuthorizeFilter(policy));
+            ////});
+            services.AddControllers();
 
             services.AddHttpContextAccessor();
 
-            services.AddScoped<IAuthorizationHandler, MustOwnHandler<EventModel>>();
+            ////services.AddScoped<IAuthorizationHandler, MustOwnHandler<EventModel>>();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;                
-            }).AddJwtBearer(o =>
-            {
-                o.Authority = "https://localhost:5001/";
-                o.Audience = "calendareventsapi";
-                o.RequireHttpsMetadata = false;                
-            });
+            ////services.AddAuthentication(options =>
+            ////{
+            ////    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;                
+            ////}).AddJwtBearer(o =>
+            ////{
+            ////    o.Authority = "https://localhost:5001/";
+            ////    o.Audience = "calendareventsapi";
+            ////    o.RequireHttpsMetadata = false;                
+            ////});
 
-            services.AddAuthorization(authorizationOptions =>
-            {
-                authorizationOptions.AddPolicy(
-                    "Events.Put",
-                    policyBuilder =>
-                    {
-                        policyBuilder.RequireAuthenticatedUser();
-                        policyBuilder.AddRequirements(
-                            new MustOwnRequirement<EventModel>()
-                        );
-                        policyBuilder.RequireClaim("scope", "calendareventsapi");
-                    });
-                authorizationOptions.AddPolicy(
-                    "Events.Post",
-                    policyBuilder =>
-                    {
-                        policyBuilder.RequireClaim("scope", "calendareventsapi");
-                    });
-            });
+            ////services.AddAuthorization(authorizationOptions =>
+            ////{
+            ////    authorizationOptions.AddPolicy(
+            ////        "Events.Put",
+            ////        policyBuilder =>
+            ////        {
+            ////            policyBuilder.RequireAuthenticatedUser();
+            ////            policyBuilder.AddRequirements(
+            ////                new MustOwnRequirement<EventModel>()
+            ////            );
+            ////            policyBuilder.RequireClaim("scope", "calendareventsapi");
+            ////        });
+            ////    authorizationOptions.AddPolicy(
+            ////        "Events.Post",
+            ////        policyBuilder =>
+            ////        {
+            ////            policyBuilder.RequireClaim("scope", "calendareventsapi");
+            ////        });
+            ////});
 
-            string migrationsAssembly = typeof(CalendarEvents.DataAccess.Migrations.InitialMigration)
+            string migrationsAssembly = typeof(CalendarEvents.DataAccess.ApplicationDbContext)
                 .GetTypeInfo().Assembly.GetName().Name;
+
+            string server = Environment.GetEnvironmentVariable("DatabaseServer");
+            string database = Environment.GetEnvironmentVariable("DatabaseName");
+            string port = Configuration["DatabasePort"] ?? "1443";            
+            string user = Configuration["DatabaseUser"] ?? "sa";
+            string password = Configuration["DatabasePassword"] ?? "<YourStrong@Passw0rd>";
+
+            Console.WriteLine($"--------------------------------------- ------------------------------------ Server: {server}");
+            //string connectionString = null;
+            //try { connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING"); }
+            //catch { }
+            //connectionString = connectionString ?? Configuration.GetConnectionString("DefaultConnection");
+
+            //connectionString = $"Server={server},{port};Database={database};User ID={user};Password={password}";
+            string connectionString = $"Server={server};Database={database};User ID={user};Password={password};";
+
+            Console.WriteLine($"--------------------------------------- ------------------------------------ ConnectionString : {connectionString }");
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlite(
-                    Configuration.GetConnectionString("DefaultConnection"), 
+                options.UseSqlServer(
+                    connectionString,
                     b => b.MigrationsAssembly(migrationsAssembly)
                 );
             });
+
+
 
             //TODO: register all the generic service and repository with generic syntax like autofac does <>.
             services.AddScoped<IGenericService<EventModel>, GenericService<EventModel>>();
@@ -129,6 +151,7 @@ namespace CalendarEvents
         {
             if (env.IsDevelopment())
             {
+                PrepareDB.PreparePopulation(app).Wait();
                 app.UseDeveloperExceptionPage();
             }
 
@@ -161,8 +184,8 @@ namespace CalendarEvents
             app.UseCors(MyAllowSpecificOrigins);
             //app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();                                   
+            //app.UseAuthentication();
+            //app.UseAuthorization();                                   
 
             
             app.UseEndpoints(endpoints =>

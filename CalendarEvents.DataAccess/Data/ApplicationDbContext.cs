@@ -5,7 +5,9 @@ namespace CalendarEvents.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {        
-        public ApplicationDbContext() { }
+        public ApplicationDbContext() {
+            
+        }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }

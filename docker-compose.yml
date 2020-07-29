@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: CalendarEvents.API/Dockerfile
+    environment:
+      - DatabaseServer=mssqlserver
+      - DatabaseName=CalendarEventsApiDB
+      - DatabaseUser=sa
+      - DatabasePassword=<YourStrong@Passw0rd>    
+    container_name: calendareventsapicontainer
+    ports:
+      - "5000:80"
+    networks:
+      - back-tier      
+    depends_on:
+      - mssqlserver
+
+  mssqlserver:
+    image: "mcr.microsoft.com/mssql/server:2017-latest"
+    ports:
+      - "1445:1433"
+    container_name: calendareventssqlcontainer
+    environment:
+      - SA_PASSWORD=<YourStrong@Passw0rd>
+      - ACCEPT_EULA=Y    
+    networks:
+      - back-tier
+
+networks:
+  back-tier:  
