@@ -113,22 +113,15 @@ namespace CalendarEvents
             string migrationsAssembly = typeof(CalendarEvents.DataAccess.ApplicationDbContext)
                 .GetTypeInfo().Assembly.GetName().Name;
 
-            string server = Environment.GetEnvironmentVariable("DatabaseServer");
-            string database = Environment.GetEnvironmentVariable("DatabaseName");
-            string port = Configuration["DatabasePort"] ?? "1443";            
-            string user = Configuration["DatabaseUser"] ?? "sa";
-            string password = Configuration["DatabasePassword"] ?? "<YourStrong@Passw0rd>";
+            string server = Environment.GetEnvironmentVariable("DatabaseServer") ?? "localhost";
+            string database = Environment.GetEnvironmentVariable("DatabaseName") ?? "CalendarEventsApiDB";
+            string port = Environment.GetEnvironmentVariable("DatabasePort") ?? "1443";
+            string user = Environment.GetEnvironmentVariable("DatabaseUser") ?? "sa";
+            string password = Environment.GetEnvironmentVariable("DatabasePassword") ?? "<YourStrong@Passw0rd>";
 
-            Console.WriteLine($"--------------------------------------- ------------------------------------ Server: {server}");
-            //string connectionString = null;
-            //try { connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING"); }
-            //catch { }
-            //connectionString = connectionString ?? Configuration.GetConnectionString("DefaultConnection");
 
             //connectionString = $"Server={server},{port};Database={database};User ID={user};Password={password}";
-            string connectionString = $"Server={server};Database={database};User ID={user};Password={password};";
-
-            Console.WriteLine($"--------------------------------------- ------------------------------------ ConnectionString : {connectionString }");
+            string connectionString = $"Server={server};Database={database};User ID={user};Password={password};";            
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
