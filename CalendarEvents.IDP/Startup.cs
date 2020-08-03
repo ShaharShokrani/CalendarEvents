@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Net;
 
 namespace CalendarEvents.IDP
 {
@@ -18,12 +20,10 @@ namespace CalendarEvents.IDP
     {
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-        public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IWebHostEnvironment environment, IConfiguration configuration)
+        public Startup(IConfiguration configuration)
         {
-            Environment = environment;
             Configuration = configuration;
         }
 
@@ -31,6 +31,7 @@ namespace CalendarEvents.IDP
         {
             services.AddControllersWithViews();
 
+            string clientUri = Environment.GetEnvironmentVariable("ClientUri") ?? "localhost:4200";//todo cha host.docker.internal
 
             services.AddCors(options =>
             {
@@ -39,28 +40,36 @@ namespace CalendarEvents.IDP
                                   {
                                       //TODO: Use the config instead.
                                       builder
-                                      .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                                      .SetIsOriginAllowed(origin => origin == $"http://{clientUri}")
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
                                   });
-            });            
-
-            // configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
-            services.Configure<IISOptions>(iis =>
-            {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
             });
 
-            // configures IIS in-proc settings
-            services.Configure<IISServerOptions>(iis =>
-            {
-                iis.AuthenticationDisplayName = "Windows";
-                iis.AutomaticAuthentication = false;
-            });
+            //// configures IIS out-of-proc settings (see https://github.com/aspnet/AspNetCore/issues/14882)
+            //services.Configure<IISOptions>(iis =>
+            //{
+            //    iis.AuthenticationDisplayName = "Windows";
+            //    iis.AutomaticAuthentication = false;
+            //});
+
+            //// configures IIS in-proc settings
+            //services.Configure<IISServerOptions>(iis =>
+            //{
+            //    iis.AuthenticationDisplayName = "Windows";
+            //    iis.AutomaticAuthentication = false;
+            //});
+
+            string server = Environment.GetEnvironmentVariable("DatabaseServer") ?? "localhost";
+            string database = Environment.GetEnvironmentVariable("DatabaseName") ?? "CalendarEventsAuthDB";
+            string port = Environment.GetEnvironmentVariable("DatabasePort") ?? "1433";
+            string user = Environment.GetEnvironmentVariable("DatabaseUser") ?? "sa";
+            string password = Environment.GetEnvironmentVariable("DatabasePassword") ?? "<YourStrong@Passw0rd>";
+
+            string connectionString = $"Server={server};Database={database};User ID={user};Password={password};";
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -71,7 +80,7 @@ namespace CalendarEvents.IDP
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
-                    options.Events.RaiseSuccessEvents = true;
+                    options.Events.RaiseSuccessEvents = true;                      
                 })
                 .AddInMemoryIdentityResources(Config.Ids)
                 .AddInMemoryApiResources(Config.Apis)
@@ -91,15 +100,20 @@ namespace CalendarEvents.IDP
                     options.ClientId = "copy client ID from Google here";
                     options.ClientSecret = "copy client secret from Google here";
                 });
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+            | SecurityProtocolType.Tls11
+            | SecurityProtocolType.Tls12;            
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (Environment.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                InitializeDatabase(app);
+                PrepareDB.PreparePopulation(app).Wait();
             }
 
             app.UseStaticFiles();

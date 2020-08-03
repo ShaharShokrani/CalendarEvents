@@ -50,7 +50,7 @@ namespace CalendarEvents
             services.AddSingleton(mapper);
             #endregion
 
-            //IdentityModelEventSource.ShowPII = true; //Add this line
+            IdentityModelEventSource.ShowPII = true; //Add this line
 
             services.AddCors(options =>
             {
@@ -65,63 +65,63 @@ namespace CalendarEvents
                                   });
             });
 
-            ////As a best practice its better to use authorization fro all of the controllers, and allow anonymous.
-            ////services.AddControllers(options =>
-            ////{
-            ////    var policy = new AuthorizationPolicyBuilder()
-            ////                    .RequireAuthenticatedUser()
-            ////                    .Build();
-            ////    options.Filters.Add(new AuthorizeFilter(policy));
-            ////});
+            //As a best practice its better to use authorization fro all of the controllers, and allow anonymous.
+            services.AddControllers(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                .RequireAuthenticatedUser()
+                                .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
             services.AddControllers();
 
             services.AddHttpContextAccessor();
 
-            ////services.AddScoped<IAuthorizationHandler, MustOwnHandler<EventModel>>();
+            services.AddScoped<IAuthorizationHandler, MustOwnHandler<EventModel>>();
 
-            ////services.AddAuthentication(options =>
-            ////{
-            ////    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            ////    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;                
-            ////}).AddJwtBearer(o =>
-            ////{
-            ////    o.Authority = "https://localhost:5001/";
-            ////    o.Audience = "calendareventsapi";
-            ////    o.RequireHttpsMetadata = false;                
-            ////});
+            string authority = Environment.GetEnvironmentVariable("Authority") ?? "https://127.0.0.1:443/";
 
-            ////services.AddAuthorization(authorizationOptions =>
-            ////{
-            ////    authorizationOptions.AddPolicy(
-            ////        "Events.Put",
-            ////        policyBuilder =>
-            ////        {
-            ////            policyBuilder.RequireAuthenticatedUser();
-            ////            policyBuilder.AddRequirements(
-            ////                new MustOwnRequirement<EventModel>()
-            ////            );
-            ////            policyBuilder.RequireClaim("scope", "calendareventsapi");
-            ////        });
-            ////    authorizationOptions.AddPolicy(
-            ////        "Events.Post",
-            ////        policyBuilder =>
-            ////        {
-            ////            policyBuilder.RequireClaim("scope", "calendareventsapi");
-            ////        });
-            ////});
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;                
+            }).AddJwtBearer(o =>
+            {
+                o.Authority = authority;
+                o.Audience = "calendareventsapi";
+                o.RequireHttpsMetadata = false;
+            });
+
+            services.AddAuthorization(authorizationOptions =>
+            {
+                authorizationOptions.AddPolicy(
+                    "Events.Put",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireAuthenticatedUser();
+                        policyBuilder.AddRequirements(
+                            new MustOwnRequirement<EventModel>()
+                        );
+                        policyBuilder.RequireClaim("scope", "calendareventsapi");
+                    });
+                authorizationOptions.AddPolicy(
+                    "Events.Post",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireClaim("scope", "calendareventsapi");
+                    });
+            });
 
             string migrationsAssembly = typeof(CalendarEvents.DataAccess.ApplicationDbContext)
                 .GetTypeInfo().Assembly.GetName().Name;
 
             string server = Environment.GetEnvironmentVariable("DatabaseServer") ?? "localhost";
             string database = Environment.GetEnvironmentVariable("DatabaseName") ?? "CalendarEventsApiDB";
-            string port = Environment.GetEnvironmentVariable("DatabasePort") ?? "1443";
+            string port = Environment.GetEnvironmentVariable("DatabasePort") ?? "1433";
             string user = Environment.GetEnvironmentVariable("DatabaseUser") ?? "sa";
             string password = Environment.GetEnvironmentVariable("DatabasePassword") ?? "<YourStrong@Passw0rd>";
 
-
-            //connectionString = $"Server={server},{port};Database={database};User ID={user};Password={password}";
-            string connectionString = $"Server={server};Database={database};User ID={user};Password={password};";            
+            string connectionString = $"Server={server};Database={database};User ID={user};Password={password};";
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -175,12 +175,12 @@ namespace CalendarEvents
             //        template: "{controller=Home}/{action=Index}/{id?}");
             //});
             app.UseCors(MyAllowSpecificOrigins);
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseAuthentication();
-            //app.UseAuthorization();                                   
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

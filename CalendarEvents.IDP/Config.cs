@@ -4,6 +4,7 @@
 
 using IdentityServer4;
 using IdentityServer4.Models;
+using System;
 using System.Collections.Generic;
 
 namespace CalendarEvents.IDP
@@ -17,7 +18,7 @@ namespace CalendarEvents.IDP
             IdentityServerConstants.StandardScopes.Email,
             "calendareventsapi"
         };
-
+        
         public static IEnumerable<IdentityResource> Ids =>
             new IdentityResource[]
             {            
@@ -31,13 +32,10 @@ namespace CalendarEvents.IDP
             {
                 new ApiResource("calendareventsapi", "Calendar Events API")
                 {
-                    //Scopes =  { 
-                    //    new Scope("calendareventsapi")
-                    //},
-                    //UserClaims = Claims
                 }
             };
 
+        private static string clientUri => Environment.GetEnvironmentVariable("ClientUri") ?? "localhost:4200";//todo cha host.docker.internal
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
@@ -50,9 +48,9 @@ namespace CalendarEvents.IDP
                     RequirePkce = true,
                     AllowAccessTokensViaBrowser = true,
                     RequireConsent = false,
-                    RedirectUris =           { "http://localhost:4200/signin-callback", "http://localhost:4200/assets/silent-callback.html" },
-                    PostLogoutRedirectUris = { "http://localhost:4200/signout-callback" },
-                    AllowedCorsOrigins =     { "http://localhost:4200" },
+                    RedirectUris =           { $"http://{clientUri}/signin-callback", $"http://{clientUri}/assets/silent-callback.html" },
+                    PostLogoutRedirectUris = { $"http://{clientUri}/signout-callback" },
+                    AllowedCorsOrigins =     { $"http://{clientUri}" },
                     AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

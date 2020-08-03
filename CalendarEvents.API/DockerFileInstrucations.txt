@@ -2,4 +2,4 @@ goto root.
 docker build -t calendareventsapi -f CalendarEvents.API\Dockerfile .
 
 
-docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Docker@1' -e 'MSSQL_PID=express' -p 1445:1433 --name=calnedareventsdb microsoft/mssql-server-linux:latest
+docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=<YourStrong@Passw0rd>' -e 'MSSQL_PID=express' -p 1433:1433 --name=calnedareventsdb microsoft/mssql-server-linux:latest
