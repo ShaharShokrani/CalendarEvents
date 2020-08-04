@@ -3,30 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.Models", "CalendarEvents.Models\CalendarEvents.Models.csproj", "{C71EA51E-728F-4D11-96C2-B4B0F1FCA3B2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.DataAccess", "CalendarEvents.DataAccess\CalendarEvents.DataAccess.csproj", "{21EB30C8-841A-489C-A341-73E815821D34}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.Services.Test", "CalendarEvents.Services.Test\CalendarEvents.Services.Test.csproj", "{6FE19691-0A6E-4F32-88CC-5C41CE020CD7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.Tests", "CalendarEvents.Tests\CalendarEvents.Tests.csproj", "{BD7994CF-5825-4322-84BC-DE8AC09349A2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.DataAccess.Tests", "CalendarEvents.DataAccess.Tests\CalendarEvents.DataAccess.Tests.csproj", "{A80B1261-2A7E-49C3-982B-0BB08C301774}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.Scrapper", "CalendarEvents.Scrapper\CalendarEvents.Scrapper.csproj", "{67677D8A-7F00-4F6B-ACA1-8C417943A8E7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.Services", "CalendarEvents.Services\CalendarEvents.Services.csproj", "{A8B9E745-B346-43C5-823A-24FFC7E60A02}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.API", "CalendarEvents.API\CalendarEvents.API.csproj", "{DA845921-294B-4C1A-8C92-C624AE9B8D0C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalendarEvents.IDP", "CalendarEvents.IDP\CalendarEvents.IDP.csproj", "{B6D003A2-84B8-484B-B0D0-E64B920395EA}"
-EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{ED5DBE99-1803-4259-99C3-2E1AADE505D2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3F8B323-4A58-4D65-926B-E5D39939EE69}"
-	ProjectSection(SolutionItems) = preProject
-		CalendarEvents.API\Dockerfile = CalendarEvents.API\Dockerfile
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,42 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C71EA51E-728F-4D11-96C2-B4B0F1FCA3B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C71EA51E-728F-4D11-96C2-B4B0F1FCA3B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C71EA51E-728F-4D11-96C2-B4B0F1FCA3B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C71EA51E-728F-4D11-96C2-B4B0F1FCA3B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21EB30C8-841A-489C-A341-73E815821D34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21EB30C8-841A-489C-A341-73E815821D34}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21EB30C8-841A-489C-A341-73E815821D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21EB30C8-841A-489C-A341-73E815821D34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FE19691-0A6E-4F32-88CC-5C41CE020CD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FE19691-0A6E-4F32-88CC-5C41CE020CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FE19691-0A6E-4F32-88CC-5C41CE020CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FE19691-0A6E-4F32-88CC-5C41CE020CD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD7994CF-5825-4322-84BC-DE8AC09349A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD7994CF-5825-4322-84BC-DE8AC09349A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD7994CF-5825-4322-84BC-DE8AC09349A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD7994CF-5825-4322-84BC-DE8AC09349A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A80B1261-2A7E-49C3-982B-0BB08C301774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A80B1261-2A7E-49C3-982B-0BB08C301774}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A80B1261-2A7E-49C3-982B-0BB08C301774}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A80B1261-2A7E-49C3-982B-0BB08C301774}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67677D8A-7F00-4F6B-ACA1-8C417943A8E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67677D8A-7F00-4F6B-ACA1-8C417943A8E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67677D8A-7F00-4F6B-ACA1-8C417943A8E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67677D8A-7F00-4F6B-ACA1-8C417943A8E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8B9E745-B346-43C5-823A-24FFC7E60A02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8B9E745-B346-43C5-823A-24FFC7E60A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8B9E745-B346-43C5-823A-24FFC7E60A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8B9E745-B346-43C5-823A-24FFC7E60A02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA845921-294B-4C1A-8C92-C624AE9B8D0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA845921-294B-4C1A-8C92-C624AE9B8D0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA845921-294B-4C1A-8C92-C624AE9B8D0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA845921-294B-4C1A-8C92-C624AE9B8D0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6D003A2-84B8-484B-B0D0-E64B920395EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED5DBE99-1803-4259-99C3-2E1AADE505D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
