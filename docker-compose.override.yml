@@ -2,11 +2,12 @@ version: '3.4'
 
 services:
   api:
+    image: shaharshokrani/calendarevents_api
     build:
       context: ../CalendarEventsAPI
-      dockerfile: CalendarEvents.API/Dockerfiles/API/Dockerfile
+      dockerfile: CalendarEvents.API/Dockerfile
     environment:
-      - DatabaseServer=apidatabase
+      - DatabaseServer=database
       - DatabaseName=CalendarEventsApiDB
       - DatabasePort=1433
       - DatabaseUser=sa
@@ -16,33 +17,18 @@ services:
     container_name: calendarevents_api_container
     ports:
       - "5000:80"
-    volumes:
-      - ~/.aspnet/https:/https:ro
-    depends_on:
-      - apidatabase
     networks:
       - back-tier
-      - api-db-tier
-
-  apidatabase:    
-    build:
-      context: ../CalendarEventsAPI
-      dockerfile: CalendarEvents.API/Dockerfiles/API/Dockerfile
-    ports:
-      - "1443:1433"
-    environment:
-      - SA_PASSWORD=<YourStrong@Passw0rd>
-      - ACCEPT_EULA=Y    
-    container_name: calendarevents_api_database_container
-    networks:      
-      - api-db-tier
-
+    depends_on:
+      - database
+      
   idp:
+    image: shaharshokrani/calendarevents_idp
     build:
       context: ../CalendarEventsIDP
-      dockerfile: Dockerfiles/IDP/Dockerfile
+      dockerfile: Dockerfile
     environment:
-      - DatabaseServer=idpdatabase
+      - DatabaseServer=database
       - DatabaseName=CalendarEventsIdpDB
       - DatabasePort=1433
       - DatabaseUser=sa
@@ -52,25 +38,21 @@ services:
     ports:
       - "5001:80"
     networks:
-      - back-tier
-      - idp-db-tier
+      - back-tier      
     depends_on:
-      - idpdatabase
+      - database
 
-  idpdatabase:
-    build:
-      context: ../CalendarEventsIDP
-      dockerfile: Dockerfiles/DB/Dockerfile
+  database:    
+    image: mcr.microsoft.com/mssql/server
     ports:
-      - "1444:1433"
+      - "1443:1433"
     environment:
       - SA_PASSWORD=<YourStrong@Passw0rd>
-      - ACCEPT_EULA=Y        
-    container_name: calendarevents_idp_database_container
+      - ACCEPT_EULA=Y    
+      - MSSQL_PID=Express
+    container_name: calendarevents_api_database_container
     networks:      
-      - idp-db-tier
+      - back-tier
 
 networks:
   back-tier:
-  api-db-tier:
-  idp-db-tier:
