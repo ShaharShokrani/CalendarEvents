@@ -3,7 +3,7 @@ version: '3.4'
 services:
   api:
     image: shaharshokrani/calendarevents_api
-        build:
+    build:
       context: ../CalendarEventsAPI
       dockerfile: CalendarEvents.API/Dockerfile
     environment:
