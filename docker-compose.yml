@@ -3,13 +3,13 @@ version: '3.4'
 services:
   api:
     image: shaharshokrani/calendarevents_api
-    build:
+        build:
       context: ../CalendarEventsAPI
       dockerfile: CalendarEvents.API/Dockerfile
     environment:
       - DatabaseServer=database
       - DatabaseName=CalendarEventsApiDB
-      - DatabasePort=1433
+      - DatabasePort=1443
       - DatabaseUser=sa
       - DatabasePassword=<YourStrong@Passw0rd>
       - ASPNETCORE_ENVIRONMENT=Development
@@ -30,7 +30,7 @@ services:
     environment:
       - DatabaseServer=database
       - DatabaseName=CalendarEventsIdpDB
-      - DatabasePort=1433
+      - DatabasePort=1443
       - DatabaseUser=sa
       - DatabasePassword=<YourStrong@Passw0rd>    
       - ASPNETCORE_ENVIRONMENT=Development
