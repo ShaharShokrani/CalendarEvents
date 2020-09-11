@@ -28,6 +28,7 @@ services:
       context: ../CalendarEventsIDP
       dockerfile: Dockerfile
     environment:
+      - IssuerUri=http://idp
       - DatabaseServer=database
       - DatabaseName=CalendarEventsIdpDB
       - DatabasePort=1433
